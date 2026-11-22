@@ -6,6 +6,7 @@ import pytest
 
 from medical_data_crawler.acquisition import DocumentRequest, LocalDocumentAdapter
 from medical_data_crawler.contract import validate_record
+from medical_data_crawler.pdf_extraction import PDFExtractor
 from medical_data_crawler.pipeline import OfflinePipeline, RecordRights
 from medical_data_crawler.provenance import ProvenanceStore
 from medical_data_crawler.storage import ArtifactStore
@@ -240,3 +241,47 @@ def test_unexpected_acquisition_error_does_not_stop_batch(pipeline, monkeypatch)
     assert first.record is None
     assert first.errors == ("acquisition_unexpected_error",)
     assert second.extraction.status == "success"
+
+
+def test_large_pdf_uses_disk_snapshot_without_a_full_bytes_copy(
+    pipeline, tmp_path, pdf_bytes, monkeypatch
+):
+    data = pdf_bytes(
+        [[(72, 720, "Synthetic document")]],
+        metadata={"/FixturePadding": "x" * (1024 * 1024)},
+    )
+    path = tmp_path / "large.pdf"
+    path.write_bytes(data)
+    expected = PDFExtractor().extract(data)
+    extract = pipeline.extractors["application/pdf"].extract
+    snapshots = []
+
+    def inspect_snapshot(stream):
+        assert not isinstance(stream, bytes)
+        assert stream.tell() == 0
+        assert stream._rolled, "The large snapshot must have spilled to disk"
+        snapshots.append(stream)
+        return extract(stream)
+
+    def forbid_bytes_copy(*args):
+        pytest.fail("PDF pipeline must pass the snapshot directly to PdfReader")
+
+    monkeypatch.setattr(pipeline.extractors["application/pdf"], "extract", inspect_snapshot)
+    monkeypatch.setattr("medical_data_crawler.pdf_extraction.BytesIO", forbid_bytes_copy)
+    result = pipeline.process(request(path), rights=RIGHTS)
+    assert result.extraction == expected
+    assert result.errors == ()
+    validate_record(result.record)
+    assert len(snapshots) == 1 and snapshots[0].closed
+
+
+def test_snapshot_failure_keeps_artifact_and_provenance(pipeline, monkeypatch):
+    def fail(*args, **kwargs):
+        raise OSError("secret temporary storage failure")
+
+    monkeypatch.setattr("medical_data_crawler.pipeline.SpooledTemporaryFile", fail)
+    result = pipeline.process(request(FIXTURE), rights=RIGHTS)
+    assert result.errors == ("artifact_read_error",)
+    assert result.extraction is None and result.record is None
+    assert result.acquisition.accepted
+    assert pipeline.artifacts.verify(result.acquisition.artifact.sha256)

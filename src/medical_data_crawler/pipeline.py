@@ -2,7 +2,8 @@
 
 from dataclasses import dataclass
 from io import BytesIO
-from typing import Literal
+from tempfile import SpooledTemporaryFile
+from typing import BinaryIO, Literal
 
 from .acquisition import AcquisitionAdapter, AcquisitionResult, DocumentRequest
 from .contract import validate_record
@@ -32,20 +33,41 @@ class PipelineResult:
     errors: tuple[str, ...]
 
 
-def detect_media_type(data: bytes, hint: str | None) -> str:
+def detect_media_type(data: bytes | BinaryIO, hint: str | None) -> str:
     """PDF signature wins; HTML tolerates fragments/plain text with an HTML suffix.
 
     A PDF suffix retains PDF routing for damaged-header failure reporting.
     Known binary signatures and unexplained NUL bytes are never treated as HTML.
     This is limited format detection, not a complete file-type classifier.
     """
-    if data.lstrip(b" \t\r\n").startswith(b"%PDF-") or hint == "application/pdf":
+    if hint == "application/pdf":
         return "application/pdf"
-    binary = data.startswith((b"\x89PNG", b"\xff\xd8\xff", b"GIF87a", b"GIF89a", b"PK\x03\x04"))
-    unicode_bom = data.startswith((b"\xff\xfe", b"\xfe\xff", b"\x00\x00\xfe\xff"))
-    if hint == "text/html" and not binary and (b"\x00" not in data or unicode_bom):
-        return "text/html"
-    return "application/octet-stream"
+    stream = BytesIO(data) if isinstance(data, bytes) else data
+    position = stream.tell()
+    try:
+        header = stream.read(8)
+        binary = header.startswith(
+            (b"\x89PNG", b"\xff\xd8\xff", b"GIF87a", b"GIF89a", b"PK\x03\x04")
+        )
+        unicode_bom = header.startswith((b"\xff\xfe", b"\xfe\xff", b"\x00\x00\xfe\xff"))
+        prefix = b""
+        has_nul = False
+        chunk = header
+        while chunk:
+            has_nul |= b"\x00" in chunk
+            if len(prefix) < 5:
+                candidate = chunk if prefix else chunk.lstrip(b" \t\r\n")
+                prefix += candidate[: 5 - len(prefix)]
+            if prefix == b"%PDF-":
+                return "application/pdf"
+            # Scan all remaining HTML bytes for NUL, including beyond the first
+            # buffer. Prefix-only detection would change existing routing.
+            chunk = stream.read(65536)
+        if hint == "text/html" and not binary and (not has_nul or unicode_bom):
+            return "text/html"
+        return "application/octet-stream"
+    finally:
+        stream.seek(position)
 
 
 class OfflinePipeline:
@@ -67,33 +89,34 @@ class OfflinePipeline:
         if not acquired.accepted:
             return PipelineResult(request, acquired, None, None, (), acquired.errors)
         try:
-            stream = BytesIO()
-            # Extraction sees only verified immutable storage, never the source path.
-            self.artifacts.copy_to(acquired.artifact.sha256, stream)
-            data = stream.getvalue()
-        except StorageError:
+            # Small inputs stay in a bounded buffer; larger originals spill to disk.
+            # Only verified snapshots reach parsers, never a live artifact/source path.
+            with SpooledTemporaryFile(max_size=1024 * 1024, mode="w+b") as stream:
+                self.artifacts.copy_to(acquired.artifact.sha256, stream)
+                stream.seek(0)
+                media_type = detect_media_type(stream, acquired.media_type)
+                extractor = self.extractors.get(media_type)
+                if extractor is None:
+                    extracted = extraction_result(
+                        document_type="unknown",
+                        method="offline-format-detection",
+                        version="1.0",
+                        profile="offline-dispatch-v1",
+                        errors=("unsupported_content_format",),
+                    )
+                else:
+                    try:
+                        extracted = extractor.extract(stream)
+                    except Exception:
+                        extracted = extraction_result(
+                            document_type="pdf" if media_type == "application/pdf" else "html",
+                            method="offline-pipeline/dispatch",
+                            version="1.0",
+                            profile="offline-dispatch-v1",
+                            errors=("extractor_unexpected_error",),
+                        )
+        except (StorageError, OSError):
             return PipelineResult(request, acquired, None, None, (), ("artifact_read_error",))
-        media_type = detect_media_type(data, acquired.media_type)
-        extractor = self.extractors.get(media_type)
-        if extractor is None:
-            extracted = extraction_result(
-                document_type="unknown",
-                method="offline-format-detection",
-                version="1.0",
-                profile="offline-dispatch-v1",
-                errors=("unsupported_content_format",),
-            )
-        else:
-            try:
-                extracted = extractor.extract(data)
-            except Exception:
-                extracted = extraction_result(
-                    document_type="pdf" if media_type == "application/pdf" else "html",
-                    method="offline-pipeline/dispatch",
-                    version="1.0",
-                    profile="offline-dispatch-v1",
-                    errors=("extractor_unexpected_error",),
-                )
         warnings = list(extracted.warnings)
         errors = list(extracted.errors)
         if media_type != acquired.media_type:

@@ -1,6 +1,7 @@
 """DOM order extraction without rendering, network access, or medical rewriting."""
 
 import re
+from typing import BinaryIO
 
 import bs4
 from bs4 import BeautifulSoup, Comment, Declaration, Doctype, NavigableString, Tag
@@ -54,7 +55,11 @@ class HTMLExtractor:
     profile = "html-dom-v1"
     version = f"1.0/beautifulsoup4-{bs4.__version__}/html.parser"
 
-    def extract(self, data: bytes) -> ExtractionResult:
+    def extract(self, data: bytes | BinaryIO) -> ExtractionResult:
+        if not isinstance(data, bytes):
+            # Keep the exact bytes-based parser/encoding behavior. HTML still
+            # needs the whole input for DOM construction; PDF can remain streamed.
+            data = data.read()
         if not data:
             return extraction_result(
                 document_type="html",

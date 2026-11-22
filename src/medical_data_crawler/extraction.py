@@ -1,7 +1,7 @@
 """Small common interface for offline extractors and contract-compatible blocks."""
 
 from dataclasses import dataclass, field
-from typing import Literal, Protocol
+from typing import BinaryIO, Literal, Protocol
 
 ExtractionStatus = Literal["success", "partial", "failed"]
 
@@ -47,7 +47,9 @@ class ExtractionResult:
 
 
 class Extractor(Protocol):
-    def extract(self, data: bytes) -> ExtractionResult: ...
+    def extract(self, data: bytes | BinaryIO) -> ExtractionResult:
+        """Read bytes or a borrowed seekable binary stream at document start; never close it."""
+        ...
 
 
 def extraction_result(

@@ -2,6 +2,7 @@
 
 import re
 from io import BytesIO
+from typing import BinaryIO
 
 import pypdf
 from pypdf import PdfReader
@@ -19,7 +20,7 @@ class PDFExtractor:
     profile = "pdf-plain-v1"
     version = f"1.0/pypdf-{pypdf.__version__}"
 
-    def extract(self, data: bytes) -> ExtractionResult:
+    def extract(self, data: bytes | BinaryIO) -> ExtractionResult:
         blocks: list[ContentBlock] = []
         boundaries: list[PageBoundary] = []
         warnings = ["pdf_layout_unverified"]
@@ -28,7 +29,8 @@ class PDFExtractor:
         page_count = None
         incomplete = False
         try:
-            reader = PdfReader(BytesIO(data), strict=True)
+            stream = BytesIO(data) if isinstance(data, bytes) else data
+            reader = PdfReader(stream, strict=True)
             if reader.is_encrypted:
                 errors.append("pdf_encrypted")
             else:

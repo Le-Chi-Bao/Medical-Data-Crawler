@@ -85,11 +85,21 @@ Identity/locator không hợp lệ không thể tạo event có căn cứ, nên 
 Provenance ghi thất bại không được coi là acquisition thành công; artifact đã lưu
 vẫn được giữ nguyên để điều tra. Chưa có transaction hoặc tự phục hồi artifact mồ côi.
 
-Pipeline chỉ đọc lại artifact qua `copy_to` đã kiểm chứng checksum. Chữ ký `%PDF-`
+Pipeline chỉ đọc lại artifact qua `copy_to` đã kiểm chứng checksum vào snapshot
+`SpooledTemporaryFile`: ngưỡng 1 MiB để chuyển buffer xuống đĩa. Format
+detection quét theo khối 64 KiB và khôi phục vị trí stream; vẫn kiểm tra NUL ở toàn bộ
+HTML và chữ ký PDF sau whitespace, không chỉ xét prefix cố định. Chữ ký `%PDF-`
 được ưu tiên; suffix PDF vẫn chuyển tới PDF parser để báo PDF hỏng. HTML dùng hint
 từ suffix, chấp nhận fragment/plain text; từ chối một số chữ ký binary phổ biến và
 NUL không có Unicode BOM. Đây là nhận diện giới hạn, không phải bộ phân loại mọi
 định dạng. Lệch suffix/chữ ký có warning, không đổi identity hay byte gốc.
+
+Extractor nhận bytes hoặc binary stream seekable tại đầu tài liệu, không đóng stream
+của caller. PDF chuyển thẳng snapshot vào pypdf, không tạo thêm full-file bytes/BytesIO
+ở pipeline. HTML đọc snapshot thành bytes một lần rồi dùng cùng parser/encoding như
+trước; DOM và pypdf vẫn có thể dùng RAM tỷ lệ với nội dung. Đây là giới hạn buffer
+vận chuyển, không phải cam kết giới hạn RAM toàn extraction. Snapshot đóng sau mỗi
+tài liệu, kể cả khi extractor lỗi; lỗi temporary storage được cô lập và giữ original/event.
 
 `ExtractionResult` giữ loại tài liệu, tuple block có thứ tự, method/version/profile,
 status, warnings/errors, metadata và thông tin trang/encoding nội bộ. Không deduplicate
