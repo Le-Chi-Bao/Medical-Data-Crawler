@@ -1,6 +1,7 @@
 import hashlib
 import json
 import os
+import sys
 import tempfile
 from datetime import datetime
 from pathlib import Path
@@ -10,16 +11,25 @@ from .errors import FoundationError
 from .storage import ArtifactStore, StorageError
 
 
-def document_id(source_id: str, logical_key: str) -> str:
-    """Caller cung cấp khóa logic bền vững theo chính sách nguồn đã duyệt."""
-    if not source_id.strip() or not logical_key.strip():
-        raise ValueError("Nguồn và khóa logic phải khác rỗng")
-    identity = json.dumps([source_id, logical_key], ensure_ascii=False).encode("utf-8")
-    return "doc:" + hashlib.sha256(identity).hexdigest()
-
-
 class ProvenanceError(FoundationError):
     """Sự kiện tiếp nhận không hợp lệ hoặc không ghi được."""
+
+
+def _validate_text(value: str) -> None:
+    if not isinstance(value, str) or not value.strip():
+        raise ProvenanceError("Trường văn bản phải là chuỗi khác rỗng")
+    try:
+        value.encode("utf-8")
+    except UnicodeError:
+        raise ProvenanceError("Trường văn bản không mã hóa được UTF-8") from None
+
+
+def document_id(source_id: str, logical_key: str) -> str:
+    """Caller cung cấp khóa logic bền vững theo chính sách nguồn đã duyệt."""
+    _validate_text(source_id)
+    _validate_text(logical_key)
+    identity = json.dumps([source_id, logical_key], ensure_ascii=False).encode("utf-8")
+    return "doc:" + hashlib.sha256(identity).hexdigest()
 
 
 class ProvenanceStore:
@@ -39,11 +49,24 @@ class ProvenanceStore:
         error_code: str | None = None,
     ) -> str:
         """Chỉ nhận locator đã loại secrets/PHI và mã lỗi từ danh sách an toàn."""
+        identity = document_id(source_id, logical_key)
+        _validate_text(locator)
+        try:
+            if not isinstance(acquired_at, datetime) or acquired_at.utcoffset() is None:
+                raise ProvenanceError("Thời điểm tiếp nhận cần datetime có múi giờ")
+            timestamp = acquired_at.isoformat()
+        except (ValueError, TypeError, OverflowError):
+            raise ProvenanceError("Thời điểm tiếp nhận không hợp lệ") from None
         if (
-            not locator.strip()
-            or acquired_at.utcoffset() is None
+            (checksum is not None and not isinstance(checksum, str))
             or (checksum is None) == (error_code is None)
-            or (error_code is not None and error_code not in {"read_error", "invalid_input"})
+            or (
+                error_code is not None
+                and (
+                    not isinstance(error_code, str)
+                    or error_code not in {"read_error", "invalid_input"}
+                )
+            )
         ):
             raise ProvenanceError("Thông tin sự kiện không hợp lệ")
         artifact = None
@@ -56,10 +79,10 @@ class ProvenanceStore:
         event = {
             "event_version": "0.1",
             "event_id": event_id,
-            "document_id": document_id(source_id, logical_key),
+            "document_id": identity,
             "source_id": source_id,
             "locator": locator,
-            "acquired_at": acquired_at.isoformat(),
+            "acquired_at": timestamp,
             "artifact_reference": artifact.reference if artifact else None,
             "sha256": artifact.sha256 if artifact else None,
             "byte_size": artifact.byte_size if artifact else None,
@@ -80,5 +103,11 @@ class ProvenanceStore:
             raise ProvenanceError("Không công bố được sự kiện") from None
         finally:
             if temporary is not None:
-                temporary.unlink(missing_ok=True)
+                active_error = sys.exception()
+                try:
+                    temporary.unlink(missing_ok=True)
+                except OSError:
+                    if active_error is None:
+                        raise ProvenanceError("Sự kiện đã công bố nhưng cleanup thất bại") from None
+                    active_error.add_note("Không dọn được temporary file của sự kiện")
         return event_id

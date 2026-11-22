@@ -1,6 +1,7 @@
 import hashlib
 import os
 import re
+import sys
 import tempfile
 from dataclasses import dataclass
 from io import BytesIO
@@ -30,7 +31,7 @@ class ArtifactStore:
         root.mkdir(parents=True, exist_ok=True)
 
     def _path(self, checksum: str) -> Path:
-        if re.fullmatch(r"[0-9a-f]{64}", checksum) is None:
+        if not isinstance(checksum, str) or re.fullmatch(r"[0-9a-f]{64}", checksum) is None:
             raise StorageError("Checksum không hợp lệ")
         return self.root / checksum
 
@@ -60,7 +61,7 @@ class ArtifactStore:
                     size += len(chunk)
                     if destination.write(chunk) != len(chunk):
                         raise StorageError("Đích ghi không đủ byte")
-        except OSError:
+        except (OSError, ValueError, TypeError, AttributeError):
             raise StorageError("Không sao chép được artifact") from None
         if digest.hexdigest() != checksum or size != artifact.byte_size:
             raise StorageError("Artifact thay đổi trong khi đọc")
@@ -76,9 +77,15 @@ class ArtifactStore:
                 temporary = Path(out.name)
                 digest = hashlib.sha256()
                 size = 0
-                while chunk := stream.read(65536):
+                while True:
+                    chunk = stream.read(65536)
+                    if not isinstance(chunk, bytes):
+                        raise StorageError("Input stream phải trả về bytes")
+                    if not chunk:
+                        break
                     digest.update(chunk)
-                    out.write(chunk)
+                    if out.write(chunk) != len(chunk):
+                        raise StorageError("Temporary file ghi không đủ byte")
                     size += len(chunk)
                 out.flush()
                 os.fsync(out.fileno())
@@ -97,8 +104,14 @@ class ArtifactStore:
                     if existing.read(1):
                         raise StorageError("Xung đột kích thước artifact") from None
             return self.verify(checksum)
-        except OSError:
+        except (OSError, ValueError, TypeError, AttributeError):
             raise StorageError("Không lưu được artifact") from None
         finally:
             if temporary is not None:
-                temporary.unlink(missing_ok=True)
+                active_error = sys.exception()
+                try:
+                    temporary.unlink(missing_ok=True)
+                except OSError:
+                    if active_error is None:
+                        raise StorageError("Artifact đã công bố nhưng cleanup thất bại") from None
+                    active_error.add_note("Không dọn được temporary file của artifact")
