@@ -1,6 +1,6 @@
 # Medical Data Crawler
 
-Dự án thu thập kiến thức về tổn thương da thuộc K01–K08 cho Medical RAG. Đầu ra mục tiêu là Structured Raw truy được về tài liệu gốc. Session 01 cung cấp nền tảng Python, kiểm tra bản ghi v0.1 và hàm băm byte. Session 02 bổ sung ArtifactStore và ProvenanceStore, exact deduplication và stable document ID. Session 03 tiếp nhận file HTML/PDF cục bộ, trích xuất content blocks và điều phối offline; có thể dựng record v0.1 trong bộ nhớ khi caller cung cấp thông tin quyền truy cập. Chưa có HTTP crawling production, nguồn thực tế được duyệt, scheduler, batch exporter hoặc manifest. Chunking, embeddings, truy xuất RAG, chẩn đoán và xử lý ảnh nằm ngoài phạm vi.
+Dự án thu thập kiến thức về tổn thương da thuộc K01–K08 cho Medical RAG. Pipeline offline tiếp nhận HTML/PDF cục bộ, lưu byte gốc theo SHA-256, ghi sự kiện provenance, trích xuất nội dung và xuất Structured Raw v0.1 khi caller cung cấp căn cứ truy cập. Mỗi batch có manifest v0.1 để đối chiếu checksum, nguồn gốc và trạng thái của từng mục. HTTP crawling production và tuyển chọn nguồn thực tế thuộc giai đoạn sau. Chunking, embeddings, truy xuất RAG, chẩn đoán và xử lý ảnh nằm ngoài phạm vi.
 
 ## Cài đặt và kiểm tra
 
@@ -16,16 +16,23 @@ python -m venv .venv
 
 Trên Linux/macOS dùng `.venv/bin/python` thay cho đường dẫn Windows. Việc cài dependency có thể cần mạng. Tests chỉ dùng dữ liệu cục bộ.
 
+## Demo export offline
+
+```powershell
+.\.venv\Scripts\python scripts/demo_offline_export.py
+```
+
+Demo dùng fixture tổng hợp HTML/PDF và in đường dẫn manifest, thống kê cùng kết quả xác minh. Batch nằm tại `data/offline-export-demo/exports/<batch_id>/`. Originals và sự kiện nằm trong `originals/` và `events/` cùng cấp với `exports/`. Toàn bộ `data/` đã được Git ignore. Xem [cách tích hợp và kiểm tra](docs/DEVELOPMENT.md#chạy-export-batch-offline) và [kết quả nghiệm thu MVP](docs/MVP_VERIFICATION.md).
+
 ## Cấu trúc
 
 | Đường dẫn | Nội dung |
 | --- | --- |
-| `src/medical_data_crawler/` | Nền tảng, storage/provenance, acquisition, HTML/PDF extraction và offline pipeline |
+| `src/medical_data_crawler/` | Storage, provenance, acquisition, trích xuất HTML/PDF, export và xác minh batch |
 | `tests/unit/`, `tests/contract/`, `tests/integration/`, `tests/fixtures/` | Unit/contract/integration tests và mẫu tổng hợp tự tạo; chặn network trong tests |
 | `docs/` | [Kiến trúc](docs/ARCHITECTURE.md), [hợp đồng dữ liệu](docs/DATA_CONTRACT.md), [hướng dẫn phát triển](docs/DEVELOPMENT.md) |
 | `.github/workflows/quality.yml` | CI kiểm tra package, lint, format và tests |
 
-Xem [cách chạy fixture offline](docs/DEVELOPMENT.md#chạy-fixture-session-03-offline).
 HTML được đọc theo DOM, bảng ở dạng text có cảnh báo khi mất cấu trúc. PDF chỉ hỗ
 trợ text layer, báo từng trang lỗi/rỗng và giới hạn reading order; không có OCR.
 Thông tin trang nằm trong extraction nội bộ vì schema v0.1 chưa biểu diễn được.

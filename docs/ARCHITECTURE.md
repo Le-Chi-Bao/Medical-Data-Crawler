@@ -32,7 +32,7 @@ Unit tests kiểm tra byte nhị phân, nguồn cấu hình và logging. Contrac
 
 ## Quyết định còn mở
 
-Cần review khóa logic cho từng nguồn, schema của manifest, chính sách rights/PHI và bộ mẫu HTML/PDF đại diện. Session 03 có acquisition cục bộ, extractor và điều phối offline; chưa có HTTP crawling, scheduler hay exporter/manifest. Các block dạng bảng ở v0.1 mang văn bản, chưa mô hình hóa ô và quan hệ hàng/cột.
+Cần review khóa logic cho từng nguồn, chính sách rights/PHI và bộ mẫu HTML/PDF đại diện trước pilot production. Acquisition hiện dùng đầu vào cục bộ. Các block dạng bảng ở v0.1 mang văn bản, chưa mô hình hóa ô và quan hệ hàng/cột.
 
 ## ADR 04 — Storage và identity trong Session 02
 
@@ -142,10 +142,10 @@ text. Đây là font advance ước lượng, không phải bounding box đã re
 rotation, font lạ và layout so le vẫn có thể gây báo dư/bỏ sót. Ngưỡng 72/2 point
 chưa được hiệu chỉnh trên corpus đại diện; kết quả chỉ được kiểm tra bằng fixture tổng hợp.
 
-### Record v0.1 và ranh giới export
+### Dựng record v0.1
 
-`OfflinePipeline.process`/`process_many` trả kết quả trong bộ nhớ, không có exporter
-hay manifest. Acquisition thất bại hoặc artifact không còn toàn vẹn không tạo record.
+`OfflinePipeline.process` và `process_many` trả kết quả trong bộ nhớ.
+Acquisition thất bại hoặc artifact không còn toàn vẹn không tạo record.
 Thiếu `RecordRights.access_basis` từ caller thì giữ extraction nội bộ, trả warning
 `record_not_built_missing_rights`. Khi caller cung cấp rights, pipeline dựng record
 v0.1 (kể cả extraction failed), giữ nhãn scope/audience là `unknown`, gọi
@@ -156,6 +156,35 @@ phân phối; permitted/restricted cần evidence theo schema cũ.
 đối với root của ArtifactStore. Pipeline giữ toàn bộ warnings/errors của extractor.
 Schema v0.1 không có trường page count/boundary/encoding hay cấu trúc ô bảng: chúng
 được giữ trong extraction nội bộ; record PDF thêm warning
-`v0.1_page_boundaries_internal_only`. Không thêm trường trái schema hoặc tạo metadata,
-nhãn, quyền truy cập giả. Structured Raw batch export và cách xuất thông tin trang
-cần quyết định trong phiên sau; chưa thể coi đây là nghiệm thu toàn bộ MVP.
+`v0.1_page_boundaries_internal_only`. Cách xuất chi tiết trang vẫn là quyết định mở.
+
+## ADR 06 — Công bố và xác minh batch offline
+
+`DocumentRequest[] → OfflinePipeline.process_many() → export_batch() → manifest.json → verify_batch()`.
+`export_batch()` nhận iterable `PipelineResult` và dùng `ProvenanceStore` đã cấu
+hình để xác minh event cùng `ArtifactStore` tương ứng. Original được đọc theo
+stream. `process_many()` giữ record và extraction đã xử lý trong bộ nhớ, vì vậy RAM
+vẫn tăng theo lượng văn bản trích xuất trong batch.
+
+Mỗi lần export cấp một UUID mới và tạo thư mục batch bằng thao tác từ chối thư
+mục đã tồn tại. Tên record được tạo từ vị trí đầu vào. Exporter kiểm tra schema và
+đối chiếu provenance cùng original trước khi ghi record UTF-8. Mỗi file được ghi
+vào file tạm cùng thư mục, flush, fsync rồi công bố bằng hard link. Exporter đọc
+lại record, đối chiếu byte size, SHA-256, schema và tham chiếu sau khi xử lý các
+mục. Batch có hiệu lực kể từ khi hard link `manifest.json` xuất hiện.
+
+Lỗi từng record trước khi công bố manifest được ghi vào `omissions`. Nếu phát
+hiện record đã ghi bị thay đổi hoặc batch không thể công bố manifest, lần export
+thất bại và cố dọn file của batch đang ghi. Khi process bị kill hoặc mất điện,
+thư mục batch chưa có manifest hoặc file `.pending-*` có thể còn lại. Consumer
+chỉ đọc batch có manifest. Filesystem phải hỗ trợ hard link. Cơ chế này chưa bảo
+đảm độ bền khi mất điện vì không fsync thư mục. Các root cần do ứng dụng tin cậy
+quản lý. SHA-256 giúp phát hiện thay đổi so với manifest và tham chiếu đã lưu,
+trong khi tác nhân có quyền thay đồng thời các file vẫn có thể thay chứng cứ.
+
+Rerun tạo batch mới và giữ batch cũ. Xuất lại cùng `PipelineResult` có thể cho
+record JSON giống từng byte. Acquisition lại vẫn tạo event và timestamp riêng,
+nên record SHA-256 có thể đổi dù original trùng SHA-256. Original trùng được
+dùng chung trong ArtifactStore. Khi byte gốc đổi, store giữ cả hai phiên bản
+với cùng document ID nếu caller giữ cặp khóa nguồn và khóa logic. Chi tiết
+trường và cách đọc original nằm trong [hợp đồng dữ liệu](DATA_CONTRACT.md).

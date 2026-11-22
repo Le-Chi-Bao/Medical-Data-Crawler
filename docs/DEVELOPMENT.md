@@ -32,7 +32,7 @@ Khi thêm producer, gọi `configure_logging(settings)` từ entry point, dùng 
 Chạy `python -m pytest -q`, `python -m ruff check .` và `python -m ruff format --check .`. Khi Windows từ chối truy cập thư mục tạm dùng chung của pytest, dùng thư mục mới riêng cho lần chạy:
 
 ```powershell
-$testBase = Join-Path $env:TEMP ('mdc-' + [guid]::NewGuid())
+$testBase = Join-Path (Get-Location) ('data/pytest-' + [guid]::NewGuid())
 python -m pytest -q --basetemp $testBase
 ```
 
@@ -86,3 +86,42 @@ fixture; không cần download hay reportlab. Test fault injection bổ sung l�
 và page boundaries. Các test không thay thế đánh giá fidelity trên tài liệu thực,
 font Unicode PDF hay layout nhiều cột đại diện. Giới hạn và cấu hình cố định của
 extractor nằm trong [ADR 05](ARCHITECTURE.md#adr-05--acquisition-và-extraction-offline-trong-session-03).
+
+## Chạy export batch offline
+
+Chạy từ root sau khi cài package.
+
+```powershell
+python scripts/demo_offline_export.py
+```
+
+Demo dùng HTML tổng hợp có sẵn và tạo thêm HTML có media, PDF trang trắng cùng
+một yêu cầu file bị thiếu. Một yêu cầu riêng bỏ qua quyền truy cập để minh họa
+`skipped`. Kết quả dự kiến là 5 đầu vào, 3 record xuất thành công, 1 mục
+`failed`, 1 mục `skipped`. Ba record xuất ra lần lượt có trạng thái extraction
+`success`, `partial`, `failed`. Demo in `Verification PASS` sau khi đọc lại batch.
+
+```text
+data/offline-export-demo/
+  originals/<sha256>
+  events/<event_id>.json
+  exports/<batch_id>/manifest.json
+  exports/<batch_id>/records/<input_index>.json
+```
+
+Trong ứng dụng, gọi `export_batch(pipeline.process_many(requests, rights=rights),
+output_root, provenance)` để lấy đường dẫn manifest. Đối với quyền khác nhau
+theo tài liệu, gọi `pipeline.process(request, rights=rights_for_request)` cho
+từng yêu cầu rồi chuyển iterable kết quả vào `export_batch`.
+`verify_batch(manifest_path, provenance)` trả `VerificationResult` với
+`valid`, `error_code` và `input_index` (nếu lỗi gắn với một mục). Lỗi toàn batch
+khi export được báo qua `ExportError`. Mã lỗi trong manifest và kết quả xác minh
+dùng giá trị cố định để tránh tiết lộ chi tiết đầu vào. Scope của demo là dữ liệu
+tổng hợp. Dùng căn cứ truy cập được xác minh cho từng tài liệu khi chuyển sang pilot.
+
+Chạy riêng nhóm kiểm thử exporter và hai schema.
+
+```powershell
+$testBase = Join-Path (Get-Location) ('data/pytest-export-' + [guid]::NewGuid())
+python -m pytest -q tests/contract tests/integration/test_export.py tests/unit/test_export_publication.py --basetemp $testBase
+```

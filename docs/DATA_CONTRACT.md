@@ -23,3 +23,28 @@ Một record mô tả kết quả của một lần trích xuất từ một ori
 | failed | Mảng rỗng | Có error và đủ source/original |
 
 Các object từ chối khóa ngoài schema. Khi thay đổi cấu trúc, tạo schema có version mới, giữ validator cũ cho dữ liệu cũ và chạy fixtures của từng version trước tích hợp. Schema kiểm tra hình dạng một record. Việc kiểm tra ID ổn định giữa nhiều lần chạy, checksum khớp artifact và tính xác thực của căn cứ thuộc về storage và producer.
+
+## Manifest batch v0.1
+
+Manifest có [schema riêng](../src/medical_data_crawler/schemas/export-manifest-0.1.json).
+`validate_manifest()` kiểm tra schema, tổng đếm, vị trí đầu vào duy nhất và tên
+record tương ứng. `verify_batch()` đọc và đối chiếu file thực tế.
+
+| Trường | Ý nghĩa |
+| --- | --- |
+| `manifest_version`, `structured_raw_version` | Phiên bản hai hợp đồng. Hiện đều là `"0.1"`. |
+| `batch_id`, `created_at` | UUID dạng hex của lần export và thời điểm tạo RFC 3339 có múi giờ. Tên thư mục batch là `batch_id`. |
+| `records` | Mỗi mục có `input_index` tính từ 0, `document_id`, `event_id`, đường dẫn `records/<input_index>.json`, SHA-256 và kích thước byte của JSON, SHA-256 và tham chiếu original, `extraction_status` và `reuse`. |
+| `omissions` | Mỗi mục có vị trí đầu vào, `status` là `failed` hoặc `skipped`, mã `code`, document ID và event ID nếu xác định được. Thiếu thông tin quyền do caller chưa cung cấp là `skipped`. Acquisition thất bại, record sai schema hoặc lỗi ghi được ghi là `failed`. |
+| `summary` | `total = exported + failed + skipped`. `extraction` đếm `success`, `partial` và `failed` trong các record đã xuất. Record extraction `failed` có original hợp lệ được tính vào `exported` và `extraction.failed`. |
+
+Consumer đọc `record_path` tương đối với thư mục chứa manifest. Dùng
+`ProvenanceStore` được cấu hình cùng batch để tra `<event_id>.json` trong root
+sự kiện. `original_reference` (và `original.reference` trong record) là khóa
+SHA-256 trong `ArtifactStore` đã cấu hình. Gọi
+`artifacts.verify(entry["original_sha256"])` để đối chiếu hash và kích thước,
+hoặc `artifacts.copy_to(entry["original_sha256"], binary_stream)` để đọc byte
+đã kiểm chứng. Cấu hình các root nằm ngoài hợp đồng dữ liệu. Batch chỉ lưu tham
+chiếu tới original. `reuse=unknown` và `reuse=restricted` được giữ nguyên
+khi xuất nội bộ. Consumer phải có căn cứ quyền riêng trước khi phân phối bất kỳ
+tài liệu nào.
