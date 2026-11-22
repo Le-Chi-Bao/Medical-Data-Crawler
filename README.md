@@ -1,6 +1,6 @@
 # Medical Data Crawler
 
-Dự án thu thập kiến thức về tổn thương da thuộc K01–K08 cho Medical RAG. Đầu ra mục tiêu là Structured Raw truy được về tài liệu gốc. Session 01 cung cấp nền tảng Python, kiểm tra bản ghi v0.1 và hàm băm byte. Crawler, extraction engine và export pipeline thuộc các phiên sau. Chunking, embeddings, truy xuất RAG, chẩn đoán và xử lý ảnh nằm ngoài phạm vi.
+Dự án thu thập kiến thức về tổn thương da thuộc K01–K08 cho Medical RAG. Đầu ra mục tiêu là Structured Raw truy được về tài liệu gốc. Session 01 cung cấp nền tảng Python, kiểm tra bản ghi v0.1 và hàm băm byte. Session 02 bổ sung ArtifactStore và ProvenanceStore hoạt động offline, exact deduplication và stable document ID. Crawler, extraction engine và export pipeline thuộc các phiên sau. Chunking, embeddings, truy xuất RAG, chẩn đoán và xử lý ảnh nằm ngoài phạm vi.
 
 ## Cài đặt và kiểm tra
 

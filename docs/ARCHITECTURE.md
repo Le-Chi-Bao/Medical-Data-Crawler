@@ -32,4 +32,36 @@ Unit tests kiểm tra byte nhị phân, nguồn cấu hình và logging. Contrac
 
 ## Quyết định còn mở
 
-Cần review cách cấp ID bền vững cho từng nguồn, schema của manifest, chính sách rights/PHI, quy tắc công bố storage và bộ mẫu HTML/PDF. Chưa có acquisition, artifact store, extractor, batch runner hay exporter. Các block dạng bảng ở v0.1 mang văn bản, chưa mô hình hóa ô và quan hệ hàng/cột.
+Cần review khóa logic cho từng nguồn, schema của manifest, chính sách rights/PHI và bộ mẫu HTML/PDF. Chưa có acquisition, extractor, batch runner hay exporter. Các block dạng bảng ở v0.1 mang văn bản, chưa mô hình hóa ô và quan hệ hàng/cột.
+
+## ADR 04 — Storage và identity trong Session 02
+
+Đã triển khai ArtifactStore với put(bytes hoặc BinaryIO), verify(checksum) và
+copy_to(checksum, destination). Caller giữ vòng đời input stream, được đọc từ vị trí hiện tại.
+File rỗng bị từ chối để phù hợp original.byte_length của contract v0.1.
+Artifact nằm tại root/SHA-256. Temporary file cùng filesystem được flush, fsync
+và công bố bằng os.link. Hard link chỉ tạo tên mới, từ chối thay thế tên đã có.
+Nếu filesystem không hỗ trợ hard link, thao tác báo StorageError.
+Các lần ingest trùng kiểm tra hash, kích thước và so sánh byte.
+File hỏng được giữ lại để điều tra, thao tác thất bại an toàn.
+
+Lựa chọn ID theo content hash sẽ đổi khi nội dung đổi. UUID ngẫu nhiên cần registry
+để giữ ổn định qua rerun. Session 02 chọn hàm document_id(source_id, logical_key)
+băm cặp chuỗi JSON UTF-8 bằng SHA-256. Caller cung cấp khóa bền vững theo nguồn,
+không tự chuẩn hóa URL. Phiên bản nội dung dùng hash artifact riêng.
+Sự kiện provenance có UUID riêng cho mỗi lần gọi record, kể cả nguồn và byte trùng.
+ProvenanceStore kiểm tra artifact trước khi công bố từng JSON bằng hard link.
+Sự kiện failed lưu mã lỗi an toàn cùng tham chiếu null. Schema export v0.1 giữ nguyên.
+
+Root storage cần nằm trong vùng do ứng dụng tin cậy quản lý. Cơ chế bất biến áp dụng
+cho API, quyền filesystem vẫn cho phép tác nhân ngoài sửa file. Đọc và dedup phát hiện
+thay đổi byte. copy_to có thể ghi một phần vào đích nếu lỗi giữa chừng, caller chỉ công bố
+đích sau khi hàm thành công. Không bảo đảm chống tác nhân sửa file đồng thời có chủ đích.
+Crash cấp process có thể để lại file .pending- hoặc artifact chưa có event.
+Chưa có transaction xuyên hai store, fsync thư mục hay cam kết phục hồi mất điện.
+Không tự dọn original hoặc pending của process khác.
+
+record chỉ nhận locator/source identifier đã loại secrets và PHI từ caller.
+Không lưu free-text exception, không ghi log nội dung. Các mã lỗi được hỗ trợ hiện tại
+là read_error và invalid_input. Chính sách sanitization theo nguồn và cơ chế phục hồi
+artifact mồ côi cần được review trước acquisition.
