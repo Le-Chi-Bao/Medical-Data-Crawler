@@ -1,4 +1,4 @@
-"""Offline orchestration and optional in-memory v0.1 records; no batch exporter."""
+"""Offline orchestration and in-memory v0.1 records for downstream export."""
 
 from dataclasses import dataclass
 from io import BytesIO

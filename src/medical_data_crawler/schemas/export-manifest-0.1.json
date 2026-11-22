@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:medical-data-crawler:export-manifest:0.1",
+  "title": "Offline Export Manifest v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "manifest_version", "batch_id", "created_at", "structured_raw_version",
+    "records", "omissions", "summary"
+  ],
+  "properties": {
+    "manifest_version": {"const": "0.1"},
+    "batch_id": {"$ref": "#/$defs/event_id"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "structured_raw_version": {"const": "0.1"},
+    "records": {"type": "array", "items": {"$ref": "#/$defs/record"}},
+    "omissions": {"type": "array", "items": {"$ref": "#/$defs/omission"}},
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "exported", "failed", "skipped", "extraction"],
+      "properties": {
+        "total": {"$ref": "#/$defs/count"},
+        "exported": {"$ref": "#/$defs/count"},
+        "failed": {"$ref": "#/$defs/count"},
+        "skipped": {"$ref": "#/$defs/count"},
+        "extraction": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["success", "partial", "failed"],
+          "properties": {
+            "success": {"$ref": "#/$defs/count"},
+            "partial": {"$ref": "#/$defs/count"},
+            "failed": {"$ref": "#/$defs/count"}
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "count": {"type": "integer", "minimum": 0},
+    "event_id": {"type": "string", "minLength": 32, "maxLength": 32, "pattern": "^[0-9a-f]{32}$"},
+    "document_id": {
+      "type": "string", "minLength": 68, "maxLength": 68, "pattern": "^doc:[0-9a-f]{64}$"
+    },
+    "sha256": {"type": "string", "minLength": 64, "maxLength": 64, "pattern": "^[0-9a-f]{64}$"},
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "input_index", "document_id", "event_id", "record_path", "record_sha256",
+        "record_byte_size", "original_reference", "original_sha256", "extraction_status", "reuse"
+      ],
+      "properties": {
+        "input_index": {"$ref": "#/$defs/count"},
+        "document_id": {"$ref": "#/$defs/document_id"},
+        "event_id": {"$ref": "#/$defs/event_id"},
+        "record_path": {"type": "string", "pattern": "^records/(0|[1-9][0-9]*)\\.json$"},
+        "record_sha256": {"$ref": "#/$defs/sha256"},
+        "record_byte_size": {"type": "integer", "minimum": 1},
+        "original_reference": {"$ref": "#/$defs/sha256"},
+        "original_sha256": {"$ref": "#/$defs/sha256"},
+        "extraction_status": {"enum": ["success", "partial", "failed"]},
+        "reuse": {"enum": ["unknown", "restricted", "permitted"]}
+      }
+    },
+    "omission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_index", "document_id", "event_id", "status", "code"],
+      "properties": {
+        "input_index": {"$ref": "#/$defs/count"},
+        "document_id": {"anyOf": [{"$ref": "#/$defs/document_id"}, {"type": "null"}]},
+        "event_id": {"anyOf": [{"$ref": "#/$defs/event_id"}, {"type": "null"}]},
+        "status": {"enum": ["failed", "skipped"]},
+        "code": {
+          "enum": [
+            "acquisition_failed", "artifact_read_error", "record_validation_error",
+            "missing_access_basis", "provenance_integrity_error", "original_integrity_error",
+            "record_encoding_error", "record_write_error"
+          ]
+        }
+      },
+      "if": {"properties": {"status": {"const": "skipped"}}},
+      "then": {"properties": {"code": {"const": "missing_access_basis"}}},
+      "else": {"properties": {"code": {"not": {"const": "missing_access_basis"}}}}
+    }
+  }
+}
