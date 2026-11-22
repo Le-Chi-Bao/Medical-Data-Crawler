@@ -27,7 +27,7 @@ class PageBoundary:
     page_number: int
     block_start: int
     block_end: int
-    status: Literal["success", "no_text", "failed"]
+    status: Literal["success", "partial", "no_text", "failed"]
 
 
 @dataclass(frozen=True)
