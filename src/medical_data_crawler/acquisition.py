@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Protocol
+from typing import BinaryIO, Protocol
 
 from .provenance import ProvenanceError, ProvenanceStore, document_id
 from .storage import Artifact, ArtifactStore, StorageError
@@ -35,6 +35,21 @@ class AcquisitionResult:
 
 class AcquisitionAdapter(Protocol):
     def acquire(self, request: DocumentRequest) -> AcquisitionResult: ...
+
+
+class _LocalReadError(Exception):
+    """Keep source read failures distinct from storage failures during put()."""
+
+
+class _LocalReader:
+    def __init__(self, stream: BinaryIO):
+        self.stream = stream
+
+    def read(self, size: int) -> bytes:
+        try:
+            return self.stream.read(size)
+        except OSError:
+            raise _LocalReadError from None
 
 
 class LocalDocumentAdapter:
@@ -72,14 +87,16 @@ class LocalDocumentAdapter:
                 if media_type is None:
                     errors.append("unsupported_format")
                 else:
-                    data = path.read_bytes()
-                    if not data:
-                        errors.append("empty_file")
-                    else:
-                        artifact = self.artifacts.put(data)
+                    with path.open("rb") as stream:
+                        # BufferedReader.peek() checks emptiness without consuming
+                        # input or trusting a file size that may change during reading.
+                        if not stream.peek(1):
+                            errors.append("empty_file")
+                        else:
+                            artifact = self.artifacts.put(_LocalReader(stream))
             except FileNotFoundError:
                 errors.append("file_not_found")
-            except OSError:
+            except (OSError, _LocalReadError):
                 errors.append("read_error")
             except (TypeError, ValueError):
                 errors.append("invalid_input")

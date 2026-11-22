@@ -1,3 +1,4 @@
+import hashlib
 import json
 from pathlib import Path
 
@@ -70,7 +71,7 @@ def test_read_error_is_safe(adapter, tmp_path, monkeypatch):
     def fail(*args):
         raise PermissionError("secret/path")
 
-    monkeypatch.setattr(Path, "read_bytes", fail)
+    monkeypatch.setattr(Path, "open", fail)
     result = adapter.acquire(request(tmp_path / "blocked.html"))
     assert result.errors == ("read_error",)
     assert result.event_id is not None
@@ -107,3 +108,79 @@ def test_invalid_attribution_is_not_invented(adapter, tmp_path, field):
 def test_mismatched_stores_are_configuration_error(adapter, tmp_path):
     with pytest.raises(ValueError, match="same ArtifactStore"):
         LocalDocumentAdapter(ArtifactStore(tmp_path / "other"), adapter.provenance)
+
+
+@pytest.mark.parametrize("fail_during_read", [False, True])
+def test_streaming_reads_are_bounded_and_source_errors_keep_provenance(
+    adapter, tmp_path, monkeypatch, fail_during_read
+):
+    path = tmp_path / "large.html"
+    chunk = b"synthetic-stream\r\n" * 4096
+    digest = hashlib.sha256()
+    with path.open("wb") as out:
+        for _ in range(32):
+            out.write(chunk)
+            digest.update(chunk)
+    original_open = Path.open
+    readers = []
+
+    class GuardedReader:
+        def __init__(self, stream):
+            self.stream = stream
+            self.read_sizes = []
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            self.stream.close()
+
+        def peek(self, size):
+            return self.stream.peek(size)
+
+        def read(self, size=-1):
+            assert 0 < size <= 65536, "Acquisition must not read the whole source"
+            self.read_sizes.append(size)
+            if fail_during_read and len(self.read_sizes) == 3:
+                raise OSError("secret source read failure")
+            return self.stream.read(size)
+
+    def guarded_open(self, *args, **kwargs):
+        stream = original_open(self, *args, **kwargs)
+        if self == path:
+            assert args == ("rb",)
+            stream = GuardedReader(stream)
+            readers.append(stream)
+        return stream
+
+    monkeypatch.setattr(Path, "open", guarded_open)
+    result = adapter.acquire(request(path))
+    assert len(readers) == 1 and readers[0].stream.closed
+    assert len(readers[0].read_sizes) >= 3
+    event = json.loads((adapter.provenance.root / f"{result.event_id}.json").read_text("utf-8"))
+    assert not list(adapter.artifacts.root.glob(".pending-*"))
+    if fail_during_read:
+        assert result.errors == ("read_error",)
+        assert result.artifact is None
+        assert event["error_code"] == "read_error"
+        assert event["status"] == "failed"
+        assert not list(adapter.artifacts.root.iterdir())
+    else:
+        assert result.accepted
+        assert result.artifact.sha256 == digest.hexdigest()
+        assert result.artifact.byte_size == len(chunk) * 32
+        assert event["sha256"] == digest.hexdigest()
+        assert event["status"] == "accepted"
+
+
+def test_empty_source_does_not_call_storage(adapter, tmp_path, monkeypatch):
+    path = tmp_path / "empty.html"
+    path.write_bytes(b"")
+
+    def unexpected_put(*args):
+        pytest.fail("Empty input must not be sent to storage")
+
+    monkeypatch.setattr(adapter.artifacts, "put", unexpected_put)
+    result = adapter.acquire(request(path))
+    assert result.errors == ("empty_file",)
+    assert result.event_id is not None

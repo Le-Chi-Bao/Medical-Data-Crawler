@@ -75,8 +75,10 @@ không suy ra identity từ tên file, không chuẩn hóa locator, không liệ
 Caller chịu trách nhiệm xác minh quyền truy cập và loại secrets/PHI khỏi thông tin nguồn.
 `AcquisitionAdapter` và `Extractor` là hai protocol nhỏ; chưa có HTTP adapter.
 
-Adapter nhận `.html`, `.htm`, `.pdf`, không phân biệt hoa thường, đọc binary và chỉ
-ghi qua store Session 02. Mỗi lần gọi hợp lệ về identity/locator đều thử ghi một event,
+Adapter nhận `.html`, `.htm`, `.pdf`, không phân biệt hoa thường, mở binary stream và
+chuyển vào `ArtifactStore.put()` để đọc theo khối tối đa 64 KiB, không nạp cả file vào
+RAM. Kiểm tra rỗng bằng peek trước khi gọi store; lỗi đọc giữa chừng vẫn là `read_error`,
+phân biệt với `storage_error`. Mỗi lần gọi hợp lệ về identity/locator đều thử ghi một event,
 kể cả byte trùng hoặc lỗi file. Kết quả nội bộ phân biệt missing/empty/unsupported/read/
 storage/provenance errors; event giữ vocabulary cũ `read_error` hoặc `invalid_input`.
 Identity/locator không hợp lệ không thể tạo event có căn cứ, nên trả lỗi rõ ràng.
