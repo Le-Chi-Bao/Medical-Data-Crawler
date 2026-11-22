@@ -189,6 +189,99 @@ def test_mismatched_event_does_not_attribute_record_to_another_source(workspace)
     assert verify_batch(path, provenance).valid
 
 
+@pytest.mark.parametrize("failure_name", ["missing.html", "unsupported.txt"])
+def test_failed_acquisition_cannot_be_reclassified_as_missing_rights(
+    workspace, tmp_path, failure_name
+):
+    pipeline, provenance, output = workspace
+    results = pipeline.process_many([document(), document(tmp_path / failure_name)], rights=RIGHTS)
+    path = export_batch(results, output, provenance)
+    assert verify_batch(path, provenance).valid
+    manifest = load(path)
+    omission = manifest["omissions"][0]
+    assert omission["code"] == "acquisition_failed"
+    assert omission["event_id"] == results[1].acquisition.event_id
+
+    omission.update(status="skipped", code="missing_access_basis")
+    manifest["summary"].update(failed=0, skipped=1)
+    validate_manifest(manifest)
+    path.write_text(json.dumps(manifest), encoding="utf-8")
+
+    verification = verify_batch(path, provenance)
+    assert verification.error_code == "provenance_integrity_error"
+    assert verification.input_index == 1
+
+
+def test_skipped_accepted_event_cannot_be_reclassified_as_acquisition_failure(workspace):
+    pipeline, provenance, output = workspace
+    path = export_batch([pipeline.process(document())], output, provenance)
+    assert verify_batch(path, provenance).valid
+    manifest = load(path)
+    manifest["omissions"][0].update(status="failed", code="acquisition_failed")
+    manifest["summary"].update(failed=1, skipped=0)
+    validate_manifest(manifest)
+    path.write_text(json.dumps(manifest), encoding="utf-8")
+    verification = verify_batch(path, provenance)
+    assert verification.error_code == "provenance_integrity_error"
+    assert verification.input_index == 0
+
+
+@pytest.mark.parametrize(
+    ("failed", "changes"),
+    [
+        (True, {"error_code": None}),
+        (True, {"artifact_reference": "a" * 64}),
+        (False, {"document_id": "doc:" + "a" * 64}),
+        (False, {"error_code": "read_error"}),
+        (False, {"sha256": None}),
+        (False, {"byte_size": True}),
+    ],
+)
+def test_verify_omission_rejects_inconsistent_event(workspace, tmp_path, failed, changes):
+    pipeline, provenance, output = workspace
+    result = pipeline.process(document(tmp_path / "missing.html" if failed else FIXTURE))
+    path = export_batch([result], output, provenance)
+    event_path = provenance.root / f"{result.acquisition.event_id}.json"
+    event = load(event_path)
+    event.update(changes)
+    event_path.write_text(json.dumps(event), encoding="utf-8")
+    verification = verify_batch(path, provenance)
+    assert verification.error_code == "provenance_integrity_error"
+    assert verification.input_index == 0
+
+
+def test_acquisition_error_with_an_accepted_event_keeps_failure_without_link(workspace):
+    pipeline, provenance, output = workspace
+    result = pipeline.process(document(), rights=RIGHTS)
+    # An adapter can report an error after it has already stored the original.
+    failed = replace(
+        result,
+        acquisition=replace(result.acquisition, errors=("read_error",)),
+        extraction=None,
+        record=None,
+        errors=("read_error",),
+    )
+    path = export_batch([failed, result], output, provenance)
+    omission = load(path)["omissions"][0]
+    assert omission["code"] == "acquisition_failed"
+    assert omission["document_id"] == result.acquisition.document_id
+    assert omission["event_id"] is None
+    assert verify_batch(path, provenance).valid
+
+
+def test_verify_rejects_an_unlisted_record_in_the_batch(workspace):
+    pipeline, provenance, output = workspace
+    path = export_batch([pipeline.process(document(), rights=RIGHTS)], output, provenance)
+    directory = path.parent / "records"
+    (directory / ".pending-test").write_bytes(b"temporary content")
+    assert verify_batch(path, provenance).valid
+
+    (directory / "99.json").write_bytes((directory / "0.json").read_bytes())
+    verification = verify_batch(path, provenance)
+    assert verification.error_code == "unlisted_record"
+    assert verification.input_index is None
+
+
 @pytest.mark.parametrize(
     ("target", "missing", "code"),
     [

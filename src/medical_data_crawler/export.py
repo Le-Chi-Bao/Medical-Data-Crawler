@@ -24,6 +24,7 @@ from .storage import ArtifactStore, StorageError
 
 _EVENT_ID = re.compile(r"[0-9a-f]{32}")
 _DOCUMENT_ID = re.compile(r"doc:[0-9a-f]{64}")
+_SHA256 = re.compile(r"[0-9a-f]{64}")
 
 
 class ExportError(FoundationError):
@@ -224,31 +225,81 @@ def _export_record(
     return entry
 
 
+def _check_omission_event(omission: dict, event: dict) -> None:
+    error = "provenance_integrity_error"
+    if (
+        event.get("document_id") != omission["document_id"]
+        or not {"artifact_reference", "sha256", "byte_size", "error_code"} <= event.keys()
+    ):
+        raise ExportError(error)
+
+    # Only acquisition failures can reference failed events. Other omission codes
+    # describe the exporter or pipeline after acquisition succeeded.
+    reference, checksum, size = event["artifact_reference"], event["sha256"], event["byte_size"]
+    if omission["code"] == "acquisition_failed":
+        if (
+            event.get("status") != "failed"
+            or event["error_code"] not in ("invalid_input", "read_error")
+            or (reference, checksum, size) != (None, None, None)
+        ):
+            raise ExportError(error)
+    elif (
+        event.get("status") != "accepted"
+        or event["error_code"] is not None
+        or not isinstance(checksum, str)
+        or not _SHA256.fullmatch(checksum)
+        or reference != checksum
+        or type(size) is not int
+        or size < 1
+    ):
+        raise ExportError(error)
+
+
 def _omission(result: PipelineResult, index: int, code: str, provenance: ProvenanceStore) -> dict:
-    identity = event_id = None
+    omission = dict(
+        input_index=index,
+        document_id=None,
+        event_id=None,
+        status="skipped" if code == "missing_access_basis" else "failed",
+        code=code,
+    )
     acquired = result.acquisition
     if (
         acquired
         and isinstance(acquired.document_id, str)
         and _DOCUMENT_ID.fullmatch(acquired.document_id)
     ):
-        identity = acquired.document_id
+        omission["document_id"] = acquired.document_id
         with suppress(ExportError):
             event = _load_event(provenance, acquired.event_id)
+            _check_omission_event(omission, event)
             if (
-                event.get("document_id") == identity
-                and event.get("source_id") == result.request.source_id
+                event.get("source_id") == result.request.source_id
                 and event.get("locator") == result.request.locator
                 and event.get("acquired_at") == acquired.acquired_at.isoformat()
             ):
-                event_id = acquired.event_id
-    return dict(
-        input_index=index,
-        document_id=identity,
-        event_id=event_id,
-        status="skipped" if code == "missing_access_basis" else "failed",
-        code=code,
-    )
+                omission["event_id"] = acquired.event_id
+    return omission
+
+
+def _verify_record_directory(records: list[dict], directory: Path) -> None:
+    expected = {Path(entry["record_path"]).name for entry in records}
+    try:
+        if directory.resolve(strict=True) != directory or not directory.is_dir():
+            raise ExportError("record_directory_error")
+        for child in directory.iterdir():
+            if child.name in expected:
+                continue
+            if (
+                child.name.startswith(".pending-")
+                and child.suffix.lower() != ".json"
+                and not child.is_symlink()
+                and child.is_file()
+            ):
+                continue
+            raise ExportError("unlisted_record")
+    except (OSError, RuntimeError):
+        raise ExportError("record_directory_error") from None
 
 
 def _verify_entries(manifest: dict, batch: Path, provenance: ProvenanceStore) -> None:
@@ -274,10 +325,10 @@ def _verify_entries(manifest: dict, batch: Path, provenance: ProvenanceStore) ->
             continue
         try:
             event = _load_event(provenance, entry["event_id"])
-            if event.get("document_id") != entry["document_id"]:
-                raise ExportError("provenance_integrity_error")
+            _check_omission_event(entry, event)
         except ExportError as error:
-            raise ExportError(error.code, entry["input_index"]) from None
+            raise ExportError(error.code, int(entry["input_index"])) from None
+    _verify_record_directory(manifest["records"], batch / "records")
 
 
 def export_batch(
