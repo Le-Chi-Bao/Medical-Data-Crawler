@@ -37,3 +37,52 @@ python -m pytest -q --basetemp $testBase
 ```
 
 Kiểm tra thay đổi hợp đồng bằng cả fixture hợp lệ và ca bị từ chối. Dùng `git diff --cached` để rà phạm vi commit. GitHub Actions cài package từ checkout trên Python 3.11 và 3.12, sau đó chạy cùng các kiểm tra. Thay đổi ý nghĩa dữ liệu hoặc mở rộng scope cần review theo Problem Definition.
+
+## Chạy fixture Session 03 offline
+
+Sau khi cài dependency, pipeline không cần Internet. Chạy đoạn Python sau tại root
+(trong PowerShell có thể lưu thành script cục bộ hoặc dùng here-string đưa vào Python):
+
+```python
+from pathlib import Path
+
+from medical_data_crawler.acquisition import DocumentRequest, LocalDocumentAdapter
+from medical_data_crawler.pipeline import OfflinePipeline, RecordRights
+from medical_data_crawler.provenance import ProvenanceStore
+from medical_data_crawler.storage import ArtifactStore
+
+artifacts = ArtifactStore(Path("data/offline-demo/originals"))
+events = ProvenanceStore(Path("data/offline-demo/events"), artifacts)
+pipeline = OfflinePipeline(artifacts, LocalDocumentAdapter(artifacts, events))
+request = DocumentRequest(
+    Path("tests/fixtures/synthetic.html"),
+    source_id="synthetic-fixtures",
+    logical_key="session03-html",
+    locator="repository-fixture:synthetic.html",
+)
+result = pipeline.process(
+    request, rights=RecordRights("Self-authored synthetic repository fixture")
+)
+print(result.extraction.status, len(result.extraction.blocks))
+print(result.warnings, result.errors)
+assert result.record is not None
+```
+
+File HTML do phiên này tự tạo, không phải nguồn y khoa production. Chạy lại tái sử
+dụng original nhưng ghi event mới. `data/` đã được ignore; không stage originals hay
+event sinh ra. Bỏ đối số `rights` để chỉ nhận extraction nội bộ khi chưa có access
+basis. Không tự áp dụng access basis của fixture cho nguồn thực tế.
+
+Chạy nhóm kiểm thử offline (dùng basetemp mới trên Windows như hướng dẫn phía trên):
+
+```powershell
+$testBase = Join-Path $env:TEMP ('mdc-session03-' + [guid]::NewGuid())
+python -m pytest -q tests/unit/test_acquisition.py tests/unit/test_html_extraction.py tests/unit/test_pdf_extraction.py tests/integration --basetemp $testBase
+```
+
+`tests/conftest.py` chặn kết nối socket và DNS trong tests. PDF được tạo trong bộ nhớ
+bằng pypdf với text tổng hợp/font Helvetica, trang rỗng, stream hỏng hoặc mật khẩu
+fixture; không cần download hay reportlab. Test fault injection bổ sung lỗi backend
+và page boundaries. Các test không thay thế đánh giá fidelity trên tài liệu thực,
+font Unicode PDF hay layout nhiều cột đại diện. Giới hạn và cấu hình cố định của
+extractor nằm trong [ADR 05](ARCHITECTURE.md#adr-05--acquisition-và-extraction-offline-trong-session-03).

@@ -11,7 +11,8 @@ from .storage import Artifact, ArtifactStore, StorageError
 
 @dataclass(frozen=True)
 class DocumentRequest:
-    path: Path
+    # Non-filesystem adapters may use locator with path=None in a later session.
+    path: Path | None
     source_id: str
     logical_key: str
     locator: str

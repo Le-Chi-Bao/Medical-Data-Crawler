@@ -5,7 +5,7 @@ from io import BytesIO
 
 import pytest
 from pypdf import PdfWriter
-from pypdf.generic import DecodedStreamObject, DictionaryObject, NameObject
+from pypdf.generic import DecodedStreamObject, DictionaryObject, NameObject, NumberObject
 
 
 @pytest.fixture(autouse=True)
@@ -63,3 +63,30 @@ def pdf_bytes():
         return output.getvalue()
 
     return build
+
+
+@pytest.fixture
+def image_only_pdf():
+    """A synthetic one-pixel image, drawn onto a PDF page with no text operators."""
+    writer = PdfWriter()
+    page = writer.add_blank_page(width=612, height=792)
+    image = DecodedStreamObject()
+    image.update(
+        {
+            NameObject("/Type"): NameObject("/XObject"),
+            NameObject("/Subtype"): NameObject("/Image"),
+            NameObject("/ColorSpace"): NameObject("/DeviceGray"),
+        }
+    )
+    for key, value in [("/Width", 1), ("/Height", 1), ("/BitsPerComponent", 8)]:
+        image[NameObject(key)] = NumberObject(value)
+    image.set_data(b"\x80")
+    page[NameObject("/Resources")] = DictionaryObject(
+        {NameObject("/XObject"): DictionaryObject({NameObject("/Im0"): writer._add_object(image)})}
+    )
+    content = DecodedStreamObject()
+    content.set_data(b"q 100 0 0 100 72 600 cm /Im0 Do Q")
+    page[NameObject("/Contents")] = writer._add_object(content)
+    output = BytesIO()
+    writer.write(output)
+    return output.getvalue()

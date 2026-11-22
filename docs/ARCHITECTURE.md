@@ -32,7 +32,7 @@ Unit tests kiểm tra byte nhị phân, nguồn cấu hình và logging. Contrac
 
 ## Quyết định còn mở
 
-Cần review khóa logic cho từng nguồn, schema của manifest, chính sách rights/PHI và bộ mẫu HTML/PDF. Chưa có acquisition, extractor, batch runner hay exporter. Các block dạng bảng ở v0.1 mang văn bản, chưa mô hình hóa ô và quan hệ hàng/cột.
+Cần review khóa logic cho từng nguồn, schema của manifest, chính sách rights/PHI và bộ mẫu HTML/PDF đại diện. Session 03 có acquisition cục bộ, extractor và điều phối offline; chưa có HTTP crawling, scheduler hay exporter/manifest. Các block dạng bảng ở v0.1 mang văn bản, chưa mô hình hóa ô và quan hệ hàng/cột.
 
 ## ADR 04 — Storage và identity trong Session 02
 
@@ -65,3 +65,78 @@ record chỉ nhận locator/source identifier đã loại secrets và PHI từ c
 Không lưu free-text exception, không ghi log nội dung. Các mã lỗi được hỗ trợ hiện tại
 là read_error và invalid_input. Chính sách sanitization theo nguồn và cơ chế phục hồi
 artifact mồ côi cần được review trước acquisition.
+
+## ADR 05 — Acquisition và extraction offline trong Session 03
+
+Luồng đã triển khai: `DocumentRequest → LocalDocumentAdapter → ArtifactStore →
+ProvenanceStore → ArtifactStore.copy_to → format detection → HTML/PDF extractor →
+PipelineResult`. Adapter nhận path riêng với `source_id`, `logical_key`, `locator`;
+không suy ra identity từ tên file, không chuẩn hóa locator, không liệt kê filesystem.
+Caller chịu trách nhiệm xác minh quyền truy cập và loại secrets/PHI khỏi thông tin nguồn.
+`AcquisitionAdapter` và `Extractor` là hai protocol nhỏ; chưa có HTTP adapter.
+
+Adapter nhận `.html`, `.htm`, `.pdf`, không phân biệt hoa thường, đọc binary và chỉ
+ghi qua store Session 02. Mỗi lần gọi hợp lệ về identity/locator đều thử ghi một event,
+kể cả byte trùng hoặc lỗi file. Kết quả nội bộ phân biệt missing/empty/unsupported/read/
+storage/provenance errors; event giữ vocabulary cũ `read_error` hoặc `invalid_input`.
+Identity/locator không hợp lệ không thể tạo event có căn cứ, nên trả lỗi rõ ràng.
+Provenance ghi thất bại không được coi là acquisition thành công; artifact đã lưu
+vẫn được giữ nguyên để điều tra. Chưa có transaction hoặc tự phục hồi artifact mồ côi.
+
+Pipeline chỉ đọc lại artifact qua `copy_to` đã kiểm chứng checksum. Chữ ký `%PDF-`
+được ưu tiên; suffix PDF vẫn chuyển tới PDF parser để báo PDF hỏng. HTML dùng hint
+từ suffix, chấp nhận fragment/plain text; từ chối một số chữ ký binary phổ biến và
+NUL không có Unicode BOM. Đây là nhận diện giới hạn, không phải bộ phân loại mọi
+định dạng. Lệch suffix/chữ ký có warning, không đổi identity hay byte gốc.
+
+`ExtractionResult` giữ loại tài liệu, tuple block có thứ tự, method/version/profile,
+status, warnings/errors, metadata và thông tin trang/encoding nội bộ. Không deduplicate
+text. `success` nghĩa là có text và không phát hiện phần mất trong phạm vi extractor;
+không chứng nhận fidelity tuyệt đối. `partial` có text cùng phần mất/cấu trúc không
+đáng tin cậy; `failed` không có block và có error. Lỗi parser không chứa exception
+text tự do; lỗi từng trang/tài liệu không làm dừng các mục còn lại.
+
+### Các profile có thể khôi phục
+
+| Profile | Cấu hình cố định và giới hạn |
+| --- | --- |
+| `html-dom-v1` | BeautifulSoup + stdlib `html.parser`; bytes được parser nhận diện encoding, ghi encoding nội bộ; chuẩn hóa whitespace của HTML flow, giải entities, giữ `br` và `pre`. Duyệt DOM, h1–h6 giữ level; list item giữ độ sâu, có thể tách item trước/sau nested list để bảo toàn thứ tự. Bảng đơn giản dùng tab giữa ô, newline giữa hàng; bảng gộp ô, lồng nhau, không đều hoặc nội dung ô phức tạp có warning và `partial`. |
+| `pdf-plain-v1` | `pypdf.PdfReader(strict=True)`, từ chối PDF mã hóa; `extract_text(extraction_mode="plain", orientations=(0,90,180,270))` theo chỉ số trang. Tách paragraph bằng dòng trống, giữ newline nội bộ, không nối từ ngắt dòng. Text origin cách nhau ít nhất 72 point trên cùng hàng (sai số 2 point) là dấu hiệu layout phức tạp và `partial`. Luôn có `pdf_layout_unverified`. |
+| `offline-dispatch-v1` | Không chuyển đổi nội dung; tạo kết quả failed khi không nhận diện được định dạng hoặc extractor ném lỗi ngoài dự kiến. |
+
+Version ghi cả phiên bản implementation `1.0` và dependency thực dùng. BeautifulSoup
+được chọn để xử lý HTML không hoàn chỉnh mà không tự viết parser; pypdf đọc text layer
+và sinh được fixture PDF trong test, không cần OCR hay dependency dựng PDF khác.
+
+HTML loại script/style/head, nav/role navigation, form/control, template/noscript,
+hidden/aria-hidden; giữ header/footer có thể chứa nội dung tài liệu. Không chạy JS,
+CSS hay tải linked resources; CSS layout/visibility không được diễn giải. Ảnh, SVG,
+canvas và media được bỏ với warning/partial; không suy diễn nội dung hình. Metadata
+chỉ lấy từ title, html lang, meta author và trường ngày xuất bản tường minh. HTML hỏng
+được parse best-effort; không đảm bảo cây DOM tương đương trình duyệt. Encoding tự
+nhận diện có thể sai với file không khai báo; cần kiểm tra fidelity bằng mẫu đại diện.
+
+PDF giữ số trang và khoảng block nửa mở `[block_start, block_end)` cho từng trang,
+kể cả trang lỗi/rỗng. Trang không có text có warning; tất cả trang không có text thì
+failed, không phân biệt chắc chắn trang trống với scan và không chạy OCR. Heuristic
+layout có thể bỏ sót hoặc báo dư; không dựng lại cột, ô bảng, hình, heading hoặc danh
+sách PDF. Font, thứ tự content stream và bố cục phức tạp có thể làm text sai/mất.
+Ngày tạo PDF không được dùng làm ngày xuất bản, author string không tự tách tên.
+
+### Record v0.1 và ranh giới export
+
+`OfflinePipeline.process`/`process_many` trả kết quả trong bộ nhớ, không có exporter
+hay manifest. Acquisition thất bại hoặc artifact không còn toàn vẹn không tạo record.
+Thiếu `RecordRights.access_basis` từ caller thì giữ extraction nội bộ, trả warning
+`record_not_built_missing_rights`. Khi caller cung cấp rights, pipeline dựng record
+v0.1 (kể cả extraction failed), giữ nhãn scope/audience là `unknown`, gọi
+`validate_record()` và chỉ trả record qua validation. `reuse=unknown` không cấp quyền
+phân phối; permitted/restricted cần evidence theo schema cũ.
+
+`source.context` chứa `provenance_event:<event_id>`, original reference là hash tương
+đối với root của ArtifactStore. Pipeline giữ toàn bộ warnings/errors của extractor.
+Schema v0.1 không có trường page count/boundary/encoding hay cấu trúc ô bảng: chúng
+được giữ trong extraction nội bộ; record PDF thêm warning
+`v0.1_page_boundaries_internal_only`. Không thêm trường trái schema hoặc tạo metadata,
+nhãn, quyền truy cập giả. Structured Raw batch export và cách xuất thông tin trang
+cần quyết định trong phiên sau; chưa thể coi đây là nghiệm thu toàn bộ MVP.

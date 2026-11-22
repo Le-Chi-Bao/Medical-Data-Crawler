@@ -52,6 +52,14 @@ def test_text_and_empty_pages_are_partial(pdf_bytes):
     assert "pdf_page_2_no_text" in result.warnings
 
 
+def test_image_only_pdf_is_failed_without_ocr(image_only_pdf):
+    result = PDFExtractor().extract(image_only_pdf)
+    assert result.status == "failed"
+    assert result.blocks == ()
+    assert result.pages[0].status == "no_text"
+    assert "no_extractable_text" in result.errors
+
+
 @pytest.mark.parametrize("data", [b"", b"not a PDF", b"%PDF-1.4\ncorrupt\n%%EOF"])
 def test_corrupt_pdf_fails_safely(data):
     result = PDFExtractor().extract(data)

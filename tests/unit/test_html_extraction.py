@@ -110,6 +110,11 @@ def test_br_and_preformatted_text():
     assert [b.text for b in result.blocks] == ["A\nB", "one\n  two"]
 
 
+def test_empty_table_cells_retain_column_separators():
+    result = extract("<table><tr><td></td><td>B</td><td></td></tr></table>")
+    assert result.blocks[0].text == "\tB\t"
+
+
 def test_declared_non_utf8_encoding_is_respected():
     result = HTMLExtractor().extract('<meta charset="windows-1252"><p>Café</p>'.encode("cp1252"))
     assert result.blocks[0].text == "Café"
