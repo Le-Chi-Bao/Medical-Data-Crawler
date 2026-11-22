@@ -113,10 +113,11 @@ text tự do; lỗi từng trang/tài liệu không làm dừng các mục còn 
 | Profile | Cấu hình cố định và giới hạn |
 | --- | --- |
 | `html-dom-v1` | BeautifulSoup + stdlib `html.parser`; bytes được parser nhận diện encoding, ghi encoding nội bộ; chuẩn hóa whitespace của HTML flow, giải entities, giữ `br` và `pre`. Duyệt DOM, h1–h6 giữ level; list item giữ độ sâu, có thể tách item trước/sau nested list để bảo toàn thứ tự. Bảng đơn giản dùng tab giữa ô, newline giữa hàng; bảng gộp ô, lồng nhau, không đều hoặc nội dung ô phức tạp có warning và `partial`. |
-| `pdf-plain-v1` | `pypdf.PdfReader(strict=True)`, từ chối PDF mã hóa; `extract_text(extraction_mode="plain", orientations=(0,90,180,270))` theo chỉ số trang. Tách paragraph bằng dòng trống, giữ newline nội bộ, không nối từ ngắt dòng. Text origin cách nhau ít nhất 72 point trên cùng hàng (sai số 2 point) là dấu hiệu layout phức tạp và `partial`. Luôn có `pdf_layout_unverified`. |
+| `pdf-plain-v1` (lịch sử, implementation 1.0) | `pypdf.PdfReader(strict=True)`, từ chối PDF mã hóa; `extract_text(extraction_mode="plain", orientations=(0,90,180,270))` theo chỉ số trang. Tách paragraph bằng dòng trống, giữ newline nội bộ, không nối từ ngắt dòng. Text origin cách nhau ít nhất 72 point trên cùng hàng (sai số 2 point) là dấu hiệu layout phức tạp và `partial`. Luôn có `pdf_layout_unverified`. |
+| `pdf-plain-v2` (hiện tại, implementation 1.1) | Giữ cách đọc và text của v1. Dùng font metrics của pypdf để ước lượng chiều rộng text run, hợp nhất các khoảng trên cùng hàng (sai số 2 point), chỉ báo complex layout khi khoảng trống giữa chúng ít nhất 72 point. Không đo được width thì dùng origin và thêm `pdf_layout_metrics_unavailable`; luôn giữ `pdf_layout_unverified`. |
 | `offline-dispatch-v1` | Không chuyển đổi nội dung; tạo kết quả failed khi không nhận diện được định dạng hoặc extractor ném lỗi ngoài dự kiến. |
 
-Version ghi cả phiên bản implementation `1.0` và dependency thực dùng. BeautifulSoup
+Version ghi cả phiên bản implementation (HTML `1.0`, PDF `1.1`) và dependency thực dùng. BeautifulSoup
 được chọn để xử lý HTML không hoàn chỉnh mà không tự viết parser; pypdf đọc text layer
 và sinh được fixture PDF trong test, không cần OCR hay dependency dựng PDF khác.
 
@@ -134,6 +135,12 @@ failed, không phân biệt chắc chắn trang trống với scan và không ch
 layout có thể bỏ sót hoặc báo dư; không dựng lại cột, ô bảng, hình, heading hoặc danh
 sách PDF. Font, thứ tự content stream và bố cục phức tạp có thể làm text sai/mất.
 Ngày tạo PDF không được dùng làm ngày xuất bản, author string không tự tách tên.
+V2 giảm false positives do một dòng thường tách thành nhiều text run; không sắp xếp
+lại text. Width dùng model nội bộ `pypdf.generic._font.Font` của pypdf 7, cache theo
+font trong từng trang; lỗi API/metrics được bắt và chuyển về fallback, không làm mất
+text. Đây là font advance ước lượng, không phải bounding box đã render; spacing,
+rotation, font lạ và layout so le vẫn có thể gây báo dư/bỏ sót. Ngưỡng 72/2 point
+chưa được hiệu chỉnh trên corpus đại diện; kết quả chỉ được kiểm tra bằng fixture tổng hợp.
 
 ### Record v0.1 và ranh giới export
 

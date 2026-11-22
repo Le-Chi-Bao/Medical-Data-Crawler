@@ -1,4 +1,7 @@
+from io import BytesIO
+
 import pytest
+from pypdf import PdfReader
 from pypdf._page import PageObject
 
 from medical_data_crawler.pdf_extraction import PDFExtractor
@@ -114,3 +117,94 @@ def test_paragraph_boundaries_do_not_join_pages(pdf_bytes, monkeypatch):
     result = PDFExtractor().extract(pdf_bytes([None, None]))
     assert [b.text for b in result.blocks] == ["One\nline.", "Two.", "Three."] * 2
     assert [(p.block_start, p.block_end) for p in result.pages] == [(0, 3), (3, 6)]
+
+
+@pytest.mark.parametrize("reverse_runs", [False, True])
+def test_ordinary_inline_runs_are_not_misclassified_as_columns(pdf_bytes, reverse_runs):
+    # Ten Helvetica M glyphs occupy about 100 pt at 12 pt. These adjacent
+    # runs form one normal line, although their origins are over 72 pt apart.
+    runs = [(72, 720, "MMMMMMMMMM"), (172, 720, "MMMMMMMMMM"), (272, 720, "continuation")]
+    if reverse_runs:
+        runs.reverse()
+    result = PDFExtractor().extract(pdf_bytes([runs]))
+    assert result.status == "success"
+    assert "pdf_page_1_complex_layout" not in result.warnings
+    assert "pdf_layout_unverified" in result.warnings
+    raw_text = PdfReader(BytesIO(pdf_bytes([runs])), strict=True).pages[0].extract_text()
+    assert "\n\n".join(block.text for block in result.blocks) == raw_text.strip()
+
+
+@pytest.mark.parametrize(
+    "runs",
+    [
+        [(72, 720, "Ordinary first line"), (72, 700, "Ordinary second line")],
+        [
+            (72, 720, "MMMMMMMMMM"),
+            (172, 720, "continuation"),
+            (72, 700, "MMMMMMMMMM"),
+            (172, 700, "continuation"),
+        ],
+    ],
+)
+def test_normal_lines_do_not_trigger_complex_layout(pdf_bytes, runs):
+    result = PDFExtractor().extract(pdf_bytes([runs]))
+    assert result.status == "success"
+    assert "pdf_page_1_complex_layout" not in result.warnings
+
+
+@pytest.mark.parametrize(
+    "runs",
+    [
+        [
+            (72, 720, "Left column"),
+            (340, 720, "Right column"),
+            (72, 700, "Left continuation"),
+            (340, 700, "Right continuation"),
+        ],
+        [
+            (72, 720, "Name"),
+            (260, 720, "Value"),
+            (72, 700, "Synthetic row"),
+            (260, 700, "Synthetic value"),
+        ],
+    ],
+)
+def test_columns_and_tables_keep_their_layout_warning_and_text(pdf_bytes, runs):
+    result = PDFExtractor().extract(pdf_bytes([runs]))
+    assert result.status == "partial"
+    assert "pdf_page_1_complex_layout" in result.warnings
+    text = "\n".join(block.text for block in result.blocks)
+    assert all(fragment in text for _, _, fragment in runs)
+
+
+@pytest.mark.parametrize(
+    ("spans", "expected"),
+    [
+        ([], False),
+        ([(72, 720, 150), (222, 720, 80)], False),
+        ([(72, 720, 300), (180, 720, 20), (300, 720, 30)], False),
+        ([(72, 720, 20), (300, 700, 20)], False),
+        ([(72, 720, 20), (163, 720, 20)], False),
+        ([(72, 720, 20), (164, 721.5, 20)], True),
+        ([(72, 720, 20), (300, 720, 20)], True),
+        ([(72, 720, None), (300, 720, None)], True),
+    ],
+)
+def test_complex_layout_checks_gaps_between_extents_on_the_same_row(spans, expected):
+    assert PDFExtractor._complex_layout(spans) is expected
+
+
+def test_missing_font_metrics_keeps_text_and_explicit_fallback_warning(pdf_bytes, monkeypatch):
+    monkeypatch.setattr(PDFExtractor, "_fragment_width", staticmethod(lambda *args: None))
+    result = PDFExtractor().extract(pdf_bytes([[(72, 720, "Left"), (340, 720, "Right")]]))
+    assert result.status == "partial"
+    assert result.errors == ()
+    assert "pdf_layout_metrics_unavailable" in result.warnings
+    assert "pdf_page_1_complex_layout" in result.warnings
+    text = "\n".join(block.text for block in result.blocks)
+    assert "Left" in text and "Right" in text
+
+
+def test_unreadable_font_metrics_do_not_escape_as_extraction_errors():
+    identity = [1, 0, 0, 1, 0, 0]
+    assert PDFExtractor._fragment_width("text", identity, identity, object(), 12, {}) is None
