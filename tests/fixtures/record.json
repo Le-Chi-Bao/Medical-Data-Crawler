@@ -1,0 +1,48 @@
+{
+  "schema_version": "0.1",
+  "document_id": "pilot:sample-1",
+  "source": {
+    "source_id": "pilot",
+    "locator": "sample-1",
+    "acquired_at": "2026-11-22T12:00:00Z",
+    "context": null
+  },
+  "original": {
+    "reference": "fixture:abc",
+    "media_type": "text/plain",
+    "byte_length": 3,
+    "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+  },
+  "metadata": {
+    "title": null,
+    "authors": null,
+    "published_on": null,
+    "language": null
+  },
+  "content": [
+    {
+      "kind": "paragraph",
+      "level": null,
+      "text": "abc"
+    }
+  ],
+  "extraction": {
+    "status": "success",
+    "warnings": [],
+    "errors": [],
+    "method": "fixture",
+    "version": "1",
+    "configuration": {
+      "profile": "fixture-v1"
+    }
+  },
+  "rights": {
+    "access_basis": "Mẫu do dự án tự tạo",
+    "reuse": "unknown",
+    "evidence": null
+  },
+  "audience": "unknown",
+  "audience_evidence": null,
+  "scope": "unknown",
+  "scope_evidence": null
+}
