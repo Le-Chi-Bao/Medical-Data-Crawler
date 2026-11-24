@@ -150,3 +150,22 @@ Script in JSON gồm metadata và số đếm để hỗ trợ reviewer điền 
 `inspect_html()` từ `medical_data_crawler.html_preflight` khi cần dùng kết quả
 trong mã Python. Test dùng fixture tổng hợp và chặn socket/DNS theo cấu hình chung.
 Xem cách đặt giới hạn byte, cung cấp tên trường chứng cứ HTTP và đọc kết quả. [HTML preflight](HTML_PREFLIGHT.md)
+
+## Kiểm tra HTTP acquisition ngoại tuyến
+
+Chạy tại root sau khi cài package.
+
+```powershell
+python scripts/demo_http_acquisition.py
+python -m pytest -q tests/unit/test_http_acquisition.py tests/unit/test_https_transport.py tests/integration/test_http_pipeline.py
+```
+
+Demo in `Verification PASS` và manifest của hai bản ghi đã trích xuất thành công.
+Mỗi lần chạy cấp event và batch ID mới. ArtifactStore dùng lại original nếu byte
+trùng. Output dưới `data/http-acquisition-demo/` đã được Git ignore.
+
+Test adapter dùng phản hồi HTTP tổng hợp qua `http.client.HTTPResponse`. Test transport
+dùng socket giả để kiểm tra IP đích, hostname TLS, trust store, header request và
+deadline. DNS và kết nối thật bị chặn bởi fixture chung. Dùng thư mục pytest tạm
+riêng theo hướng dẫn phía trên nếu Windows từ chối quyền truy cập. Xem API cấu hình,
+quyền và hành vi khi tải lỗi. [HTTP acquisition](HTTP_ACQUISITION.md)

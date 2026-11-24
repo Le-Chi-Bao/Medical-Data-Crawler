@@ -88,6 +88,9 @@ class OfflinePipeline:
             return PipelineResult(request, None, None, None, (), ("acquisition_unexpected_error",))
         if not acquired.accepted:
             return PipelineResult(request, acquired, None, None, (), acquired.errors)
+        if acquired.extraction_media_types == frozenset():
+            warnings = ("extraction_not_authorized", "record_not_built_missing_rights")
+            return PipelineResult(request, acquired, None, None, warnings, ())
         try:
             # Small inputs stay in a bounded buffer; larger originals spill to disk.
             # Only verified snapshots reach parsers, never a live artifact/source path.
@@ -95,6 +98,13 @@ class OfflinePipeline:
                 self.artifacts.copy_to(acquired.artifact.sha256, stream)
                 stream.seek(0)
                 media_type = detect_media_type(stream, acquired.media_type)
+                if (
+                    acquired.extraction_media_types is not None
+                    and media_type not in acquired.extraction_media_types
+                ):
+                    # Preserve the original and report a format failure without
+                    # parsing bytes as a format outside the recorded grant.
+                    media_type = "application/octet-stream"
                 extractor = self.extractors.get(media_type)
                 if extractor is None:
                     extracted = extraction_result(

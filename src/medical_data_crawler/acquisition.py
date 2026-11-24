@@ -1,4 +1,4 @@
-"""Offline acquisition; callers own source identity and sanitized locators."""
+"""Acquisition interface and implementation for explicit local documents."""
 
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -11,7 +11,7 @@ from .storage import Artifact, ArtifactStore, StorageError
 
 @dataclass(frozen=True)
 class DocumentRequest:
-    # Non-filesystem adapters may use locator with path=None in a later session.
+    # HTTP requests use an approved locator and path=None.
     path: Path | None
     source_id: str
     logical_key: str
@@ -27,6 +27,7 @@ class AcquisitionResult:
     artifact: Artifact | None
     event_id: str | None
     errors: tuple[str, ...]
+    extraction_media_types: frozenset[str] | None = None
 
     @property
     def accepted(self) -> bool:

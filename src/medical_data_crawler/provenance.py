@@ -3,6 +3,7 @@ import json
 import os
 import sys
 import tempfile
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 from uuid import uuid4
@@ -13,6 +14,24 @@ from .storage import ArtifactStore, StorageError
 
 class ProvenanceError(FoundationError):
     """Sự kiện tiếp nhận không hợp lệ hoặc không ghi được."""
+
+
+@dataclass(frozen=True)
+class HTTPAttempt:
+    """One exchange with a policy-checked locator and a fixed outcome code."""
+
+    source_id: str
+    locator: str
+    attempted_at: str
+    status: int | None
+    outcome: str
+
+
+@dataclass(frozen=True)
+class HTTPTrace:
+    user_agent: str
+    outcome: str
+    attempts: tuple[HTTPAttempt, ...]
 
 
 def _validate_text(value: str) -> None:
@@ -47,6 +66,7 @@ class ProvenanceStore:
         acquired_at: datetime,
         checksum: str | None,
         error_code: str | None = None,
+        http: HTTPTrace | None = None,
     ) -> str:
         """Chỉ nhận locator đã loại secrets/PHI và mã lỗi từ danh sách an toàn."""
         identity = document_id(source_id, logical_key)
@@ -89,6 +109,8 @@ class ProvenanceStore:
             "status": "accepted" if artifact else "failed",
             "error_code": error_code,
         }
+        if http is not None:
+            event["http"] = asdict(http)
         temporary = None
         try:
             with tempfile.NamedTemporaryFile(

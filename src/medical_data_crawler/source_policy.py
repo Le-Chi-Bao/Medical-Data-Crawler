@@ -70,6 +70,13 @@ def _public_url(value: str) -> tuple[str, str]:
     return host, (path or "").removesuffix("/")
 
 
+def public_document_host(url: str) -> str:
+    """Validate a registry-compatible document locator and return its DNS hostname."""
+    if not isinstance(url, str) or len(url) > 512:
+        raise SourcePolicyError("invalid_public_url")
+    return _public_url(url)[0]
+
+
 def _right_allowed(source: dict, asset: str, action: str) -> bool:
     return source["rights"].get(asset, {}).get(action, {}).get("status") == "allowed"
 

@@ -32,7 +32,7 @@ Unit tests kiểm tra byte nhị phân, nguồn cấu hình và logging. Contrac
 
 ## Quyết định còn mở
 
-Cần review khóa logic cho từng nguồn, chính sách rights/PHI và bộ mẫu HTML/PDF đại diện trước pilot production. Acquisition hiện dùng đầu vào cục bộ. Các block dạng bảng ở v0.1 mang văn bản, chưa mô hình hóa ô và quan hệ hàng/cột.
+Cần review khóa logic cho từng nguồn, chính sách rights/PHI và bộ mẫu HTML/PDF đại diện trước pilot production. Các block dạng bảng ở v0.1 mang văn bản, chưa mô hình hóa ô và quan hệ hàng/cột.
 
 ## ADR 04 — Storage và identity trong Session 02
 
@@ -68,12 +68,12 @@ artifact mồ côi cần được review trước acquisition.
 
 ## ADR 05 — Acquisition và extraction offline trong Session 03
 
-Luồng đã triển khai: `DocumentRequest → LocalDocumentAdapter → ArtifactStore →
+Luồng Session 03 dùng `DocumentRequest → LocalDocumentAdapter → ArtifactStore →
 ProvenanceStore → ArtifactStore.copy_to → format detection → HTML/PDF extractor →
 PipelineResult`. Adapter nhận path riêng với `source_id`, `logical_key`, `locator`;
 không suy ra identity từ tên file, không chuẩn hóa locator, không liệt kê filesystem.
 Caller chịu trách nhiệm xác minh quyền truy cập và loại secrets/PHI khỏi thông tin nguồn.
-`AcquisitionAdapter` và `Extractor` là hai protocol nhỏ; chưa có HTTP adapter.
+`AcquisitionAdapter` và `Extractor` định nghĩa interface giữa các bước.
 
 Adapter nhận `.html`, `.htm`, `.pdf`, không phân biệt hoa thường, mở binary stream và
 chuyển vào `ArtifactStore.put()` để đọc theo khối tối đa 64 KiB, không nạp cả file vào
@@ -188,3 +188,19 @@ nên record SHA-256 có thể đổi dù original trùng SHA-256. Original trùn
 dùng chung trong ArtifactStore. Khi byte gốc đổi, store giữ cả hai phiên bản
 với cùng document ID nếu caller giữ cặp khóa nguồn và khóa logic. Chi tiết
 trường và cách đọc original nằm trong [hợp đồng dữ liệu](DATA_CONTRACT.md).
+
+## ADR 07 — Tiếp nhận từng tài liệu qua HTTPS trong Session 06A
+
+`HTTPDocumentAdapter` triển khai cùng `AcquisitionAdapter` với `LocalDocumentAdapter`.
+Adapter kiểm tra snapshot registry, giới hạn retry/redirect và xác minh IP đích.
+Transport mở một kết nối TLS trực tiếp tới IP đã xác minh cho mỗi GET. Adapter truyền
+stream có kích thước xác định cho `ArtifactStore.put()`. Store dùng chung cơ chế ghi
+tạm, công bố bất biến, SHA-256 và deduplication. Adapter dừng stream khi còn thiếu
+byte hoặc lỗi đọc, trước khi store có thể công bố artifact.
+
+`ProvenanceStore` lưu thêm trường `http` cho yêu cầu được quy về một mục registry.
+Trường này ghi kết quả tổng thể và các lần thử có URL đã kiểm tra. Pipeline dùng cùng
+luồng xác minh artifact và trích xuất offline, áp dụng thêm quyền đọc/lưu văn bản
+của nguồn HTTP. Structured Raw và manifest tiếp tục dùng schema v0.1.
+Thiết kế transport, phạm vi quyền, mã lỗi và giới hạn vận hành nằm trong
+[HTTP acquisition](HTTP_ACQUISITION.md).

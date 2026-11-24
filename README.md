@@ -1,6 +1,6 @@
 # Medical Data Crawler
 
-Dự án thu thập kiến thức về tổn thương da thuộc K01–K08 cho Medical RAG. Pipeline offline tiếp nhận HTML/PDF cục bộ, lưu byte gốc theo SHA-256, ghi sự kiện provenance, trích xuất nội dung và xuất Structured Raw v0.1 khi caller cung cấp căn cứ truy cập. Mỗi batch có manifest v0.1 để đối chiếu checksum, nguồn gốc và trạng thái của từng mục. HTTP crawling production và tuyển chọn nguồn thực tế thuộc giai đoạn sau. Chunking, embeddings, truy xuất RAG, chẩn đoán và xử lý ảnh nằm ngoài phạm vi.
+Dự án thu thập kiến thức về tổn thương da thuộc K01–K08 cho Medical RAG. Pipeline tiếp nhận HTML/PDF cục bộ hoặc tải từng tài liệu từ URL HTTPS đã duyệt khi caller bật HTTP. Cả hai luồng lưu byte gốc theo SHA-256, ghi provenance, trích xuất nội dung và xuất Structured Raw v0.1 khi có căn cứ truy cập. Manifest v0.1 cho phép đối chiếu checksum, nguồn gốc và trạng thái từng mục. Chunking, embeddings, truy xuất RAG, chẩn đoán và xử lý ảnh nằm ngoài phạm vi.
 
 ## Cài đặt và kiểm tra
 
@@ -23,6 +23,14 @@ Trên Linux/macOS dùng `.venv/bin/python` thay cho đường dẫn Windows. Vi�
 ```
 
 Demo dùng fixture tổng hợp HTML/PDF và in đường dẫn manifest, thống kê cùng kết quả xác minh. Batch nằm tại `data/offline-export-demo/exports/<batch_id>/`. Originals và sự kiện nằm trong `originals/` và `events/` cùng cấp với `exports/`. Toàn bộ `data/` đã được Git ignore. Xem [cách tích hợp và kiểm tra](docs/DEVELOPMENT.md#chạy-export-batch-offline) và [kết quả nghiệm thu MVP](docs/MVP_VERIFICATION.md).
+
+## Demo HTTP bằng fixture offline
+
+```powershell
+.\.venv\Scripts\python scripts/demo_http_acquisition.py
+```
+
+Demo dùng registry tổng hợp trong bộ nhớ, resolver và transport giả lập. Demo tải hai fixture HTML/PDF vào ArtifactStore, trích xuất, xuất batch và xác minh manifest dưới `data/http-acquisition-demo/`. HTTP mặc định tắt. Xem cấu hình cho URL đã duyệt và quy trình tiếp nhận tài liệu nội bộ. [HTTP acquisition](docs/HTTP_ACQUISITION.md)
 
 ## Cấu trúc
 
