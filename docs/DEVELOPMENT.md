@@ -125,3 +125,15 @@ Chạy riêng nhóm kiểm thử exporter và hai schema.
 $testBase = Join-Path (Get-Location) ('data/pytest-export-' + [guid]::NewGuid())
 python -m pytest -q tests/contract tests/integration/test_export.py tests/unit/test_export_publication.py --basetemp $testBase
 ```
+
+## Kiểm tra registry nguồn offline
+
+```powershell
+python -m pytest -q tests/unit/test_source_policy.py
+```
+
+Nhóm test kiểm tra schema đóng gói, registry tại `config/source_candidates.v0.1.json`
+và các đường cấp quyền bằng fixture tổng hợp. Khi review một thay đổi registry, giải mã
+hai snapshot JSON và gọi `validate_registry_update(previous, proposed, at=...)` với
+thời điểm quyết định có múi giờ. Xem [chính sách nguồn](SOURCE_POLICY.md) trước khi dùng
+gate trong luồng tiếp nhận. Đánh giá corpus dùng [phiếu baseline](PILOT_EVALUATION.md).

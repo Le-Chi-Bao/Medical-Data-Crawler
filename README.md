@@ -41,3 +41,9 @@ Chưa kiểm chứng fidelity trên bộ tài liệu production. Chi tiết tron
 
 Đọc toàn bộ `DEFINE_PROBLEM_v1.0.md` tại root hoặc `docs/` trước khi thay đổi dự án;
 giữ nguyên nội dung đặc tả đã khóa.
+
+## Chuẩn bị corpus pilot
+
+[Registry v0.1](config/source_candidates.v0.1.json) có 16 ứng viên đang chờ review.
+Xem [chính sách nguồn](docs/SOURCE_POLICY.md), [kế hoạch tuyển mẫu](docs/PILOT_PLAN.md),
+[phiếu đánh giá offline](docs/PILOT_EVALUATION.md) và [trạng thái pilot](docs/PILOT_READINESS.md).
