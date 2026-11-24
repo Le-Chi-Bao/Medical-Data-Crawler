@@ -1,0 +1,272 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Source registry v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "sources"],
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    }
+  },
+  "$defs": {
+    "url": {
+      "type": "string",
+      "maxLength": 512,
+      "pattern": "^https://[^\\s]+(?![\\s\\S])"
+    },
+    "decision": {
+      "enum": ["unknown", "allowed", "denied", "restricted"]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z(?![\\s\\S])"
+    },
+    "right": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "evidence_url"],
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/decision"
+        },
+        "evidence_url": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/url"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "publisher", "domain", "candidate_url", "document_type", "audience_candidate", "scope_candidates", "priority", "status", "rights", "copyright_policy_urls", "access_terms_urls", "terms", "robots", "automated_acquisition", "embedded_assets", "review", "pending_decisions"],
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*(?![\\s\\S])",
+          "maxLength": 80
+        },
+        "publisher": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z .&()-]*(?![\\s\\S])",
+          "maxLength": 100
+        },
+        "domain": {
+          "type": "string",
+          "pattern": "^[a-z0-9.-]+(?![\\s\\S])",
+          "maxLength": 253
+        },
+        "candidate_url": {
+          "$ref": "#/$defs/url"
+        },
+        "document_type": {
+          "enum": ["html", "pdf"]
+        },
+        "audience_candidate": {
+          "enum": ["general", "medical", "mixed", "unknown"]
+        },
+        "scope_candidates": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 8,
+          "items": {
+            "enum": ["K01", "K02", "K03", "K04", "K05", "K06", "K07", "K08"]
+          }
+        },
+        "priority": {
+          "enum": ["high", "standard"]
+        },
+        "status": {
+          "enum": ["candidate", "needs_review", "approved_for_manual_pilot", "approved_for_automated_fetch", "rejected"]
+        },
+        "rights": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [],
+          "properties": {
+            "html_text": {
+              "$ref": "#/$defs/asset_rights"
+            },
+            "pdf_text": {
+              "$ref": "#/$defs/asset_rights"
+            },
+            "original_bytes": {
+              "$ref": "#/$defs/asset_rights"
+            },
+            "images": {
+              "$ref": "#/$defs/asset_rights"
+            },
+            "external_media": {
+              "$ref": "#/$defs/asset_rights"
+            },
+            "third_party_assets": {
+              "$ref": "#/$defs/asset_rights"
+            }
+          }
+        },
+        "copyright_policy_urls": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 16,
+          "items": {
+            "$ref": "#/$defs/url"
+          }
+        },
+        "access_terms_urls": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 16,
+          "items": {
+            "$ref": "#/$defs/url"
+          }
+        },
+        "terms": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["manual", "automated", "evidence_url"],
+          "properties": {
+            "manual": {
+              "$ref": "#/$defs/decision"
+            },
+            "automated": {
+              "$ref": "#/$defs/decision"
+            },
+            "evidence_url": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/url"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "robots": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "user_agent", "evidence_url"],
+          "properties": {
+            "status": {
+              "enum": ["not_checked", "unknown", "allowed", "denied"]
+            },
+            "user_agent": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z][A-Za-z0-9.-]*(?![\\s\\S])",
+                  "maxLength": 64
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "evidence_url": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/url"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "automated_acquisition": {
+          "$ref": "#/$defs/decision"
+        },
+        "embedded_assets": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "evidence_url"],
+          "properties": {
+            "status": {
+              "enum": ["unknown", "cleared_for_internal_storage", "restricted"]
+            },
+            "evidence_url": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/url"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "review": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["reviewer_id", "reviewed_at", "review_again_at"],
+              "properties": {
+                "reviewer_id": {
+                  "type": "string",
+                  "pattern": "^reviewer-[a-z0-9]+(?:-[a-z0-9]+)*(?![\\s\\S])",
+                  "maxLength": 64
+                },
+                "reviewed_at": {
+                  "$ref": "#/$defs/timestamp"
+                },
+                "review_again_at": {
+                  "$ref": "#/$defs/timestamp"
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pending_decisions": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 6,
+          "items": {
+            "enum": ["document_rights", "embedded_assets", "access_terms", "robots", "ai_use", "privacy_review"]
+          }
+        }
+      }
+    },
+    "asset_rights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [],
+      "properties": {
+        "read": {
+          "$ref": "#/$defs/right"
+        },
+        "internal_storage": {
+          "$ref": "#/$defs/right"
+        },
+        "reuse": {
+          "$ref": "#/$defs/right"
+        },
+        "distribute": {
+          "$ref": "#/$defs/right"
+        },
+        "ai_use": {
+          "$ref": "#/$defs/right"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,704 @@
+{
+  "schema_version": "0.1",
+  "sources": [
+    {
+      "source_id": "nci-skin-treatment-patient",
+      "publisher": "NCI",
+      "domain": "www.cancer.gov",
+      "candidate_url": "https://www.cancer.gov/types/skin/patient/skin-treatment-pdq",
+      "document_type": "html",
+      "audience_candidate": "general",
+      "scope_candidates": [
+        "K07"
+      ],
+      "priority": "high",
+      "status": "needs_review",
+      "rights": {},
+      "copyright_policy_urls": [
+        "https://www.cancer.gov/policies/copyright-reuse"
+      ],
+      "access_terms_urls": [],
+      "terms": {
+        "manual": "unknown",
+        "automated": "unknown",
+        "evidence_url": null
+      },
+      "robots": {
+        "status": "not_checked",
+        "user_agent": null,
+        "evidence_url": null
+      },
+      "automated_acquisition": "unknown",
+      "embedded_assets": {
+        "status": "unknown",
+        "evidence_url": null
+      },
+      "review": null,
+      "pending_decisions": [
+        "document_rights",
+        "embedded_assets",
+        "access_terms",
+        "robots",
+        "ai_use",
+        "privacy_review"
+      ]
+    },
+    {
+      "source_id": "nci-skin-treatment-professional",
+      "publisher": "NCI",
+      "domain": "www.cancer.gov",
+      "candidate_url": "https://www.cancer.gov/types/skin/hp/skin-treatment-pdq",
+      "document_type": "html",
+      "audience_candidate": "medical",
+      "scope_candidates": [
+        "K07"
+      ],
+      "priority": "high",
+      "status": "needs_review",
+      "rights": {},
+      "copyright_policy_urls": [
+        "https://www.cancer.gov/policies/copyright-reuse"
+      ],
+      "access_terms_urls": [],
+      "terms": {
+        "manual": "unknown",
+        "automated": "unknown",
+        "evidence_url": null
+      },
+      "robots": {
+        "status": "not_checked",
+        "user_agent": null,
+        "evidence_url": null
+      },
+      "automated_acquisition": "unknown",
+      "embedded_assets": {
+        "status": "unknown",
+        "evidence_url": null
+      },
+      "review": null,
+      "pending_decisions": [
+        "document_rights",
+        "embedded_assets",
+        "access_terms",
+        "robots",
+        "ai_use",
+        "privacy_review"
+      ]
+    },
+    {
+      "source_id": "nci-skin-prevention",
+      "publisher": "NCI",
+      "domain": "www.cancer.gov",
+      "candidate_url": "https://www.cancer.gov/types/skin/patient/skin-prevention-pdq",
+      "document_type": "html",
+      "audience_candidate": "general",
+      "scope_candidates": [
+        "K04",
+        "K08"
+      ],
+      "priority": "high",
+      "status": "needs_review",
+      "rights": {},
+      "copyright_policy_urls": [
+        "https://www.cancer.gov/policies/copyright-reuse"
+      ],
+      "access_terms_urls": [],
+      "terms": {
+        "manual": "unknown",
+        "automated": "unknown",
+        "evidence_url": null
+      },
+      "robots": {
+        "status": "not_checked",
+        "user_agent": null,
+        "evidence_url": null
+      },
+      "automated_acquisition": "unknown",
+      "embedded_assets": {
+        "status": "unknown",
+        "evidence_url": null
+      },
+      "review": null,
+      "pending_decisions": [
+        "document_rights",
+        "embedded_assets",
+        "access_terms",
+        "robots",
+        "ai_use",
+        "privacy_review"
+      ]
+    },
+    {
+      "source_id": "nci-skin-screening",
+      "publisher": "NCI",
+      "domain": "www.cancer.gov",
+      "candidate_url": "https://www.cancer.gov/types/skin/hp/skin-screening-pdq",
+      "document_type": "html",
+      "audience_candidate": "medical",
+      "scope_candidates": [
+        "K05"
+      ],
+      "priority": "high",
+      "status": "needs_review",
+      "rights": {},
+      "copyright_policy_urls": [
+        "https://www.cancer.gov/policies/copyright-reuse"
+      ],
+      "access_terms_urls": [],
+      "terms": {
+        "manual": "unknown",
+        "automated": "unknown",
+        "evidence_url": null
+      },
+      "robots": {
+        "status": "not_checked",
+        "user_agent": null,
+        "evidence_url": null
+      },
+      "automated_acquisition": "unknown",
+      "embedded_assets": {
+        "status": "unknown",
+        "evidence_url": null
+      },
+      "review": null,
+      "pending_decisions": [
+        "document_rights",
+        "embedded_assets",
+        "access_terms",
+        "robots",
+        "ai_use",
+        "privacy_review"
+      ]
+    },
+    {
+      "source_id": "nci-skin-cancer-booklet",
+      "publisher": "NCI",
+      "domain": "www.cancer.gov",
+      "candidate_url": "https://www.cancer.gov/publications/patient-education/anyone-can-get-skin-cancer.pdf",
+      "document_type": "pdf",
+      "audience_candidate": "general",
+      "scope_candidates": [
+        "K08"
+      ],
+      "priority": "high",
+      "status": "needs_review",
+      "rights": {},
+      "copyright_policy_urls": [
+        "https://www.cancer.gov/policies/copyright-reuse"
+      ],
+      "access_terms_urls": [],
+      "terms": {
+        "manual": "unknown",
+        "automated": "unknown",
+        "evidence_url": null
+      },
+      "robots": {
+        "status": "not_checked",
+        "user_agent": null,
+        "evidence_url": null
+      },
+      "automated_acquisition": "unknown",
+      "embedded_assets": {
+        "status": "unknown",
+        "evidence_url": null
+      },
+      "review": null,
+      "pending_decisions": [
+        "document_rights",
+        "embedded_assets",
+        "access_terms",
+        "robots",
+        "ai_use",
+        "privacy_review"
+      ]
+    },
+    {
+      "source_id": "niams-acne",
+      "publisher": "NIAMS",
+      "domain": "www.niams.nih.gov",
+      "candidate_url": "https://www.niams.nih.gov/health-topics/acne",
+      "document_type": "html",
+      "audience_candidate": "general",
+      "scope_candidates": [
+        "K03",
+        "K04",
+        "K07"
+      ],
+      "priority": "high",
+      "status": "needs_review",
+      "rights": {},
+      "copyright_policy_urls": [
+        "https://www.niams.nih.gov/disclaimer"
+      ],
+      "access_terms_urls": [],
+      "terms": {
+        "manual": "unknown",
+        "automated": "unknown",
+        "evidence_url": null
+      },
+      "robots": {
+        "status": "not_checked",
+        "user_agent": null,
+        "evidence_url": null
+      },
+      "automated_acquisition": "unknown",
+      "embedded_assets": {
+        "status": "unknown",
+        "evidence_url": null
+      },
+      "review": null,
+      "pending_decisions": [
+        "document_rights",
+        "embedded_assets",
+        "access_terms",
+        "robots",
+        "ai_use",
+        "privacy_review"
+      ]
+    },
+    {
+      "source_id": "niams-atopic-dermatitis",
+      "publisher": "NIAMS",
+      "domain": "www.niams.nih.gov",
+      "candidate_url": "https://www.niams.nih.gov/health-topics/atopic-dermatitis",
+      "document_type": "html",
+      "audience_candidate": "general",
+      "scope_candidates": [
+        "K03",
+        "K04"
+      ],
+      "priority": "high",
+      "status": "needs_review",
+      "rights": {},
+      "copyright_policy_urls": [
+        "https://www.niams.nih.gov/disclaimer"
+      ],
+      "access_terms_urls": [],
+      "terms": {
+        "manual": "unknown",
+        "automated": "unknown",
+        "evidence_url": null
+      },
+      "robots": {
+        "status": "not_checked",
+        "user_agent": null,
+        "evidence_url": null
+      },
+      "automated_acquisition": "unknown",
+      "embedded_assets": {
+        "status": "unknown",
+        "evidence_url": null
+      },
+      "review": null,
+      "pending_decisions": [
+        "document_rights",
+        "embedded_assets",
+        "access_terms",
+        "robots",
+        "ai_use",
+        "privacy_review"
+      ]
+    },
+    {
+      "source_id": "niams-atopic-dermatitis-care",
+      "publisher": "NIAMS",
+      "domain": "www.niams.nih.gov",
+      "candidate_url": "https://www.niams.nih.gov/health-topics/atopic-dermatitis/diagnosis-treatment-and-steps-to-take",
+      "document_type": "html",
+      "audience_candidate": "general",
+      "scope_candidates": [
+        "K05",
+        "K07"
+      ],
+      "priority": "high",
+      "status": "needs_review",
+      "rights": {},
+      "copyright_policy_urls": [
+        "https://www.niams.nih.gov/disclaimer"
+      ],
+      "access_terms_urls": [],
+      "terms": {
+        "manual": "unknown",
+        "automated": "unknown",
+        "evidence_url": null
+      },
+      "robots": {
+        "status": "not_checked",
+        "user_agent": null,
+        "evidence_url": null
+      },
+      "automated_acquisition": "unknown",
+      "embedded_assets": {
+        "status": "unknown",
+        "evidence_url": null
+      },
+      "review": null,
+      "pending_decisions": [
+        "document_rights",
+        "embedded_assets",
+        "access_terms",
+        "robots",
+        "ai_use",
+        "privacy_review"
+      ]
+    },
+    {
+      "source_id": "niams-psoriasis",
+      "publisher": "NIAMS",
+      "domain": "www.niams.nih.gov",
+      "candidate_url": "https://www.niams.nih.gov/health-topics/psoriasis",
+      "document_type": "html",
+      "audience_candidate": "general",
+      "scope_candidates": [
+        "K03",
+        "K04"
+      ],
+      "priority": "high",
+      "status": "needs_review",
+      "rights": {},
+      "copyright_policy_urls": [
+        "https://www.niams.nih.gov/disclaimer"
+      ],
+      "access_terms_urls": [],
+      "terms": {
+        "manual": "unknown",
+        "automated": "unknown",
+        "evidence_url": null
+      },
+      "robots": {
+        "status": "not_checked",
+        "user_agent": null,
+        "evidence_url": null
+      },
+      "automated_acquisition": "unknown",
+      "embedded_assets": {
+        "status": "unknown",
+        "evidence_url": null
+      },
+      "review": null,
+      "pending_decisions": [
+        "document_rights",
+        "embedded_assets",
+        "access_terms",
+        "robots",
+        "ai_use",
+        "privacy_review"
+      ]
+    },
+    {
+      "source_id": "niams-psoriasis-care",
+      "publisher": "NIAMS",
+      "domain": "www.niams.nih.gov",
+      "candidate_url": "https://www.niams.nih.gov/health-topics/psoriasis/diagnosis-treatment-and-steps-to-take",
+      "document_type": "html",
+      "audience_candidate": "general",
+      "scope_candidates": [
+        "K05",
+        "K07"
+      ],
+      "priority": "high",
+      "status": "needs_review",
+      "rights": {},
+      "copyright_policy_urls": [
+        "https://www.niams.nih.gov/disclaimer"
+      ],
+      "access_terms_urls": [],
+      "terms": {
+        "manual": "unknown",
+        "automated": "unknown",
+        "evidence_url": null
+      },
+      "robots": {
+        "status": "not_checked",
+        "user_agent": null,
+        "evidence_url": null
+      },
+      "automated_acquisition": "unknown",
+      "embedded_assets": {
+        "status": "unknown",
+        "evidence_url": null
+      },
+      "review": null,
+      "pending_decisions": [
+        "document_rights",
+        "embedded_assets",
+        "access_terms",
+        "robots",
+        "ai_use",
+        "privacy_review"
+      ]
+    },
+    {
+      "source_id": "niams-pemphigus",
+      "publisher": "NIAMS",
+      "domain": "www.niams.nih.gov",
+      "candidate_url": "https://www.niams.nih.gov/health-topics/pemphigus",
+      "document_type": "html",
+      "audience_candidate": "general",
+      "scope_candidates": [
+        "K03"
+      ],
+      "priority": "high",
+      "status": "needs_review",
+      "rights": {},
+      "copyright_policy_urls": [
+        "https://www.niams.nih.gov/disclaimer"
+      ],
+      "access_terms_urls": [],
+      "terms": {
+        "manual": "unknown",
+        "automated": "unknown",
+        "evidence_url": null
+      },
+      "robots": {
+        "status": "not_checked",
+        "user_agent": null,
+        "evidence_url": null
+      },
+      "automated_acquisition": "unknown",
+      "embedded_assets": {
+        "status": "unknown",
+        "evidence_url": null
+      },
+      "review": null,
+      "pending_decisions": [
+        "document_rights",
+        "embedded_assets",
+        "access_terms",
+        "robots",
+        "ai_use",
+        "privacy_review"
+      ]
+    },
+    {
+      "source_id": "nhs-moles",
+      "publisher": "NHS",
+      "domain": "www.nhs.uk",
+      "candidate_url": "https://www.nhs.uk/conditions/moles/",
+      "document_type": "html",
+      "audience_candidate": "general",
+      "scope_candidates": [
+        "K01",
+        "K02",
+        "K08"
+      ],
+      "priority": "standard",
+      "status": "needs_review",
+      "rights": {},
+      "copyright_policy_urls": [
+        "https://www.nhs.uk/our-policies/terms-and-conditions/",
+        "https://www.nhs.uk/our-policies/terms-and-conditions/content-not-licensed-for-re-use/"
+      ],
+      "access_terms_urls": [
+        "https://www.nhs.uk/our-policies/terms-and-conditions/"
+      ],
+      "terms": {
+        "manual": "unknown",
+        "automated": "unknown",
+        "evidence_url": null
+      },
+      "robots": {
+        "status": "not_checked",
+        "user_agent": null,
+        "evidence_url": null
+      },
+      "automated_acquisition": "unknown",
+      "embedded_assets": {
+        "status": "unknown",
+        "evidence_url": null
+      },
+      "review": null,
+      "pending_decisions": [
+        "document_rights",
+        "embedded_assets",
+        "access_terms",
+        "robots",
+        "ai_use",
+        "privacy_review"
+      ]
+    },
+    {
+      "source_id": "nhs-skin-tags",
+      "publisher": "NHS",
+      "domain": "www.nhs.uk",
+      "candidate_url": "https://www.nhs.uk/conditions/skin-tags/",
+      "document_type": "html",
+      "audience_candidate": "general",
+      "scope_candidates": [
+        "K01",
+        "K02"
+      ],
+      "priority": "standard",
+      "status": "needs_review",
+      "rights": {},
+      "copyright_policy_urls": [
+        "https://www.nhs.uk/our-policies/terms-and-conditions/",
+        "https://www.nhs.uk/our-policies/terms-and-conditions/content-not-licensed-for-re-use/"
+      ],
+      "access_terms_urls": [
+        "https://www.nhs.uk/our-policies/terms-and-conditions/"
+      ],
+      "terms": {
+        "manual": "unknown",
+        "automated": "unknown",
+        "evidence_url": null
+      },
+      "robots": {
+        "status": "not_checked",
+        "user_agent": null,
+        "evidence_url": null
+      },
+      "automated_acquisition": "unknown",
+      "embedded_assets": {
+        "status": "unknown",
+        "evidence_url": null
+      },
+      "review": null,
+      "pending_decisions": [
+        "document_rights",
+        "embedded_assets",
+        "access_terms",
+        "robots",
+        "ai_use",
+        "privacy_review"
+      ]
+    },
+    {
+      "source_id": "nhs-melanoma-symptoms",
+      "publisher": "NHS",
+      "domain": "www.nhs.uk",
+      "candidate_url": "https://www.nhs.uk/conditions/melanoma-skin-cancer/symptoms/",
+      "document_type": "html",
+      "audience_candidate": "general",
+      "scope_candidates": [
+        "K01",
+        "K03",
+        "K08"
+      ],
+      "priority": "standard",
+      "status": "needs_review",
+      "rights": {},
+      "copyright_policy_urls": [
+        "https://www.nhs.uk/our-policies/terms-and-conditions/",
+        "https://www.nhs.uk/our-policies/terms-and-conditions/content-not-licensed-for-re-use/"
+      ],
+      "access_terms_urls": [
+        "https://www.nhs.uk/our-policies/terms-and-conditions/"
+      ],
+      "terms": {
+        "manual": "unknown",
+        "automated": "unknown",
+        "evidence_url": null
+      },
+      "robots": {
+        "status": "not_checked",
+        "user_agent": null,
+        "evidence_url": null
+      },
+      "automated_acquisition": "unknown",
+      "embedded_assets": {
+        "status": "unknown",
+        "evidence_url": null
+      },
+      "review": null,
+      "pending_decisions": [
+        "document_rights",
+        "embedded_assets",
+        "access_terms",
+        "robots",
+        "ai_use",
+        "privacy_review"
+      ]
+    },
+    {
+      "source_id": "nhs-melanoma-tests",
+      "publisher": "NHS",
+      "domain": "www.nhs.uk",
+      "candidate_url": "https://www.nhs.uk/conditions/melanoma-skin-cancer/tests-and-next-steps/",
+      "document_type": "html",
+      "audience_candidate": "general",
+      "scope_candidates": [
+        "K05"
+      ],
+      "priority": "standard",
+      "status": "needs_review",
+      "rights": {},
+      "copyright_policy_urls": [
+        "https://www.nhs.uk/our-policies/terms-and-conditions/",
+        "https://www.nhs.uk/our-policies/terms-and-conditions/content-not-licensed-for-re-use/"
+      ],
+      "access_terms_urls": [
+        "https://www.nhs.uk/our-policies/terms-and-conditions/"
+      ],
+      "terms": {
+        "manual": "unknown",
+        "automated": "unknown",
+        "evidence_url": null
+      },
+      "robots": {
+        "status": "not_checked",
+        "user_agent": null,
+        "evidence_url": null
+      },
+      "automated_acquisition": "unknown",
+      "embedded_assets": {
+        "status": "unknown",
+        "evidence_url": null
+      },
+      "review": null,
+      "pending_decisions": [
+        "document_rights",
+        "embedded_assets",
+        "access_terms",
+        "robots",
+        "ai_use",
+        "privacy_review"
+      ]
+    },
+    {
+      "source_id": "nhs-melanoma-treatment",
+      "publisher": "NHS",
+      "domain": "www.nhs.uk",
+      "candidate_url": "https://www.nhs.uk/conditions/melanoma-skin-cancer/treatment/",
+      "document_type": "html",
+      "audience_candidate": "general",
+      "scope_candidates": [
+        "K07"
+      ],
+      "priority": "standard",
+      "status": "needs_review",
+      "rights": {},
+      "copyright_policy_urls": [
+        "https://www.nhs.uk/our-policies/terms-and-conditions/",
+        "https://www.nhs.uk/our-policies/terms-and-conditions/content-not-licensed-for-re-use/"
+      ],
+      "access_terms_urls": [
+        "https://www.nhs.uk/our-policies/terms-and-conditions/"
+      ],
+      "terms": {
+        "manual": "unknown",
+        "automated": "unknown",
+        "evidence_url": null
+      },
+      "robots": {
+        "status": "not_checked",
+        "user_agent": null,
+        "evidence_url": null
+      },
+      "automated_acquisition": "unknown",
+      "embedded_assets": {
+        "status": "unknown",
+        "evidence_url": null
+      },
+      "review": null,
+      "pending_decisions": [
+        "document_rights",
+        "embedded_assets",
+        "access_terms",
+        "robots",
+        "ai_use",
+        "privacy_review"
+      ]
+    }
+  ]
+}
