@@ -1,0 +1,687 @@
+{
+  "fixture_version": 1,
+  "domains": [
+    {
+      "id": "public-fixtures",
+      "visibility": "public"
+    },
+    {
+      "id": "internal-fixtures",
+      "visibility": "internal"
+    }
+  ],
+  "sources": [
+    {
+      "domain_id": "public-fixtures",
+      "id": "press-index",
+      "provider": "Fallowglass Press",
+      "channel": "publisher",
+      "connector_version": "fixture-1"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "mirror-index",
+      "provider": "Ternspool Index",
+      "channel": "bibliographic_index",
+      "connector_version": "fixture-1"
+    },
+    {
+      "domain_id": "internal-fixtures",
+      "id": "hospital-handoff",
+      "provider": "Glimmerfen Teaching Centre",
+      "channel": "internal_handoff",
+      "connector_version": "fixture-1"
+    }
+  ],
+  "documents": [
+    {
+      "domain_id": "public-fixtures",
+      "id": "atlas",
+      "category": "medical_textbooks",
+      "kind": "book",
+      "category_evidence": "fixture:category:atlas",
+      "scope": [
+        "K01"
+      ],
+      "scope_evidence": "fixture:scope:atlas",
+      "audience": "medical",
+      "audience_evidence": "fixture:audience:atlas"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "atlas-edges-a",
+      "category": "medical_textbooks",
+      "kind": "chapter",
+      "category_evidence": "fixture:category:atlas-edges-a"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "atlas-edges-b",
+      "category": "medical_textbooks",
+      "kind": "chapter",
+      "category_evidence": "fixture:category:atlas-edges-b"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "atlas-surfaces-b",
+      "category": "medical_textbooks",
+      "kind": "chapter",
+      "category_evidence": "fixture:category:atlas-surfaces-b"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "guideline",
+      "category": "clinical_guidelines",
+      "category_evidence": "fixture:category:guideline",
+      "scope": [
+        "K01",
+        "K03"
+      ],
+      "scope_evidence": "fixture:scope:guideline"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "paper",
+      "category": "research_papers",
+      "category_evidence": "fixture:category:paper"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "review",
+      "category": "systematic_reviews",
+      "category_evidence": "fixture:category:review"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "review-publication",
+      "category": "research_papers",
+      "category_evidence": "fixture:category:review-publication"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "reference-page",
+      "category": "medical_reference_websites",
+      "category_evidence": "fixture:category:reference-page",
+      "audience": "general",
+      "audience_evidence": "fixture:audience:reference-page"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "report",
+      "category": "medical_reports",
+      "category_evidence": "fixture:category:report"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "retraction-notice",
+      "category": "research_papers",
+      "kind": "notice",
+      "category_evidence": "fixture:category:retraction-notice"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "unclassified"
+    },
+    {
+      "domain_id": "internal-fixtures",
+      "id": "hospital-protocol",
+      "category": "hospital_protocols",
+      "category_evidence": "fixture:category:hospital-protocol"
+    }
+  ],
+  "policy_references": [
+    {
+      "domain_id": "internal-fixtures",
+      "id": "protocol-policy-ref",
+      "authority": "Glimmerfen Teaching Centre",
+      "reference": "fixture:policy:protocol-ref",
+      "policy_version": "fixture-1"
+    }
+  ],
+  "source_items": [
+    {
+      "domain_id": "public-fixtures",
+      "id": "atlas-first",
+      "source_id": "press-index",
+      "native_key": "atlas-first",
+      "document_id": "atlas",
+      "locator": "https://press-index.example/atlas-first"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "atlas-second",
+      "source_id": "press-index",
+      "native_key": "atlas-second",
+      "document_id": "atlas",
+      "locator": "https://press-index.example/atlas-second"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "atlas-edges-a",
+      "source_id": "press-index",
+      "native_key": "atlas-edges-a",
+      "document_id": "atlas-edges-a",
+      "locator": "https://press-index.example/atlas-edges-a"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "atlas-edges-b",
+      "source_id": "press-index",
+      "native_key": "atlas-edges-b",
+      "document_id": "atlas-edges-b",
+      "locator": "https://press-index.example/atlas-edges-b"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "atlas-surfaces-b",
+      "source_id": "press-index",
+      "native_key": "atlas-surfaces-b",
+      "document_id": "atlas-surfaces-b",
+      "locator": "https://press-index.example/atlas-surfaces-b"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "guideline",
+      "source_id": "press-index",
+      "native_key": "guideline",
+      "document_id": "guideline",
+      "locator": "https://press-index.example/guideline"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "paper",
+      "source_id": "press-index",
+      "native_key": "paper",
+      "document_id": "paper",
+      "locator": "https://press-index.example/paper"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "paper-mirror",
+      "source_id": "mirror-index",
+      "native_key": "paper-mirror",
+      "document_id": "paper",
+      "locator": "https://mirror-index.example/paper-mirror"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "review",
+      "source_id": "press-index",
+      "native_key": "review",
+      "document_id": "review",
+      "locator": "https://press-index.example/review"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "review-publication",
+      "source_id": "press-index",
+      "native_key": "review-publication",
+      "document_id": "review-publication",
+      "locator": "https://press-index.example/review-publication"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "reference-page",
+      "source_id": "press-index",
+      "native_key": "reference-page",
+      "document_id": "reference-page",
+      "locator": "https://press-index.example/reference-page"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "report",
+      "source_id": "press-index",
+      "native_key": "report",
+      "document_id": "report",
+      "locator": "https://press-index.example/report"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "retraction-notice",
+      "source_id": "press-index",
+      "native_key": "retraction-notice",
+      "document_id": "retraction-notice",
+      "locator": "https://press-index.example/retraction-notice"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "unclassified",
+      "source_id": "press-index",
+      "native_key": "unclassified",
+      "document_id": "unclassified",
+      "locator": "https://press-index.example/unclassified"
+    },
+    {
+      "domain_id": "internal-fixtures",
+      "id": "hospital-protocol",
+      "source_id": "hospital-handoff",
+      "native_key": "protocol-a",
+      "document_id": "hospital-protocol",
+      "locator": "internal:fixture-protocol-a",
+      "policy_ref_id": "protocol-policy-ref"
+    }
+  ],
+  "revisions": [
+    {
+      "domain_id": "public-fixtures",
+      "id": "atlas-edition-1",
+      "document_id": "atlas",
+      "version_key": "edition-1",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "publisher_version": "1",
+      "published_on": "2024",
+      "status": "published",
+      "status_evidence": "fixture:status:atlas-edition-1"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "atlas-edition-2",
+      "document_id": "atlas",
+      "version_key": "edition-2",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "publisher_version": "2",
+      "published_on": "2025-09",
+      "status": "published",
+      "status_evidence": "fixture:status:atlas-edition-2"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "guideline-1",
+      "document_id": "guideline",
+      "version_key": "first-issue",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "publisher_version": "1",
+      "effective_on": "2024-04-01",
+      "expires_on": "2025-03-31",
+      "status": "superseded",
+      "status_evidence": "fixture:status:guideline-1"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "guideline-2",
+      "document_id": "guideline",
+      "version_key": "second-issue",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "publisher_version": "2",
+      "effective_on": "2025-04-01",
+      "status": "active",
+      "status_evidence": "fixture:status:guideline-2"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "paper-version-1",
+      "document_id": "paper",
+      "version_key": "version-of-record",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "published_on": "2024-07-10",
+      "status": "retracted",
+      "status_evidence": "fixture:status:paper-version-1"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "reference-page-1",
+      "document_id": "reference-page",
+      "version_key": "site-version-1",
+      "observed_at": "2026-06-10T09:30:00Z"
+    },
+    {
+      "domain_id": "internal-fixtures",
+      "id": "hospital-protocol-1",
+      "document_id": "hospital-protocol",
+      "version_key": "internal-edition-1",
+      "observed_at": "2026-06-10T09:30:00Z"
+    }
+  ],
+  "identifiers": [
+    {
+      "domain_id": "public-fixtures",
+      "id": "atlas-isbn-1",
+      "namespace": "isbn",
+      "value": "978-0-000-00101-6",
+      "document_id": "atlas",
+      "evidence": "fixture:identifier:atlas-isbn-1",
+      "revision_id": "atlas-edition-1"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "atlas-isbn-2",
+      "namespace": "isbn",
+      "value": "978-0-000-00102-3",
+      "document_id": "atlas",
+      "evidence": "fixture:identifier:atlas-isbn-2",
+      "revision_id": "atlas-edition-2"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "paper-doi",
+      "namespace": "doi",
+      "value": "10.999999/Catalog-Fixture.Paper-01",
+      "document_id": "paper",
+      "evidence": "fixture:identifier:paper-doi",
+      "revision_id": "paper-version-1"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "paper-pmid",
+      "namespace": "pmid",
+      "value": "999991001",
+      "document_id": "paper",
+      "evidence": "fixture:identifier:paper-pmid"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "paper-pmcid",
+      "namespace": "pmcid",
+      "value": "PMC999991001",
+      "document_id": "paper",
+      "evidence": "fixture:identifier:paper-pmcid"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "review-publication-doi",
+      "namespace": "doi",
+      "value": "10.999999/catalog-fixture.review-01",
+      "document_id": "review-publication",
+      "evidence": "fixture:identifier:review-publication-doi"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "notice-doi",
+      "namespace": "doi",
+      "value": "10.999999/catalog-fixture.retraction-01",
+      "document_id": "retraction-notice",
+      "evidence": "fixture:identifier:notice-doi"
+    }
+  ],
+  "observations": [
+    {
+      "domain_id": "public-fixtures",
+      "id": "atlas-title-first",
+      "source_item_id": "atlas-first",
+      "field": "title",
+      "value": "Fallowglass Atlas of Lesion Form",
+      "evidence": "fixture:observation:atlas-title-first",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "verification": "verified"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "atlas-title-second",
+      "source_item_id": "atlas-second",
+      "field": "title",
+      "value": "Fallowglass Atlas of Lesion Form",
+      "evidence": "fixture:observation:atlas-title-second",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "verification": "verified"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "atlas-publisher",
+      "source_item_id": "atlas-second",
+      "field": "publisher",
+      "value": "Fallowglass Press",
+      "evidence": "fixture:observation:atlas-publisher",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "verification": "verified"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "chapter-title-first",
+      "source_item_id": "atlas-edges-a",
+      "field": "title",
+      "value": "An Index of Margins",
+      "evidence": "fixture:observation:chapter-title-first",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "verification": "verified"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "chapter-title-second",
+      "source_item_id": "atlas-edges-b",
+      "field": "title",
+      "value": "An Index of Margins",
+      "evidence": "fixture:observation:chapter-title-second",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "verification": "verified"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "chapter-title-surfaces",
+      "source_item_id": "atlas-surfaces-b",
+      "field": "title",
+      "value": "An Index of Surfaces",
+      "evidence": "fixture:observation:chapter-title-surfaces",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "verification": "verified"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "guideline-title",
+      "source_item_id": "guideline",
+      "field": "title",
+      "value": "Vellumkite Guideline for Describing Skin Lesions",
+      "evidence": "fixture:observation:guideline-title",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "verification": "verified"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "paper-title",
+      "source_item_id": "paper",
+      "field": "title",
+      "value": "Northspindle Descriptive Lesion Inventory",
+      "evidence": "fixture:observation:paper-title",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "verification": "verified"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "paper-title-mirror",
+      "source_item_id": "paper-mirror",
+      "field": "title",
+      "value": "Northspindle Lesion Inventory",
+      "evidence": "fixture:observation:paper-title-mirror",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "verification": "reported"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "paper-authors",
+      "source_item_id": "paper",
+      "field": "authors",
+      "value": [
+        "Iri Quillbranch",
+        "Jex Nacrefern"
+      ],
+      "evidence": "fixture:observation:paper-authors",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "verification": "verified"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "paper-doi-first",
+      "source_item_id": "paper",
+      "field": "doi",
+      "value": "10.999999/Catalog-Fixture.Paper-01",
+      "evidence": "fixture:observation:paper-doi-first",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "verification": "verified",
+      "normalized_value": "10.999999/catalog-fixture.paper-01"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "paper-doi-mirror",
+      "source_item_id": "paper-mirror",
+      "field": "doi",
+      "value": "10.999999/catalog-fixture.paper-01",
+      "evidence": "fixture:observation:paper-doi-mirror",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "verification": "reported",
+      "normalized_value": "10.999999/catalog-fixture.paper-01",
+      "connector_version": "fixture-1"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "review-title",
+      "source_item_id": "review",
+      "field": "title",
+      "value": "Sablefin Review of Lesion Description Inventories",
+      "evidence": "fixture:observation:review-title",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "verification": "verified"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "review-publication-title",
+      "source_item_id": "review-publication",
+      "field": "title",
+      "value": "Sablefin Review Publication Record",
+      "evidence": "fixture:observation:review-publication-title",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "verification": "verified"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "reference-page-title",
+      "source_item_id": "reference-page",
+      "field": "title",
+      "value": "Larchwheel Glossary of Surface Terms",
+      "evidence": "fixture:observation:reference-page-title",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "verification": "verified"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "report-title",
+      "source_item_id": "report",
+      "field": "title",
+      "value": "Brindlewake Editorial Coverage Report",
+      "evidence": "fixture:observation:report-title",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "verification": "verified"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "retraction-title",
+      "source_item_id": "retraction-notice",
+      "field": "title",
+      "value": "Retraction Notice for the Northspindle Inventory",
+      "evidence": "fixture:observation:retraction-title",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "verification": "verified"
+    },
+    {
+      "domain_id": "internal-fixtures",
+      "id": "protocol-title",
+      "source_item_id": "hospital-protocol",
+      "field": "title",
+      "value": "Glimmerfen Internal Lesion Terminology Protocol",
+      "evidence": "fixture:observation:protocol-title",
+      "observed_at": "2026-06-10T09:30:00Z",
+      "verification": "verified"
+    }
+  ],
+  "renditions": [
+    {
+      "domain_id": "public-fixtures",
+      "id": "paper-pdf",
+      "document_id": "paper",
+      "revision_id": "paper-version-1",
+      "format": "pdf",
+      "declared_mime": "application/pdf",
+      "source_item_id": "paper"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "paper-xml",
+      "document_id": "paper",
+      "revision_id": "paper-version-1",
+      "format": "jats",
+      "declared_mime": "application/xml",
+      "source_item_id": "paper"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "reference-html",
+      "document_id": "reference-page",
+      "revision_id": "reference-page-1",
+      "format": "html",
+      "declared_mime": "text/html",
+      "source_item_id": "reference-page"
+    }
+  ],
+  "relations": [
+    {
+      "domain_id": "public-fixtures",
+      "id": "edition-first",
+      "relation_type": "edition_of",
+      "from_document_id": "atlas",
+      "to_document_id": "atlas",
+      "evidence": "fixture:relation:edition-first",
+      "from_revision_id": "atlas-edition-1"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "edition-second",
+      "relation_type": "edition_of",
+      "from_document_id": "atlas",
+      "to_document_id": "atlas",
+      "evidence": "fixture:relation:edition-second",
+      "from_revision_id": "atlas-edition-2"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "edges-first",
+      "relation_type": "chapter_of",
+      "from_document_id": "atlas-edges-a",
+      "to_document_id": "atlas",
+      "evidence": "fixture:relation:edges-first",
+      "to_revision_id": "atlas-edition-1"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "edges-second",
+      "relation_type": "chapter_of",
+      "from_document_id": "atlas-edges-b",
+      "to_document_id": "atlas",
+      "evidence": "fixture:relation:edges-second",
+      "to_revision_id": "atlas-edition-2"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "surfaces-second",
+      "relation_type": "chapter_of",
+      "from_document_id": "atlas-surfaces-b",
+      "to_document_id": "atlas",
+      "evidence": "fixture:relation:surfaces-second",
+      "to_revision_id": "atlas-edition-2"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "guideline-update",
+      "relation_type": "supersedes",
+      "from_document_id": "guideline",
+      "to_document_id": "guideline",
+      "evidence": "fixture:relation:guideline-update",
+      "from_revision_id": "guideline-2",
+      "to_revision_id": "guideline-1"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "review-publication",
+      "relation_type": "publication_of",
+      "from_document_id": "review-publication",
+      "to_document_id": "review",
+      "evidence": "fixture:relation:review-publication"
+    },
+    {
+      "domain_id": "public-fixtures",
+      "id": "notice-retracts-paper",
+      "relation_type": "retracts",
+      "from_document_id": "retraction-notice",
+      "to_document_id": "paper",
+      "evidence": "fixture:relation:notice-retracts-paper",
+      "to_revision_id": "paper-version-1"
+    }
+  ]
+}

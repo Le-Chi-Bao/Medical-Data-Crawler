@@ -226,3 +226,12 @@ original cho ra event và trạng thái riêng trong báo cáo tiếp nhận. M�
 `verify_batch()`. Báo cáo giữ thứ tự đặc tả, liên kết mục có record với index
 tương ứng trong manifest và ghi mã cố định cho mỗi lỗi. Ranh giới phê duyệt,
 config và thao tác vận hành nằm trong [hướng dẫn tiếp nhận nội bộ](INTERNAL_IMPORT.md).
+
+## ADR 09 — Catalog metadata SQLite trong Session 06C.1
+
+Catalog dùng SQLite v1, khóa và truy vấn theo miền, và giao dịch cho cập nhật metadata
+có kiểm chứng. Source item, document, revision và rendition dùng định danh riêng.
+Observation giữ nguồn và căn cứ của từng khẳng định, kể cả thông tin thiếu hoặc mâu
+thuẫn. Catalog có thể liên kết một record v0.1 đã xác minh lúc người vận hành chỉ định
+mục nguồn và rendition. Artifact, record và manifest vẫn do pipeline quản lý.
+[Schema, API và ranh giới tin cậy](CATALOG_IMPLEMENTATION.md)

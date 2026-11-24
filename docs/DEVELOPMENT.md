@@ -190,3 +190,16 @@ Dùng fixture tổng hợp cho test cấp quyền và lỗi file, kể cả test
 thù Windows. Các test offline được bảo vệ bởi fixture chặn socket và DNS. Sau
 khi cài package, chạy `python -m medical_data_crawler.internal_import_cli --help`
 để xem tham số. [Định dạng đặc tả và cách chạy batch](INTERNAL_IMPORT.md)
+
+## Chạy Catalog SQLite ngoại tuyến
+
+```powershell
+python scripts/demo_catalog.py
+python -m pytest -q tests/unit/test_catalog_model.py tests/contract/test_catalog_schema.py tests/integration/test_catalog_workflow.py tests/integration/test_catalog_legacy_link.py
+```
+
+Demo xác minh 13 document tổng hợp ở 2 miền và replay cùng metadata trên
+`data/catalog-demo/catalog.sqlite3`. Giá trị `integrity` là `pass` khi các kiểm
+tra SQLite hoàn tất. Mở API catalog dưới thư mục trạng thái do người vận hành
+kiểm soát. Database demo nằm trong `data/`, đã được Git ignore.
+[Cách dùng API và các mã lỗi](CATALOG_IMPLEMENTATION.md)
