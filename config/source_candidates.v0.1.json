@@ -699,6 +699,90 @@
         "ai_use",
         "privacy_review"
       ]
+    },
+    {
+      "source_id": "cdc-tmvii-clinical-overview",
+      "publisher": "CDC",
+      "domain": "www.cdc.gov",
+      "candidate_url": "https://www.cdc.gov/ringworm/hcp/clinical-overview/tmvii.html",
+      "document_type": "html",
+      "audience_candidate": "medical",
+      "scope_candidates": [
+        "K06"
+      ],
+      "priority": "high",
+      "status": "needs_review",
+      "rights": {},
+      "copyright_policy_urls": [
+        "https://www.cdc.gov/other/agencymaterials.html"
+      ],
+      "access_terms_urls": [],
+      "terms": {
+        "manual": "unknown",
+        "automated": "unknown",
+        "evidence_url": null
+      },
+      "robots": {
+        "status": "not_checked",
+        "user_agent": null,
+        "evidence_url": null
+      },
+      "automated_acquisition": "unknown",
+      "embedded_assets": {
+        "status": "unknown",
+        "evidence_url": null
+      },
+      "review": null,
+      "pending_decisions": [
+        "document_rights",
+        "embedded_assets",
+        "access_terms",
+        "robots",
+        "ai_use",
+        "privacy_review"
+      ]
+    },
+    {
+      "source_id": "cdc-monkeypox-clinical-considerations",
+      "publisher": "CDC",
+      "domain": "www.cdc.gov",
+      "candidate_url": "https://www.cdc.gov/monkeypox/hcp/clinical-overview/",
+      "document_type": "html",
+      "audience_candidate": "medical",
+      "scope_candidates": [
+        "K06"
+      ],
+      "priority": "high",
+      "status": "needs_review",
+      "rights": {},
+      "copyright_policy_urls": [
+        "https://www.cdc.gov/other/agencymaterials.html"
+      ],
+      "access_terms_urls": [],
+      "terms": {
+        "manual": "unknown",
+        "automated": "unknown",
+        "evidence_url": null
+      },
+      "robots": {
+        "status": "not_checked",
+        "user_agent": null,
+        "evidence_url": null
+      },
+      "automated_acquisition": "unknown",
+      "embedded_assets": {
+        "status": "unknown",
+        "evidence_url": null
+      },
+      "review": null,
+      "pending_decisions": [
+        "document_rights",
+        "embedded_assets",
+        "access_terms",
+        "robots",
+        "ai_use",
+        "privacy_review"
+      ]
     }
   ]
 }

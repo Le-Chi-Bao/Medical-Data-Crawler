@@ -11,6 +11,7 @@ from medical_data_crawler.source_policy import (
     allows_asset_use,
     allows_automated_fetch,
     allows_manual_import,
+    evaluate_internal_pilot_import,
     validate_registry,
     validate_registry_update,
 )
@@ -98,14 +99,121 @@ def test_packaged_schema_and_registry_candidates():
         "NCI": 5,
         "NIAMS": 6,
         "NHS": 5,
+        "CDC": 2,
     }
-    assert Counter(item["document_type"] for item in registry["sources"]) == {"html": 15, "pdf": 1}
+    assert Counter(item["document_type"] for item in registry["sources"]) == {"html": 17, "pdf": 1}
+    cdc = [source for source in registry["sources"] if source["publisher"] == "CDC"]
+    assert {source["source_id"]: source["candidate_url"] for source in cdc} == {
+        "cdc-tmvii-clinical-overview": (
+            "https://www.cdc.gov/ringworm/hcp/clinical-overview/tmvii.html"
+        ),
+        "cdc-monkeypox-clinical-considerations": (
+            "https://www.cdc.gov/monkeypox/hcp/clinical-overview/"
+        ),
+    }
+    assert all(source["scope_candidates"] == ["K06"] and not source["rights"] for source in cdc)
     for source in registry["sources"]:
         assert source["status"] == "needs_review"
         assert source["review"] is None and source["automated_acquisition"] == "unknown"
         source_id, url = source["source_id"], source["candidate_url"]
         assert not allows_automated_fetch(registry, source_id, url, user_agent="FixtureBot", at=_AT)
         assert not allows_manual_import(registry, source_id, url, at=_AT)
+        assert (
+            evaluate_internal_pilot_import(
+                registry, source_id, url, document_type=source["document_type"], at=_AT
+            )
+            == "BLOCKED"
+        )
+
+
+@pytest.fixture
+def pilot_registry(registry):
+    registry = deepcopy(registry)
+    source = _approve(registry)
+    source["rights"]["pdf_text"] = {"read": _grant(), "internal_storage": _grant()}
+    source["pending_decisions"] = ["robots", "ai_use"]
+    return registry
+
+
+def _pilot(registry, *, source_id="fixture-guide", url=_URL, document_type="pdf", at=_AT):
+    return evaluate_internal_pilot_import(
+        registry, source_id, url, document_type=document_type, at=at
+    )
+
+
+def test_internal_pilot_manual_approval_does_not_grant_other_use(registry, pilot_registry):
+    validate_registry_update(registry, pilot_registry, at=_AT)
+    assert _pilot(pilot_registry) == "ELIGIBLE"
+    assert not _fetch(pilot_registry)
+    for asset in ("original_bytes", "pdf_text"):
+        for action in ("reuse", "ai_use", "distribute"):
+            assert not _use(pilot_registry, asset, action)
+
+
+@pytest.mark.parametrize(
+    ("asset", "action"),
+    [
+        ("original_bytes", "read"),
+        ("original_bytes", "internal_storage"),
+        ("pdf_text", "read"),
+        ("pdf_text", "internal_storage"),
+    ],
+)
+def test_internal_pilot_requires_every_read_and_storage_grant(pilot_registry, asset, action):
+    source = pilot_registry["sources"][0]
+    del source["rights"][asset][action]
+    source["rights"]["html_text"] = {"read": _grant(), "internal_storage": _grant()}
+    if asset == "pdf_text":
+        assert allows_manual_import(pilot_registry, "fixture-guide", _URL, at=_AT)
+    assert _pilot(pilot_registry) == "BLOCKED"
+
+
+@pytest.mark.parametrize("field", ["embedded_assets", "privacy_review", "manual_access"])
+def test_internal_pilot_requires_resolved_review(pilot_registry, field):
+    source = pilot_registry["sources"][0]
+    if field == "embedded_assets":
+        source["embedded_assets"] = {"status": "unknown", "evidence_url": None}
+    elif field == "privacy_review":
+        source["pending_decisions"].append(field)
+    else:
+        source["terms"]["manual"] = "unknown"
+    assert _pilot(pilot_registry) == "BLOCKED"
+
+
+def test_internal_pilot_requires_evidence_for_text_grant(pilot_registry):
+    pilot_registry["sources"][0]["rights"]["pdf_text"]["internal_storage"]["evidence_url"] = None
+    assert _pilot(pilot_registry) == "BLOCKED"
+
+
+def test_internal_pilot_checks_current_review_exact_locator_and_format(pilot_registry):
+    assert _pilot(pilot_registry, source_id="fixture-other") == "BLOCKED"
+    assert _pilot(pilot_registry, url=_URL + "/") == "BLOCKED"
+    assert _pilot(pilot_registry, document_type="html") == "BLOCKED"
+    assert _pilot(pilot_registry, at=datetime(2026, 12, 23, tzinfo=UTC)) == "BLOCKED"
+    assert _pilot(pilot_registry, at=datetime(2026, 11, 22, tzinfo=UTC)) == "BLOCKED"
+
+
+def test_internal_pilot_uses_html_text_grants_for_html(pilot_registry):
+    url = "https://publisher.example/public-guide.html"
+    source = pilot_registry["sources"][0]
+    source.update(candidate_url=url, document_type="html")
+    assert _pilot(pilot_registry, url=url, document_type="html") == "BLOCKED"
+    source["rights"]["html_text"] = source["rights"].pop("pdf_text")
+    assert _pilot(pilot_registry, url=url, document_type="html") == "ELIGIBLE"
+
+
+def test_internal_pilot_requires_manual_status_even_with_automated_approval(registry):
+    source = _approve(registry, automated=True)
+    source["terms"]["manual"] = "allowed"
+    source["rights"]["pdf_text"] = {"read": _grant(), "internal_storage": _grant()}
+    assert allows_manual_import(registry, "fixture-guide", _URL, at=_AT)
+    assert _pilot(registry) == "BLOCKED"
+
+
+def test_internal_pilot_approval_cannot_skip_needs_review(registry, pilot_registry):
+    registry["sources"][0]["status"] = "candidate"
+    with pytest.raises(SourcePolicyError, match="^invalid_approval_transition$"):
+        validate_registry_update(registry, pilot_registry, at=_AT)
 
 
 @pytest.mark.parametrize("version", [None, 0.1, "0.2"])

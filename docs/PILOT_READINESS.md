@@ -1,20 +1,21 @@
-# Trạng thái chuẩn bị pilot · Session 05A
+# Trạng thái chuẩn bị pilot nội bộ · Session 05B-1
 
 | Hạng mục | Trạng thái |
 | --- | --- |
-| Ứng viên trong registry | 16, gồm NCI 5, NIAMS 6 và NHS 5. |
-| Hàng chờ review | 16 mục `needs_review`, 0 mục ở trạng thái `candidate`. |
+| Ứng viên trong registry | 18, gồm NCI 5, NIAMS 6, NHS 5 và CDC 2. |
+| Hồ sơ ưu tiên | 8 hồ sơ đã soạn, chờ reviewer xác minh. |
+| Hàng chờ review | 18 mục `needs_review`, 0 mục `candidate`. |
 | Đã duyệt | 0 thủ công, 0 tự động. |
 | Bị bác bỏ | 0. |
-| Original y khoa đã import hoặc đánh giá | 0. Chất lượng extraction và coverage thực tế đều `NOT MEASURED`. |
+| Gate import thủ công | 18 `BLOCKED`, 0 `ELIGIBLE`. |
+| Original y khoa đã import hoặc đánh giá | 0. Chất lượng extraction, coverage thực tế và lỗi trên corpus thật đều `NOT MEASURED`. |
 
-Registry dựa trên URL và đầu mối chính sách được cung cấp. Terms of Service, robots.txt, quyền lưu original, giấy phép văn bản/media, các điều kiện dùng cho AI và ngoại lệ theo từng tài liệu còn chờ review. PDF có thể chứa ảnh hoặc thành phần bên thứ ba. NCI và NIAMS cần thêm căn cứ điều khoản truy cập đã xác minh. NHS có đầu mối điều khoản và danh mục ngoại lệ cần đối chiếu. Mọi nguồn đều có `automated_acquisition=unknown` và gate đóng. Xem [registry](../config/source_candidates.v0.1.json) và [chính sách](SOURCE_POLICY.md).
+Chưa có căn cứ đã xác minh cho redirect, định dạng thực tế, truy cập thủ công, quyền đọc/lưu byte gốc và văn bản, quyền tài sản nhúng và ảnh/media bên thứ ba, hoặc rà soát privacy/PHI. Mã reviewer, thời điểm review, hạn tái duyệt và quyết định cuối cùng còn thiếu. Các URL chính sách hiện dùng làm đầu mối cho reviewer. [Registry](../config/source_candidates.v0.1.json) · [Hồ sơ thẩm định](PILOT_APPROVAL_PACK.md)
 
-Ứng viên theo giả thuyết tuyển mẫu có K01: 3, K02: 2, K03: 5, K04: 4, K05: 4, K06: 0, K07: 6 và K08: 4. K06 cần ứng viên mới, K02 thiếu tổng quan hình thái nguyên phát/thứ phát. PDF có text layer, PDF nhiều cột/bảng, HTML với cấu trúc lồng nhau, trường metadata thiếu và cặp phiên bản chưa có mẫu thật đã kiểm chứng. Dùng [ma trận corpus](PILOT_PLAN.md) và [phiếu đánh giá](PILOT_EVALUATION.md) khi có tập approved.
+Phân bổ nhãn dự kiến lần lượt từ K01 đến K08 là 3, 2, 5, 4, 4, 2, 6 và 4. Hai ứng viên CDC chỉ bổ sung khả năng đánh giá K06. K02 vẫn thiếu mẫu tổng quan tổn thương nguyên phát/thứ phát. Hồ sơ PDF NCI ghi nhận báo cáo chuyển hướng sang HTML và chờ reviewer xác minh lại. Chưa có PDF có text layer, PDF nhiều cột/bảng hoặc cặp phiên bản đã kiểm chứng. [Kế hoạch pilot](PILOT_PLAN.md) · [Phiếu đánh giá](PILOT_EVALUATION.md)
 
-## Quyết định trước khi tiếp nhận tài liệu thật
+## Việc còn chờ trước khi nhận tài liệu thật
 
-1. Chỉ định người review và duyệt từng tài liệu cho pilot thủ công hoặc fetch tự động. Chốt phạm vi đọc, lưu byte gốc, trích xuất, lưu nội bộ, tái sử dụng, phân phối và AI. Chốt ngoại lệ tài sản nhúng, quyền bên thứ ba và lịch tái review.
-2. Duyệt bộ mẫu, cách xử lý khoảng trống K06/PDF layout, quy tắc định danh và quy trình từ chối/cách ly dữ liệu nhạy cảm. Chốt phân quyền, lưu giữ và nơi ghi căn cứ hoặc annotation để giữ original và provenance an toàn.
-3. Trước HTTP, xác nhận điều khoản tự động, robots cho từng URL và user agent, giới hạn truy cập, cách xử lý redirect và lỗi, cũng như thời điểm dừng và review lại. Chỉ sử dụng revision registry được duyệt với phạm vi cho phép đã ghi.
-4. Mở phiên triển khai HTTP riêng sau khi có thẩm quyền. Tích hợp gate trước mỗi yêu cầu và đường dẫn chuyển hướng, kiểm tra an toàn transport và dữ liệu đầu vào, kiểm thử bằng fixture rồi duyệt đợt chạy thật. Các API offline của 05A chỉ đánh giá quyết định đã ghi trong registry.
+1. Chỉ định reviewer có thẩm quyền. Đối chiếu URL cuối, redirect, định dạng và căn cứ cho truy cập thủ công, quyền đọc/lưu original, quyền đọc/lưu văn bản, tài sản nhúng và quyền bên thứ ba theo từng tài liệu.
+2. Rà privacy/PHI, chốt nơi lưu giữ nội bộ và quyền truy cập, ghi quyết định, mã reviewer và hạn tái duyệt vào hồ sơ. Ghi quyền được xác minh riêng theo tài sản và hành động. Nếu chưa có căn cứ reuse, giữ `reuse=unknown`.
+3. Kiểm tra bản cập nhật registry và chỉ tiếp nhận bản thủ công khớp locator và định dạng khi gate offline trả `ELIGIBLE`. Schema và kiểm thử chỉ xác nhận cấu trúc và hành vi gate. Đánh giá căn cứ pháp lý vẫn thuộc reviewer. [Chính sách pilot nội bộ](INTERNAL_PILOT_POLICY.md)

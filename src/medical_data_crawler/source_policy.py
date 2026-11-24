@@ -5,6 +5,7 @@ import re
 from datetime import datetime
 from functools import cache
 from importlib.resources import files
+from typing import Literal
 
 from jsonschema import Draft202012Validator, FormatChecker
 
@@ -268,3 +269,24 @@ def allows_asset_use(
             )
         )
     )
+
+
+def evaluate_internal_pilot_import(
+    registry: object, source_id: str, url: str, *, document_type: str, at: datetime
+) -> Literal["ELIGIBLE", "BLOCKED"]:
+    """Check a reviewed locator and observed format for offline pilot import and extraction."""
+    if not allows_manual_import(registry, source_id, url, at=at):
+        return "BLOCKED"
+
+    # The original-import check validates the snapshot and finds this exact source and URL.
+    source = next(item for item in registry["sources"] if item["source_id"] == source_id)
+    if source["status"] != "approved_for_manual_pilot" or source["document_type"] != document_type:
+        return "BLOCKED"
+
+    asset = f"{source['document_type']}_text"
+    if all(
+        allows_asset_use(registry, source_id, url, asset=asset, action=action, at=at)
+        for action in ("read", "internal_storage")
+    ):
+        return "ELIGIBLE"
+    return "BLOCKED"
