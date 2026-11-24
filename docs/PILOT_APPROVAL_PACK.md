@@ -72,6 +72,8 @@ Tám ứng viên ưu tiên đều ở trạng thái `needs_review` và bị gate
 | Expected document type | HTML |
 | Actual document type | NOT VERIFIED |
 | Final URL / redirect status | NOT VERIFIED |
+| HTTP Content-Type, status và response headers | NOT VERIFIED |
+| HTML preflight trên original | NOT VERIFIED. Chưa có lượt quét trên bản gốc NIAMS Acne. |
 | Terms evidence URL | UNKNOWN |
 | Copyright/license evidence URL | UNKNOWN |
 | Đầu mối chính sách truy cập | UNKNOWN |
@@ -91,6 +93,8 @@ Tám ứng viên ưu tiên đều ở trạng thái `needs_review` và bị gate
 | Unresolved risks | Đối chiếu disclaimer với quyền đọc và lưu trang cụ thể. Kiểm tra nguồn và quyền của hình ảnh nếu có. |
 | Proposed decision | `needs_review` |
 | Final approval decision | UNKNOWN |
+
+Khi reviewer đã có bản HTML hợp pháp và được phép đọc, dùng [HTML preflight](HTML_PREFLIGHT.md) để ghi SHA-256, kích thước, trạng thái phân tích và mã phát hiện vào hồ sơ. Đối chiếu chứng cứ HTTP riêng cho đúng bản gốc. Hoàn tất rà soát tài sản nhúng, media bên thứ ba, privacy/PHI và căn cứ quyền trước khi ghi quyết định. `niams-acne` đang ở `needs_review`.
 
 ## NIAMS Atopic Dermatitis
 

@@ -137,3 +137,16 @@ và các đường cấp quyền bằng fixture tổng hợp. Khi review một t
 hai snapshot JSON và gọi `validate_registry_update(previous, proposed, at=...)` với
 thời điểm quyết định có múi giờ. Xem [chính sách nguồn](SOURCE_POLICY.md) trước khi dùng
 gate trong luồng tiếp nhận. Đánh giá corpus dùng [phiếu baseline](PILOT_EVALUATION.md).
+
+## Chạy HTML preflight offline
+
+Sau khi cài package vào virtual environment theo README, chạy từ root với fixture tổng hợp.
+
+```powershell
+python -B scripts/inspect_html_preflight.py tests/fixtures/synthetic.html
+```
+
+Script in JSON gồm metadata và số đếm để hỗ trợ reviewer điền hồ sơ. Gọi
+`inspect_html()` từ `medical_data_crawler.html_preflight` khi cần dùng kết quả
+trong mã Python. Test dùng fixture tổng hợp và chặn socket/DNS theo cấu hình chung.
+Xem cách đặt giới hạn byte, cung cấp tên trường chứng cứ HTTP và đọc kết quả. [HTML preflight](HTML_PREFLIGHT.md)

@@ -1,4 +1,4 @@
-# Trạng thái chuẩn bị pilot nội bộ · Session 05B-1
+# Trạng thái chuẩn bị pilot nội bộ · Session 05B-3
 
 | Hạng mục | Trạng thái |
 | --- | --- |
@@ -9,6 +9,7 @@
 | Bị bác bỏ | 0. |
 | Gate import thủ công | 18 `BLOCKED`, 0 `ELIGIBLE`. |
 | Original y khoa đã import hoặc đánh giá | 0. Chất lượng extraction, coverage thực tế và lỗi trên corpus thật đều `NOT MEASURED`. |
+| HTML preflight ngoại tuyến | Đã kiểm tra bằng fixture tổng hợp. Original NIAMS Acne chưa được quét. Nguồn ở `needs_review`. |
 
 Chưa có căn cứ đã xác minh cho redirect, định dạng thực tế, truy cập thủ công, quyền đọc/lưu byte gốc và văn bản, quyền tài sản nhúng và ảnh/media bên thứ ba, hoặc rà soát privacy/PHI. Mã reviewer, thời điểm review, hạn tái duyệt và quyết định cuối cùng còn thiếu. Các URL chính sách hiện dùng làm đầu mối cho reviewer. [Registry](../config/source_candidates.v0.1.json) · [Hồ sơ thẩm định](PILOT_APPROVAL_PACK.md)
 
@@ -16,6 +17,7 @@ Phân bổ nhãn dự kiến lần lượt từ K01 đến K08 là 3, 2, 5, 4, 4
 
 ## Việc còn chờ trước khi nhận tài liệu thật
 
-1. Chỉ định reviewer có thẩm quyền. Đối chiếu URL cuối, redirect, định dạng và căn cứ cho truy cập thủ công, quyền đọc/lưu original, quyền đọc/lưu văn bản, tài sản nhúng và quyền bên thứ ba theo từng tài liệu.
-2. Rà privacy/PHI, chốt nơi lưu giữ nội bộ và quyền truy cập, ghi quyết định, mã reviewer và hạn tái duyệt vào hồ sơ. Ghi quyền được xác minh riêng theo tài sản và hành động. Nếu chưa có căn cứ reuse, giữ `reuse=unknown`.
-3. Kiểm tra bản cập nhật registry và chỉ tiếp nhận bản thủ công khớp locator và định dạng khi gate offline trả `ELIGIBLE`. Schema và kiểm thử chỉ xác nhận cấu trúc và hành vi gate. Đánh giá căn cứ pháp lý vẫn thuộc reviewer. [Chính sách pilot nội bộ](INTERNAL_PILOT_POLICY.md)
+1. Chỉ định reviewer có thẩm quyền và xác minh căn cứ truy cập thủ công và quyền đọc bản gốc. Khi đã có bản HTML hợp pháp trên ổ cục bộ, dùng inspector để ghi checksum, trạng thái phân tích và dấu hiệu cần rà. [HTML preflight](HTML_PREFLIGHT.md)
+2. Đối chiếu chứng cứ HTTP của đúng bản để xác minh đích cuối, redirect, status, Content-Type và header. Xác minh quyền đọc/lưu original và văn bản, quyền tài sản nhúng và bên thứ ba. Rà privacy/PHI và chốt nơi lưu giữ nội bộ cùng quyền truy cập.
+3. Ghi quyết định, mã reviewer và hạn tái duyệt vào hồ sơ. Ghi quyền đã xác minh riêng theo tài sản và hành động. Nếu chưa có căn cứ reuse, giữ `reuse=unknown`.
+4. Kiểm tra bản cập nhật registry và chỉ tiếp nhận bản thủ công khớp locator và định dạng khi gate offline trả `ELIGIBLE`. Đánh giá căn cứ pháp lý vẫn thuộc reviewer. [Chính sách pilot nội bộ](INTERNAL_PILOT_POLICY.md)
