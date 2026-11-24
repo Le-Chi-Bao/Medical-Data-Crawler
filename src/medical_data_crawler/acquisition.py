@@ -5,7 +5,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import BinaryIO, Protocol
 
-from .provenance import ProvenanceError, ProvenanceStore, document_id
+from .provenance import InternalIntakeTrace, ProvenanceError, ProvenanceStore, document_id
 from .storage import Artifact, ArtifactStore, StorageError
 
 
@@ -54,13 +54,55 @@ class _LocalReader:
 
 
 class LocalDocumentAdapter:
-    """Accept explicit local paths only; never enumerate or fetch sources."""
+    """Low-level adapter. Use the internal intake gateway to enforce intake policy."""
 
     def __init__(self, artifacts: ArtifactStore, provenance: ProvenanceStore):
         if provenance.artifacts is not artifacts:
             raise ValueError("Acquisition and provenance must use the same ArtifactStore")
         self.artifacts = artifacts
         self.provenance = provenance
+
+    def acquire_snapshot(
+        self,
+        request: DocumentRequest,
+        *,
+        stream: BinaryIO,
+        media_type: str,
+        expected_sha256: str,
+        trace: InternalIntakeTrace,
+    ) -> AcquisitionResult:
+        """Receive a checked snapshot without reopening its source path."""
+        acquired_at = datetime.now(UTC)
+        identity = document_id(request.source_id, request.logical_key)
+        artifact = None
+        event_id = None
+        errors: tuple[str, ...] = ()
+        try:
+            artifact = self.artifacts.put(stream, expected_sha256=expected_sha256)
+        except StorageError:
+            errors = ("storage_error",)
+        else:
+            try:
+                event_id = self.provenance.record(
+                    source_id=request.source_id,
+                    logical_key=request.logical_key,
+                    locator=request.locator,
+                    acquired_at=acquired_at,
+                    checksum=artifact.sha256,
+                    internal=trace,
+                )
+            except ProvenanceError:
+                errors = ("provenance_error",)
+        return AcquisitionResult(
+            request,
+            identity,
+            acquired_at,
+            media_type,
+            artifact,
+            event_id,
+            errors,
+            frozenset({media_type}) if trace.allow_extract else frozenset(),
+        )
 
     def acquire(self, request: DocumentRequest) -> AcquisitionResult:
         acquired_at = datetime.now(UTC)

@@ -7,7 +7,7 @@ import re
 import tempfile
 from collections.abc import Iterable
 from contextlib import suppress
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from functools import cache
 from importlib.resources import files
@@ -40,6 +40,7 @@ class ExportError(FoundationError):
 class VerificationResult:
     error_code: str | None = None
     input_index: int | None = None
+    manifest: dict | None = field(default=None, repr=False, compare=False)
 
     @property
     def valid(self) -> bool:
@@ -402,4 +403,4 @@ def verify_batch(manifest_path: Path, provenance: ProvenanceStore) -> Verificati
         _verify_entries(manifest, manifest_path.parent, provenance)
     except ExportError as error:
         return VerificationResult(error.code, error.input_index)
-    return VerificationResult()
+    return VerificationResult(manifest=manifest)

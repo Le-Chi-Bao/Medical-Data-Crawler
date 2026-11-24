@@ -169,3 +169,24 @@ dùng socket giả để kiểm tra IP đích, hostname TLS, trust store, header
 deadline. DNS và kết nối thật bị chặn bởi fixture chung. Dùng thư mục pytest tạm
 riêng theo hướng dẫn phía trên nếu Windows từ chối quyền truy cập. Xem API cấu hình,
 quyền và hành vi khi tải lỗi. [HTTP acquisition](HTTP_ACQUISITION.md)
+
+## Kiểm tra tiếp nhận nội bộ ngoại tuyến
+
+Chạy bằng Python trong virtual environment tại root repo.
+
+```powershell
+python scripts/demo_internal_import.py
+python -m pytest -q
+python -m ruff check .
+python -m ruff format --check .
+```
+
+Demo cấp phê duyệt cho HTML và PDF tổng hợp, dùng thêm một bản HTML trùng byte,
+một PDF hỏng và một đầu vào thiếu phê duyệt. Báo cáo dự kiến có tổng 5 mục, 3
+bản ghi xuất và 2 lỗi. Hai original ứng với ba sự kiện được chấp nhận. Demo xác
+minh manifest và in `Verification PASS`. Dữ liệu sinh ra nằm trong `data/`.
+
+Dùng fixture tổng hợp cho test cấp quyền và lỗi file, kể cả test đường dẫn đặc
+thù Windows. Các test offline được bảo vệ bởi fixture chặn socket và DNS. Sau
+khi cài package, chạy `python -m medical_data_crawler.internal_import_cli --help`
+để xem tham số. [Định dạng đặc tả và cách chạy batch](INTERNAL_IMPORT.md)

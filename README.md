@@ -1,6 +1,6 @@
 # Medical Data Crawler
 
-Dự án thu thập kiến thức về tổn thương da thuộc K01–K08 cho Medical RAG. Pipeline tiếp nhận HTML/PDF cục bộ hoặc tải từng tài liệu từ URL HTTPS đã duyệt khi caller bật HTTP. Cả hai luồng lưu byte gốc theo SHA-256, ghi provenance, trích xuất nội dung và xuất Structured Raw v0.1 khi có căn cứ truy cập. Manifest v0.1 cho phép đối chiếu checksum, nguồn gốc và trạng thái từng mục. Chunking, embeddings, truy xuất RAG, chẩn đoán và xử lý ảnh nằm ngoài phạm vi.
+Dự án thu thập kiến thức về tổn thương da thuộc K01–K08 cho Medical RAG. Pipeline tiếp nhận HTML/PDF nội bộ qua cổng phê duyệt offline hoặc tải từng tài liệu từ URL HTTPS đã duyệt khi caller bật HTTP. Cả hai luồng lưu byte gốc theo SHA-256, ghi provenance và trích xuất theo quyền đã cấp. Manifest v0.1 cho phép đối chiếu checksum, nguồn gốc và trạng thái các bản ghi Structured Raw. Chunking, embeddings, truy xuất RAG, chẩn đoán và xử lý ảnh nằm ngoài phạm vi.
 
 ## Cài đặt và kiểm tra
 
@@ -30,7 +30,19 @@ Demo dùng fixture tổng hợp HTML/PDF và in đường dẫn manifest, thốn
 .\.venv\Scripts\python scripts/demo_http_acquisition.py
 ```
 
-Demo dùng registry tổng hợp trong bộ nhớ, resolver và transport giả lập. Demo tải hai fixture HTML/PDF vào ArtifactStore, trích xuất, xuất batch và xác minh manifest dưới `data/http-acquisition-demo/`. HTTP mặc định tắt. Xem cấu hình cho URL đã duyệt và quy trình tiếp nhận tài liệu nội bộ. [HTTP acquisition](docs/HTTP_ACQUISITION.md)
+Demo dùng registry tổng hợp trong bộ nhớ, resolver và transport giả lập. Demo tải hai fixture HTML/PDF vào ArtifactStore, trích xuất, xuất batch và xác minh manifest dưới `data/http-acquisition-demo/`. HTTP mặc định tắt. [HTTP acquisition](docs/HTTP_ACQUISITION.md)
+
+## Demo tiếp nhận tài liệu nội bộ
+
+```powershell
+.\.venv\Scripts\python scripts/demo_internal_import.py
+```
+
+Demo tạo HTML và PDF tổng hợp, xuất ba bản ghi từ hai original khác nhau và in
+`Verification PASS`. Báo cáo ghi riêng một mục thiếu phê duyệt và một PDF hỏng.
+Đầu ra nằm dưới `data/internal-import-demo/state/` và được Git ignore.
+CLI `python -m medical_data_crawler.internal_import_cli` nhận danh sách file tường minh
+và hồ sơ phê duyệt riêng do người vận hành kiểm soát. [Tiếp nhận tài liệu nội bộ](docs/INTERNAL_IMPORT.md)
 
 ## Cấu trúc
 

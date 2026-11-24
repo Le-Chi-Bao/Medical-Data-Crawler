@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from io import BytesIO
+from pathlib import Path
 from tempfile import SpooledTemporaryFile
 from typing import BinaryIO, Literal
 
@@ -86,6 +87,17 @@ class OfflinePipeline:
             acquired = self.acquisition.acquire(request)
         except Exception:
             return PipelineResult(request, None, None, None, (), ("acquisition_unexpected_error",))
+        return self.process_acquired(acquired, rights=rights)
+
+    def process_acquired(
+        self,
+        acquired: AcquisitionResult,
+        *,
+        rights: RecordRights | None = None,
+        snapshot_dir: Path | None = None,
+    ) -> PipelineResult:
+        """Process an acquisition already completed by the caller's policy gateway."""
+        request = acquired.request
         if not acquired.accepted:
             return PipelineResult(request, acquired, None, None, (), acquired.errors)
         if acquired.extraction_media_types == frozenset():
@@ -94,7 +106,7 @@ class OfflinePipeline:
         try:
             # Small inputs stay in a bounded buffer; larger originals spill to disk.
             # Only verified snapshots reach parsers, never a live artifact/source path.
-            with SpooledTemporaryFile(max_size=1024 * 1024, mode="w+b") as stream:
+            with SpooledTemporaryFile(max_size=1024 * 1024, mode="w+b", dir=snapshot_dir) as stream:
                 self.artifacts.copy_to(acquired.artifact.sha256, stream)
                 stream.seek(0)
                 media_type = detect_media_type(stream, acquired.media_type)

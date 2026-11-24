@@ -34,6 +34,22 @@ class HTTPTrace:
     attempts: tuple[HTTPAttempt, ...]
 
 
+@dataclass(frozen=True)
+class InternalIntakeTrace:
+    """Audit information selected by the gateway, without operating paths."""
+
+    provider_ref: str
+    authorization_ref: str
+    operation: str
+    format: str
+    expires_at: str
+    allow_read: bool
+    allow_store: bool
+    allow_extract: bool
+    access_basis: str
+    reuse: str
+
+
 def _validate_text(value: str) -> None:
     if not isinstance(value, str) or not value.strip():
         raise ProvenanceError("Trường văn bản phải là chuỗi khác rỗng")
@@ -67,6 +83,7 @@ class ProvenanceStore:
         checksum: str | None,
         error_code: str | None = None,
         http: HTTPTrace | None = None,
+        internal: InternalIntakeTrace | None = None,
     ) -> str:
         """Chỉ nhận locator đã loại secrets/PHI và mã lỗi từ danh sách an toàn."""
         identity = document_id(source_id, logical_key)
@@ -111,6 +128,8 @@ class ProvenanceStore:
         }
         if http is not None:
             event["http"] = asdict(http)
+        if internal is not None:
+            event["internal"] = asdict(internal)
         temporary = None
         try:
             with tempfile.NamedTemporaryFile(

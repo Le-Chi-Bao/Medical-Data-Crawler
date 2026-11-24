@@ -2,8 +2,8 @@
 
 `HTTPDocumentAdapter` nhận từng `DocumentRequest` có `path=None`, `source_id`,
 `logical_key` bền vững và `locator` là URL HTTPS đã duyệt. Caller chọn adapter khi
-tạo `OfflinePipeline`. Tài liệu do nhân sự có thẩm quyền bàn giao vẫn dùng
-`LocalDocumentAdapter` với đường dẫn cục bộ và locator đã loại thông tin nhạy cảm.
+tạo `OfflinePipeline`. Tài liệu do nhân sự có thẩm quyền bàn giao đi qua cổng
+tiếp nhận nội bộ offline. [Tiếp nhận tài liệu nội bộ](INTERNAL_IMPORT.md)
 
 ## Cấu hình và quyền truy cập
 

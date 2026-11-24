@@ -67,7 +67,8 @@ class ArtifactStore:
             raise StorageError("Artifact thay đổi trong khi đọc")
         return artifact
 
-    def put(self, source: bytes | BinaryIO) -> Artifact:
+    def put(self, source: bytes | BinaryIO, *, expected_sha256: str | None = None) -> Artifact:
+        """Publish original bytes only after any caller-supplied checksum matches."""
         stream = BytesIO(source) if isinstance(source, bytes) else source
         temporary = None
         try:
@@ -92,6 +93,8 @@ class ArtifactStore:
             if size == 0:
                 raise StorageError("Từ chối artifact rỗng")
             checksum = digest.hexdigest()
+            if expected_sha256 is not None and checksum != expected_sha256:
+                raise StorageError("Checksum không khớp với snapshot đã xác minh")
             target = self._path(checksum)
             try:
                 os.link(temporary, target)

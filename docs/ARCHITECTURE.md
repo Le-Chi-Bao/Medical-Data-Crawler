@@ -204,3 +204,25 @@ luồng xác minh artifact và trích xuất offline, áp dụng thêm quyền �
 của nguồn HTTP. Structured Raw và manifest tiếp tục dùng schema v0.1.
 Thiết kế transport, phạm vi quyền, mã lỗi và giới hạn vận hành nằm trong
 [HTTP acquisition](HTTP_ACQUISITION.md).
+
+## ADR 08 — Tiếp nhận tài liệu nội bộ trong Session 06B
+
+Lệnh import nội bộ dùng `InternalIntakeGateway`. Gateway nhận danh sách tài liệu
+tường minh và tập phê duyệt do ứng dụng truyền riêng. Quyết định quyền gắn với
+nguồn, tài liệu, locator, đường dẫn cục bộ, định dạng, nhà cung cấp và tác vụ
+đã duyệt. Registry web và HTML preflight phục vụ các luồng riêng.
+
+Sau khi xác minh quyền đọc và lưu, gateway kiểm tra containment, loại file, giới
+hạn kích thước và tạo snapshot giới hạn bằng binary stream. Byte và SHA-256 của
+snapshot đi qua `LocalDocumentAdapter` và `ArtifactStore`. Store đối chiếu hash
+trước khi công bố, dùng lại original đã có cùng byte. Provenance ghi sự kiện mới
+cho từng lần chấp nhận, dùng locator nội bộ và tham chiếu phê duyệt an toàn.
+Gọi trực tiếp `LocalDocumentAdapter` bỏ qua kiểm tra quyền và chính sách file của
+gateway. Adapter cấp thấp tiếp tục phục vụ demo và test thư viện.
+
+Gateway chuyển quyền trích xuất độc lập vào `OfflinePipeline`. Mục chỉ được lưu
+original cho ra event và trạng thái riêng trong báo cáo tiếp nhận. Mục đủ quyền
+đi qua HTML/PDF extractor hiện có, Structured Raw v0.1, `export_batch()` và
+`verify_batch()`. Báo cáo giữ thứ tự đặc tả, liên kết mục có record với index
+tương ứng trong manifest và ghi mã cố định cho mỗi lỗi. Ranh giới phê duyệt,
+config và thao tác vận hành nằm trong [hướng dẫn tiếp nhận nội bộ](INTERNAL_IMPORT.md).
