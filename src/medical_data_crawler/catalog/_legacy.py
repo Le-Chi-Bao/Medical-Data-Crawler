@@ -5,7 +5,7 @@ import json
 import re
 from pathlib import Path
 
-from ..export import ExportError, _check_references, _load_event, verify_batch
+from ..export import ExportError, _check_references, _load_event, _read_file, verify_batch
 from ..provenance import ProvenanceStore
 from ..source_policy import SourcePolicyError, public_document_host
 from .model import AccessDomain, CatalogError, encode_json
@@ -23,18 +23,34 @@ def read_verified_record(
         result = verify_batch(path, provenance)
         if not result.valid or result.manifest is None:
             raise CatalogError("legacy_batch_invalid")
-        manifest = result.manifest
+    except (OSError, ValueError, TypeError, RuntimeError):
+        raise CatalogError("legacy_batch_invalid") from None
+    return read_verified_entry(path, provenance, input_index, domain, result.manifest)
+
+
+def read_verified_entry(
+    path: Path,
+    provenance: ProvenanceStore,
+    input_index: int,
+    domain: AccessDomain,
+    manifest: dict,
+    *,
+    max_file_bytes: int | None = None,
+) -> tuple[dict, str, int]:
+    """Private adapter for a batch already verified by the controlled backfill service."""
+    try:
         entry = next(
             (record for record in manifest["records"] if record["input_index"] == input_index), None
         )
         if entry is None:
             raise CatalogError("legacy_entry_not_found")
-        event = _load_event(provenance, entry["event_id"])
+        event = _load_event(provenance, entry["event_id"], max_file_bytes)
 
         # Hash the exact bytes read here, since the verifier completed before this read.
         record_path = path.parent / entry["record_path"]
-        with record_path.open("rb") as stream:
-            payload = stream.read(entry["record_byte_size"] + 1)
+        if max_file_bytes is not None and entry["record_byte_size"] > max_file_bytes:
+            raise CatalogError("verification_size_limit")
+        payload = _read_file(record_path, "record_read_error", entry["record_byte_size"])
         if (
             len(payload) != entry["record_byte_size"]
             or hashlib.sha256(payload).hexdigest() != entry["record_sha256"]

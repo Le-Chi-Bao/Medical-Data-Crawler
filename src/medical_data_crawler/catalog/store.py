@@ -3,7 +3,7 @@
 import json
 import sqlite3
 from collections.abc import Iterator
-from contextlib import contextmanager, suppress
+from contextlib import contextmanager, nullcontext, suppress
 from dataclasses import fields, replace
 from pathlib import Path
 from typing import TypeVar
@@ -120,10 +120,11 @@ def _decode(kind: type[RecordT], row: sqlite3.Row) -> RecordT:
 class Catalog:
     """Operator entry point. Use one connection per thread or process."""
 
-    def __init__(self, data_dir: Path):
+    def __init__(self, data_dir: Path, *, read_only: bool = False):
         try:
             state = Path(data_dir).resolve()
-            state.mkdir(parents=True, exist_ok=True)
+            if not read_only:
+                state.mkdir(parents=True, exist_ok=True)
             path = state / DATABASE_NAME
             if path.is_symlink() or (path.exists() and not path.is_file()):
                 raise CatalogError("invalid_database_path")
@@ -131,7 +132,10 @@ class Catalog:
             raise CatalogError("invalid_database_path") from None
 
         with _database_errors():
-            self._connection = sqlite3.connect(path, isolation_level=None, timeout=5.0)
+            target = path.as_uri() + "?mode=ro" if read_only else str(path)
+            self._connection = sqlite3.connect(
+                target, uri=read_only, isolation_level=None, timeout=5.0
+            )
             try:
                 self._connection.row_factory = sqlite3.Row
                 self._connection.execute("PRAGMA foreign_keys = ON")
@@ -139,7 +143,8 @@ class Catalog:
                 self._connection.execute("PRAGMA trusted_schema = OFF")
                 if self._connection.execute("PRAGMA foreign_keys").fetchone()[0] != 1:
                     raise CatalogError("foreign_keys_unavailable")
-                with _write_transaction(self._connection):
+                transaction = nullcontext() if read_only else _write_transaction(self._connection)
+                with transaction:
                     bootstrap(self._connection)
             except BaseException:
                 self._connection.close()
@@ -447,34 +452,55 @@ class DomainCatalog:
         reference, media_type, byte_size = read_verified_record(
             manifest_path, provenance, input_index, self._domain
         )
-        with _write_transaction(self._connection):
-            item = self.get(SourceItem, source_item_id)
-            rendition = self.get(Rendition, rendition_id)
-            if (
-                item is None
-                or rendition is None
-                or rendition.source_item_id != item.id
-                or item.locator != reference["locator"]
-                or rendition.sha256 != reference["original_sha256"]
-                or rendition.byte_size != byte_size
-                or {"text/html": "html", "application/pdf": "pdf"}.get(media_type)
-                != rendition.format
-            ):
-                raise CatalogError("legacy_binding_mismatch")
-            legacy = validate_record(
-                LegacyReference(
-                    domain_id=self._domain.id,
-                    document_id=rendition.document_id,
-                    rendition_id=rendition.id,
-                    **reference,
-                )
+        return self._link_legacy(reference, media_type, byte_size, source_item_id, rendition_id)[0]
+
+    def _link_legacy(
+        self, reference, media_type, byte_size, source_item_id, rendition_id, *, dry_run=False
+    ) -> tuple[LegacyReference, bool]:
+        # Dry-run never starts a write transaction. Execution rechecks every binding under lock.
+        if dry_run:
+            return self._prepare_legacy(
+                reference, media_type, byte_size, source_item_id, rendition_id
             )
-            previous_owner = self._connection.execute(
-                "SELECT 1 FROM legacy_reference WHERE domain_id = ? AND legacy_document_id = ? "
-                "AND document_id != ? LIMIT 1",
-                (self._domain.id, legacy.legacy_document_id, legacy.document_id),
-            ).fetchone()
-            if previous_owner is not None:
-                raise CatalogError("legacy_binding_mismatch")
+        with _write_transaction(self._connection):
+            legacy, existing = self._prepare_legacy(
+                reference, media_type, byte_size, source_item_id, rendition_id
+            )
             self._put(legacy)
-        return legacy
+        return legacy, existing
+
+    def _prepare_legacy(
+        self, reference, media_type, byte_size, source_item_id, rendition_id
+    ) -> tuple[LegacyReference, bool]:
+        item = self.get(SourceItem, source_item_id)
+        rendition = self.get(Rendition, rendition_id)
+        if (
+            item is None
+            or rendition is None
+            or rendition.source_item_id != item.id
+            or item.document_id not in (None, rendition.document_id)
+            or item.locator != reference["locator"]
+            or rendition.sha256 != reference["original_sha256"]
+            or rendition.byte_size != byte_size
+            or {"text/html": "html", "application/pdf": "pdf"}.get(media_type) != rendition.format
+        ):
+            raise CatalogError("legacy_binding_mismatch")
+        legacy = validate_record(
+            LegacyReference(
+                domain_id=self._domain.id,
+                document_id=rendition.document_id,
+                rendition_id=rendition.id,
+                **reference,
+            )
+        )
+        previous_owner = self._connection.execute(
+            "SELECT 1 FROM legacy_reference WHERE domain_id = ? AND legacy_document_id = ? "
+            "AND document_id != ? LIMIT 1",
+            (self._domain.id, legacy.legacy_document_id, legacy.document_id),
+        ).fetchone()
+        if previous_owner is not None:
+            raise CatalogError("legacy_binding_mismatch")
+        existing = self.get(LegacyReference, legacy.id)
+        if existing is not None and existing != legacy:
+            raise CatalogError("record_conflict")
+        return legacy, existing is not None

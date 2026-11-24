@@ -109,12 +109,18 @@ def _publish(path: Path, payload: bytes) -> None:
                 temporary.unlink()
 
 
-def _read_file(path: Path, code: str) -> bytes:
+def _read_file(path: Path, code: str, max_bytes: int | None = None) -> bytes:
     try:
         # Require the expected path itself, including its parent directories.
         if path.resolve(strict=True) != path or path.is_symlink() or not path.is_file():
             raise ExportError(code)
-        return path.read_bytes()
+        if max_bytes is None:
+            return path.read_bytes()
+        with path.open("rb") as stream:
+            payload = stream.read(max_bytes + 1)
+        if len(payload) > max_bytes:
+            raise ExportError("verification_size_limit")
+        return payload
     except (OSError, RuntimeError):
         raise ExportError(code) from None
 
@@ -126,7 +132,9 @@ def _decode(payload: bytes, code: str) -> object:
         raise ExportError(code) from None
 
 
-def _load_event(provenance: ProvenanceStore, event_id: str | None) -> dict:
+def _load_event(
+    provenance: ProvenanceStore, event_id: str | None, max_bytes: int | None = None
+) -> dict:
     code = "provenance_integrity_error"
     if not isinstance(event_id, str) or not _EVENT_ID.fullmatch(event_id):
         raise ExportError(code)
@@ -134,7 +142,7 @@ def _load_event(provenance: ProvenanceStore, event_id: str | None) -> dict:
         root = provenance.root.resolve(strict=True)
     except (OSError, RuntimeError):
         raise ExportError(code) from None
-    event = _decode(_read_file(root / f"{event_id}.json", code), code)
+    event = _decode(_read_file(root / f"{event_id}.json", code, max_bytes), code)
     if (
         not isinstance(event, dict)
         or event.get("event_version") != "0.1"
@@ -303,11 +311,13 @@ def _verify_record_directory(records: list[dict], directory: Path) -> None:
         raise ExportError("record_directory_error") from None
 
 
-def _verify_entries(manifest: dict, batch: Path, provenance: ProvenanceStore) -> None:
+def _verify_entries(
+    manifest: dict, batch: Path, provenance: ProvenanceStore, max_file_bytes: int | None = None
+) -> None:
     for entry in manifest["records"]:
         index = int(entry["input_index"])
         try:
-            payload = _read_file(batch / _record_path(index), "record_read_error")
+            payload = _read_file(batch / _record_path(index), "record_read_error", max_file_bytes)
             if (
                 len(payload) != entry["record_byte_size"]
                 or hashlib.sha256(payload).hexdigest() != entry["record_sha256"]
@@ -317,7 +327,7 @@ def _verify_entries(manifest: dict, batch: Path, provenance: ProvenanceStore) ->
             _validate_record(record)
             if _record_entry(record, entry["event_id"], index, payload) != entry:
                 raise ExportError("manifest_record_mismatch")
-            event = _load_event(provenance, entry["event_id"])
+            event = _load_event(provenance, entry["event_id"], max_file_bytes)
             _check_references(record, event, provenance.artifacts)
         except ExportError as error:
             raise ExportError(error.code, index) from None
@@ -325,7 +335,7 @@ def _verify_entries(manifest: dict, batch: Path, provenance: ProvenanceStore) ->
         if entry["event_id"] is None:
             continue
         try:
-            event = _load_event(provenance, entry["event_id"])
+            event = _load_event(provenance, entry["event_id"], max_file_bytes)
             _check_omission_event(entry, event)
         except ExportError as error:
             raise ExportError(error.code, int(entry["input_index"])) from None
@@ -389,18 +399,22 @@ def export_batch(
             pass
 
 
-def verify_batch(manifest_path: Path, provenance: ProvenanceStore) -> VerificationResult:
+def verify_batch(
+    manifest_path: Path, provenance: ProvenanceStore, *, max_file_bytes: int | None = None
+) -> VerificationResult:
     """Check a published batch on disk, returning the first issue with a safe code."""
     manifest_path = manifest_path.absolute()
     try:
-        manifest = _decode(_read_file(manifest_path, "manifest_read_error"), "manifest_invalid")
+        manifest = _decode(
+            _read_file(manifest_path, "manifest_read_error", max_file_bytes), "manifest_invalid"
+        )
         validate_manifest(manifest)
         if (
             manifest_path.name != "manifest.json"
             or manifest_path.parent.name != manifest["batch_id"]
         ):
             raise ExportError("manifest_invalid")
-        _verify_entries(manifest, manifest_path.parent, provenance)
+        _verify_entries(manifest, manifest_path.parent, provenance, max_file_bytes)
     except ExportError as error:
         return VerificationResult(error.code, error.input_index)
     return VerificationResult(manifest=manifest)

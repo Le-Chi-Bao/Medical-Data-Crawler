@@ -212,6 +212,9 @@ class _HostThrottle:
         self.next_start = 0.0
 
 
+_DEFAULT_HTTP_SETTINGS = HTTPAcquisitionSettings()
+
+
 class HTTPDocumentAdapter:
     """GET explicit registry URLs via the direct transport, disabled by default."""
 
@@ -221,7 +224,7 @@ class HTTPDocumentAdapter:
         provenance: ProvenanceStore,
         registry: object,
         *,
-        settings: HTTPAcquisitionSettings = HTTPAcquisitionSettings(),
+        settings: HTTPAcquisitionSettings = _DEFAULT_HTTP_SETTINGS,
         resolver: Callable[[str], tuple[IPAddress, ...]] = resolve_host,
         transport: HTTPTransport | None = None,
     ):
