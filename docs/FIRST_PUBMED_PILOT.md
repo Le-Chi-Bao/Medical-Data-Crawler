@@ -6,6 +6,45 @@ Ngày kiểm tra: 25/11/2026. File local ban đầu không tồn tại tại
 Không có file của lần chạy trước để xác định nó từng sai trường nào.
 Phiên này đã tạo mẫu local, giữ cả ba cờ xác nhận ở `false`.
 
+### Cập nhật Stage A ngày 26/11/2026
+
+Đã nhận xác nhận riêng của operator cho điều khoản metadata, đúng một pilot
+tối đa 20 bản ghi và IP egress không có client NCBI khác. Cửa sổ local được
+chuẩn bị theo đồng hồ hệ thống: 00:43:43–01:43:43 UTC+07 cùng ngày.
+Chỉ sau xác nhận mới bật ba cờ; validator trả `ready`.
+
+Đã chạy đúng một lần:
+
+```powershell
+python -m medical_data_crawler.pubmed_cli pilot --approval data/operator/pubmed-approval.json --enable-network --limit 20
+```
+
+Lệnh thoát với exit code 2 và `redirect_denied` trong exchange ESearch đầu tiên.
+Có truy cập mạng thật nhưng transport từ chối HTTP 3xx trước khi đọc metadata;
+không đi theo redirect, không retry lỗi terminal này. Không tạo run ID, snapshot,
+report của pilot hay catalog live. Kết quả phiên này: **0 bản ghi PubMed thật,
+0 tài liệu toàn văn, 0 bản trích xuất từ tài liệu thật**.
+
+CLI chỉ lưu mã lỗi cố định; không có status 3xx cụ thể hoặc `Location` để xác
+định đích chuyển hướng. Chưa đủ bằng chứng kết luận lỗi tương thích provider.
+Không tự đổi endpoint, bật redirect hoặc tắt TLS. Giữ bằng chứng chẩn đoán local
+ở `data/operator/pubmed-stage-a-attempt-20261126.json`; đây là báo cáo thao tác,
+không phải report acquisition thành công. Lượt duyệt duy nhất đã được sử dụng;
+cờ `true` trong file không phải quyền tự chạy lại. Cần operator duyệt lượt chẩn
+đoán mạng tiếp theo; lệnh pilot bên trên chỉ được dùng lại sau phê duyệt đó.
+Không có checkpoint để resume. Stage B chưa được mở do Stage A chưa thành công
+và chưa có phạm vi/quyền toàn văn riêng.
+
+Kiểm tra offline phiên này: `796 passed, 2 skipped` (symlink Windows).
+`profiles`, `preview --profile melanoma-v1 --limit 20` và `demo` đều chạy;
+demo giữ 2 document tổng hợp, 16 observations, integrity pass, 0 network requests.
+Lint/format `src tests scripts` đạt (82 file). Lệnh lint toàn workspace vẫn báo
+3.171 lỗi, format báo 249 file cần sửa trong dependency local có sẵn dưới
+`docs/data/`; không sửa dependency đó. Đoạn PowerShell chuẩn bị thời hạn bên
+dưới đã chạy trên fixture local hai lần: giữ nguyên cờ, backup khớp byte mẫu,
+lần hai không ghi lại cửa sổ còn hiệu lực. Đặc tả khóa và thay đổi có sẵn của
+operator được giữ nguyên.
+
 ## 1. Chuẩn bị file phê duyệt
 
 Chạy từ thư mục gốc repository trong PowerShell, với môi trường Python đã cài
@@ -32,10 +71,38 @@ Chỉ đổi từng cờ thành JSON boolean `true` sau khi điều kiện đó 
 ứng. Không dùng chuỗi `"true"` hoặc số `1`. Giữ `revoked=false` chỉ khi quyền
 chưa bị thu hồi; không tự bật lại quyền bị thu hồi.
 
-Đặt `valid_from` và `valid_until` theo giờ thực chạy, có múi giờ, ví dụ
-`2026-11-25T14:00:00+07:00` đến `2026-11-25T15:00:00+07:00`.
-Đây chỉ là ví dụ, cần thay nếu đã qua giờ. Khoảng hiệu lực gồm mốc đầu, không
-gồm mốc cuối. Mẫu cố định hết hiệu lực lúc 00:00 ngày 26/11/2026 UTC+07.
+Đặt `valid_from` và `valid_until` theo đồng hồ thực, múi giờ
+Asia/Ho_Chi_Minh (UTC+07:00). Mẫu cố định đã hết hiệu lực lúc 00:00 ngày
+26/11/2026 UTC+07. Đoạn PowerShell sau chỉ chuẩn bị cửa sổ một giờ nếu
+cửa sổ hiện tại không còn hiệu lực; giữ nguyên mọi trường và cờ phê duyệt khác.
+Chạy sau khi đã kiểm tra file hiện có, trước khi xin xác nhận pilot. Không dùng
+để gia hạn một run đang chạy hoặc tự gia hạn quyền đã được duyệt:
+
+```powershell
+$ErrorActionPreference = 'Stop'
+$approvalPath = (Resolve-Path -LiteralPath 'data/operator/pubmed-approval.json').Path
+$approvalBytes = [IO.File]::ReadAllBytes($approvalPath)
+$approvalValue = [Text.Encoding]::UTF8.GetString($approvalBytes) | ConvertFrom-Json
+$vietnamZone = [TimeZoneInfo]::FindSystemTimeZoneById('SE Asia Standard Time')
+$pilotNow = [TimeZoneInfo]::ConvertTime([DateTimeOffset]::UtcNow, $vietnamZone)
+$pilotStart = [DateTimeOffset]::Parse($approvalValue.valid_from)
+$pilotEnd = [DateTimeOffset]::Parse($approvalValue.valid_until)
+if ($pilotNow -lt $pilotStart -or $pilotNow -ge $pilotEnd) {
+    $backupPath = $approvalPath + '.before-' + [guid]::NewGuid() + '.json'
+    $approvalValue.valid_from = $pilotNow.ToString('yyyy-MM-ddTHH:mm:sszzz')
+    $approvalValue.valid_until = $pilotNow.AddHours(1).ToString('yyyy-MM-ddTHH:mm:sszzz')
+    $pendingPath = $approvalPath + '.pending-' + [guid]::NewGuid()
+    $utf8 = New-Object Text.UTF8Encoding($false)
+    [IO.File]::WriteAllText($pendingPath, ($approvalValue | ConvertTo-Json -Depth 10), $utf8)
+    [IO.File]::Replace($pendingPath, $approvalPath, $backupPath)
+}
+python -m medical_data_crawler.pubmed_cli validate-approval --approval $approvalPath
+```
+
+Windows dùng ID `SE Asia Standard Time` cho UTC+07, tương ứng giờ Việt Nam.
+Khoảng hiệu lực gồm mốc đầu, không gồm mốc cuối. Bản sao lưu giữ byte file cũ
+trong thư mục local đã ignore. Nếu ba cờ còn `false`, kết quả đúng vẫn là
+`not_authorized`; việc cập nhật thời gian không cấp quyền.
 Kiểm tra đồng hồ hệ thống, quyền đọc/ghi thư mục, bảo vệ file/state bằng ACL.
 Validator không chứng minh người sửa file có thẩm quyền, quyền sử dụng nguồn,
 khả năng ghi đích hay kết nối DNS/TLS.
