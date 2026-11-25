@@ -1,0 +1,75 @@
+{
+  "header": {
+    "type": "esummary",
+    "version": "0.3"
+  },
+  "result": {
+    "uids": [
+      "990000002",
+      "990000001"
+    ],
+    "990000002": {
+      "uid": "990000002",
+      "title": "Retraction notice for an invented skin study",
+      "authors": [
+        {
+          "name": "Fable Q",
+          "authtype": "Author"
+        },
+        {
+          "name": "Imaginary R",
+          "authtype": "Author"
+        }
+      ],
+      "fulljournalname": "Journal of Fictional Dermatology Fixtures",
+      "pubtype": [
+        "Retraction of Publication"
+      ],
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "990000002"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.99999/fictional-skin-4"
+        }
+      ],
+      "pubdate": "2026 Nov 20"
+    },
+    "990000001": {
+      "uid": "990000001",
+      "title": "Synthetic lesion boundary experiment",
+      "authors": [
+        {
+          "name": "Fable Q",
+          "authtype": "Author"
+        },
+        {
+          "name": "Imaginary R",
+          "authtype": "Author"
+        }
+      ],
+      "fulljournalname": "Journal of Fictional Dermatology Fixtures",
+      "pubtype": [
+        "Journal Article",
+        "Retracted Publication"
+      ],
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "990000001"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.99999/fictional-skin-5"
+        }
+      ],
+      "pubdate": "2026 Nov 19"
+    }
+  }
+}

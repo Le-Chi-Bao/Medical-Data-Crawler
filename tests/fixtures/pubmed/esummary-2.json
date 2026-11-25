@@ -1,0 +1,73 @@
+{
+  "header": {
+    "type": "esummary",
+    "version": "0.3"
+  },
+  "result": {
+    "uids": [
+      "990000004",
+      "990000003"
+    ],
+    "990000004": {
+      "uid": "990000004",
+      "title": "Fictional narrative review of lesion models",
+      "authors": [
+        {
+          "name": "Fable Q",
+          "authtype": "Author"
+        },
+        {
+          "name": "Imaginary R",
+          "authtype": "Author"
+        }
+      ],
+      "fulljournalname": "Journal of Fictional Dermatology Fixtures",
+      "pubtype": [
+        "Review"
+      ],
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "990000004"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.99999/fictional-skin-2"
+        }
+      ]
+    },
+    "990000003": {
+      "uid": "990000003",
+      "title": "Correction notice for an invented skin study",
+      "authors": [
+        {
+          "name": "Fable Q",
+          "authtype": "Author"
+        },
+        {
+          "name": "Imaginary R",
+          "authtype": "Author"
+        }
+      ],
+      "fulljournalname": "Journal of Fictional Dermatology Fixtures",
+      "pubtype": [
+        "Published Erratum"
+      ],
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "990000003"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.99999/fictional-skin-3"
+        }
+      ],
+      "pubdate": "2026 Nov 21"
+    }
+  }
+}

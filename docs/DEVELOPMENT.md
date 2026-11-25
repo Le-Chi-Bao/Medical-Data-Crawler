@@ -203,3 +203,17 @@ Demo xác minh 13 document tổng hợp ở 2 miền và replay cùng metadata t
 tra SQLite hoàn tất. Mở API catalog dưới thư mục trạng thái do người vận hành
 kiểm soát. Database demo nằm trong `data/`, đã được Git ignore.
 [Cách dùng API và các mã lỗi](CATALOG_IMPLEMENTATION.md)
+
+## Chạy discovery PubMed ngoại tuyến
+
+```powershell
+python scripts/demo_pubmed_discovery.py
+python -m pytest -q tests/unit/test_pubmed_discovery.py tests/contract/test_pubmed_contract.py tests/integration/test_pubmed_catalog.py
+```
+
+Demo replay ESearch/ESummary tổng hợp, ghi 6 document và 52 observations sau cập
+nhật dưới `data/pubmed-discovery-demo/`. Rerun giữ cùng trạng thái, không tạo
+rendition hoặc gọi mạng. Test subprocess có socket/DNS guard riêng. Dùng thư mục
+pytest tạm mới như hướng dẫn trên nếu Windows báo lỗi ACL. Permit demo chỉ cho
+metadata tổng hợp; cấu hình nguồn thật cần review riêng.
+[API, allowlist, cursor, mã lỗi và giới hạn](PUBMED_DISCOVERY.md)

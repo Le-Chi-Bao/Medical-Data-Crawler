@@ -1,0 +1,81 @@
+{
+  "header": {
+    "type": "esummary",
+    "version": "0.3"
+  },
+  "result": {
+    "uids": [
+      "990000006",
+      "990000005"
+    ],
+    "990000006": {
+      "uid": "990000006",
+      "title": "Updated fictional pigment islands in model skin",
+      "authors": [
+        {
+          "name": "Fable Q",
+          "authtype": "Author"
+        },
+        {
+          "name": "Imaginary R",
+          "authtype": "Author"
+        }
+      ],
+      "fulljournalname": "Journal of Fictional Dermatology Fixtures",
+      "pubtype": [
+        "Journal Article"
+      ],
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "990000006"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.99999/fictional-skin-0"
+        },
+        {
+          "idtype": "pmc",
+          "idtypen": 8,
+          "value": "PMC990000006"
+        }
+      ],
+      "pubdate": "2026 Nov",
+      "abstract": "UNAUTHORIZED_SYNTHETIC_FIELD_SENTINEL",
+      "openaccess": true,
+      "publisher_url": "https://publisher.example.invalid/fictional.pdf",
+      "unexpected": {
+        "nested": "DROP_UNKNOWN_SENTINEL"
+      }
+    },
+    "990000005": {
+      "uid": "990000005",
+      "title": "Invented review of synthetic lesion outlines",
+      "authors": [
+        {
+          "name": "Fable Q",
+          "authtype": "Author"
+        },
+        {
+          "name": "Imaginary R",
+          "authtype": "Author"
+        }
+      ],
+      "fulljournalname": "Journal of Fictional Dermatology Fixtures",
+      "pubtype": [
+        "Journal Article",
+        "Systematic Review"
+      ],
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "990000005"
+        }
+      ],
+      "pubdate": "2026 Nov 23"
+    }
+  }
+}

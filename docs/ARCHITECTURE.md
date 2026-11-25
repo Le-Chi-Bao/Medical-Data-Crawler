@@ -235,3 +235,17 @@ Observation giữ nguồn và căn cứ của từng khẳng định, kể cả 
 thuẫn. Catalog có thể liên kết một record v0.1 đã xác minh lúc người vận hành chỉ định
 mục nguồn và rendition. Artifact, record và manifest vẫn do pipeline quản lý.
 [Schema, API và ranh giới tin cậy](CATALOG_IMPLEMENTATION.md)
+
+## ADR 10 — PubMed discovery ngoại tuyến trong Session 06C.3
+
+`DiscoveryRequest` và permit tin cậy đi qua gate theo domain/query/profile/field,
+transport giả ESearch/ESummary JSON, mapper có phiên bản và writer dùng API catalog.
+Snapshot ghim thứ tự PMID, cursor HMAC ràng buộc cấu hình; lỗi item giữ cursor
+đầu trang để retry. Metadata mới thêm observation có evidence, replay giữ timestamp
+đầu tiên. Không tạo rendition/original hoặc thay schema SQLite v1/record/manifest.
+
+Transport mặc định tắt mạng. Chỉ lưu thư mục đã được phép, không lưu abstract,
+body response hoặc URL publisher. Publication type hỗ trợ category; correction/
+retraction thiếu endpoint quan hệ giữ unresolved candidate. Scope/audience giữ
+`unknown`. Permit discovery không cấp quyền full text hay AI. Giới hạn và demo
+nằm trong [PUBMED_DISCOVERY.md](PUBMED_DISCOVERY.md).
