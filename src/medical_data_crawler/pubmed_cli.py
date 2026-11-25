@@ -10,6 +10,7 @@ from .catalog import Catalog, Document, Observation
 from .catalog.model import CatalogError, validate_id
 from .discovery import DiscoveryError
 from .internal_import_cli import _ArgumentParser, _CLIError, _read_json
+from .pubmed_approval import validate_approval
 from .pubmed_pilot import SEARCH_PROFILES, operator_transport, run_pilot
 
 
@@ -21,6 +22,8 @@ def main(argv=None):
     preview.add_argument("--profile", choices=SEARCH_PROFILES, default="melanoma-v1")
     preview.add_argument("--limit", type=int, default=20)
     commands.add_parser("demo", help="Chạy dữ liệu tổng hợp, không gọi mạng")
+    validation = commands.add_parser("validate-approval", help="Kiểm tra phê duyệt, không gọi mạng")
+    validation.add_argument("--approval", type=Path, required=True)
     for name in ("pilot", "report", "inspect"):
         sub = commands.add_parser(name)
         sub.add_argument("--approval", type=Path, required=True, help="File phê duyệt của operator")
@@ -48,6 +51,8 @@ def main(argv=None):
                 "full_text_downloads": 0,
                 "approval_required": True,
             }
+        elif args.command == "validate-approval":
+            result = validate_approval(args.approval)
         elif args.command == "demo":
             from .secure_api_demo import run_demo
 
@@ -91,6 +96,8 @@ def main(argv=None):
                         "observation_limit": 1000,
                     }
         print(json.dumps(result, ensure_ascii=True, indent=2))
+        if args.command == "validate-approval":
+            return {"ready": 0, "not_authorized": 1, "invalid_configuration": 2}[result["status"]]
         return int(result.get("status") == "incomplete")
     except (DiscoveryError, CatalogError, _CLIError, OSError, ValueError, TypeError):
         error = sys.exc_info()[1]

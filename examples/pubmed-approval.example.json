@@ -1,0 +1,15 @@
+{
+  "approval_id": "pubmed-metadata-review-01",
+  "domain_id": "public-medical-metadata",
+  "profile_id": "melanoma-v1",
+  "approved_query": "\"Melanoma\"[MeSH Terms] AND \"skin\"[Title/Abstract]",
+  "fields": ["pmid", "doi", "pmcid", "title", "authors", "journal", "published_on", "publication_type", "category", "status"],
+  "valid_from": "2026-11-25T00:00:00+07:00",
+  "valid_until": "2026-11-26T00:00:00+07:00",
+  "operations": ["discover_metadata", "retain_metadata"],
+  "revoked": false,
+  "source_terms_reviewed": false,
+  "network_approved": false,
+  "exclusive_provider_ip": false,
+  "output_dir": "data/pubmed-live-pilot"
+}

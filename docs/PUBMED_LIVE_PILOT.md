@@ -8,6 +8,18 @@ Metadata là PMID, DOI/PMCID khi có, tiêu đề, tác giả, tạp chí, ngày
 publication type. Không tải abstract, PDF, XML bài báo hay truy cập link publisher.
 PMCID/OA không phải quyền tải bài. Chương trình không có RAG, embeddings hoặc chẩn đoán.
 
+Session 06D.1P bổ sung [hướng dẫn lần thử đầu](FIRST_PUBMED_PILOT.md),
+[mẫu an toàn](../examples/pubmed-approval.example.json) và chẩn đoán ngoại tuyến:
+
+```powershell
+python -m medical_data_crawler.pubmed_cli validate-approval --approval data/operator/pubmed-approval.json
+```
+
+Exit 2: cấu hình sai; exit 1: cấu hình hợp lệ nhưng chưa được phép; exit 0:
+sẵn sàng để operator chủ động chạy. Lệnh không gọi mạng hoặc cấp quyền.
+Nếu pilot báo `invalid_operator_approval`, dùng lệnh này trước khi thử lại.
+Không thay ba cờ review bằng `true` nếu chưa xác nhận điều kiện thực tế.
+
 ## Cài đặt và xem trước
 
 Tại root repo, dùng Python 3.11 hoặc 3.12 và PowerShell:
