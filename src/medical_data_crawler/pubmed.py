@@ -6,6 +6,7 @@ import json
 from collections.abc import Callable
 from datetime import UTC, datetime
 
+from .api_transport import ESEARCH, ESUMMARY, SecureMetadataTransport
 from .discovery import (
     MAPPING_VERSION,
     MAX_RESPONSE_BYTES,
@@ -25,8 +26,6 @@ from .discovery import (
     identifier,
 )
 
-ESEARCH = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
-ESUMMARY = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
 _INPUT_FIELDS = frozenset(
     {"uid", "title", "authors", "fulljournalname", "pubdate", "pubtype", "articleids"}
 )
@@ -191,11 +190,17 @@ class PubMedDiscoveryConnector:
         self.snapshot = snapshot
         self._key = cursor_key
         self._transport = transport if transport is not None else DisabledMetadataTransport()
+        if isinstance(self._transport, SecureMetadataTransport):
+            self._transport.bind_snapshot(snapshot)
         self.clock = clock
         self.mapper = PubMedMetadataMapper()
 
     def authorize(self, request, permit):
         authorize(request, permit, self.snapshot, self.clock())
+        if isinstance(self._transport, SecureMetadataTransport):
+            self._transport.authorize(permit)
+            if self._transport.is_live and self.snapshot.sort != "provider-pub-date":
+                raise DiscoveryError("live_snapshot_required")
 
     def _token(self, offset, request, permit):
         binding = digest(
@@ -237,6 +242,8 @@ class PubMedDiscoveryConnector:
         try:
             payload = self._transport.exchange(endpoint, parameters, max_bytes=MAX_RESPONSE_BYTES)
         except DiscoveryError as error:
+            if isinstance(self._transport, SecureMetadataTransport):
+                raise DiscoveryError(error.code) from None
             if error.code == "network_disabled":
                 raise
             raise DiscoveryError("transport_failure") from None
@@ -257,6 +264,18 @@ class PubMedDiscoveryConnector:
     def discover(self, request: DiscoveryRequest, permit: DiscoveryPermit) -> DiscoveryPage:
         self.authorize(request, permit)
         start = self._offset(request, permit)
+        if self.snapshot.sort == "provider-pub-date":
+            # One atomic, bounded ESearch inventory; never rerun a moving search
+            # between summary pages. Ordering is provider order, not PMID order.
+            ids = self.snapshot.pmids[start : start + request.page_size]
+            total = len(self.snapshot.pmids)
+        else:
+            ids, total = self._search(request, permit, start)
+        if not ids:
+            return DiscoveryPage(total, start, (), (), 0, None, True)
+        return self._summaries(request, permit, start, ids, total)
+
+    def _search(self, request, permit, start):
         search = self._exchange(
             ESEARCH,
             {
@@ -288,8 +307,9 @@ class PubMedDiscoveryConnector:
             or ids != expected
         ):
             raise DiscoveryError("response_inconsistent")
-        if not ids:
-            return DiscoveryPage(total, start, (), (), 0, None, True)
+        return ids, total
+
+    def _summaries(self, request, permit, start, ids, total):
         summary = self._exchange(
             ESUMMARY,
             {"db": "pubmed", "id": ",".join(ids), "retmode": "json", "version": "2.0"},
@@ -323,3 +343,68 @@ class PubMedDiscoveryConnector:
         return DiscoveryPage(
             total, start, tuple(items), tuple(issues), dropped, cursor, end == total and not issues
         )
+
+
+def capture_live_snapshot(request, permit, transport, *, limit=20, clock=lambda: datetime.now(UTC)):
+    """Pin a complete *bounded prefix* in one response, never an exhaustive inventory.
+
+    Count may exceed the 10,000 retrieval window: only the explicitly requested
+    first <=50 records are captured. No continuation beyond this prefix exists.
+    """
+    if type(limit) is not int or not 1 <= limit <= 50:
+        raise DiscoveryError("invalid_request")
+    if request.cursor is not None or not isinstance(transport, SecureMetadataTransport):
+        raise DiscoveryError("invalid_request")
+    check = SearchSnapshot("capture-validation", request.profile_id, request.query, ())
+    authorize(request, permit, check, clock())
+    transport.authorize(permit)
+    payload = transport.exchange(
+        ESEARCH,
+        {
+            "db": "pubmed",
+            "term": request.query,
+            "retmode": "json",
+            "retstart": "0",
+            "retmax": str(limit),
+            "sort": "pub_date",
+        },
+        max_bytes=MAX_RESPONSE_BYTES,
+    )
+    authorize(request, permit, check, clock())
+    transport.authorize(permit)
+    decoded = parse_json(payload)
+    header, result = decoded.get("header"), decoded.get("esearchresult")
+    if (
+        type(header) is not dict
+        or header.get("type") != "esearch"
+        or header.get("version") != "0.3"
+        or type(result) is not dict
+        or "error" in decoded
+        or "errorlist" in result
+        or "warninglist" in result
+    ):
+        raise DiscoveryError("response_profile_mismatch")
+    total = _number(result.get("count"))
+    raw = result.get("idlist")
+    if type(raw) is not list or len(raw) != min(total, limit):
+        raise DiscoveryError("response_inconsistent")
+    ids = tuple(identifier("pmid", value) for value in raw)
+    if (
+        len(set(ids)) != len(ids)
+        or tuple(raw) != ids
+        or _number(result.get("retstart")) != 0
+        or _number(result.get("retmax")) != len(ids)
+    ):
+        raise DiscoveryError("response_inconsistent")
+    captured = clock().isoformat()
+    snapshot = SearchSnapshot(
+        "live-" + digest(request.profile_id, ids, captured),
+        request.profile_id,
+        request.query,
+        ids,
+        "provider-pub-date",
+        total,
+        captured,
+    )
+    transport.bind_snapshot(snapshot)
+    return snapshot

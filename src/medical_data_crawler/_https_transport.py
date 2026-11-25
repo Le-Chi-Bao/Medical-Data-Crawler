@@ -65,6 +65,51 @@ class DirectHTTPSTransport:
         *,
         before_send: Callable[[], None],
     ) -> Iterator[http.client.HTTPResponse]:
+        with self._request(
+            host,
+            target,
+            address,
+            user_agent,
+            before_send=before_send,
+        ) as response:
+            yield response
+
+    @contextmanager
+    def post(
+        self,
+        host: str,
+        target: str,
+        address: IPAddress,
+        user_agent: str,
+        *,
+        body: bytes,
+        deadline: float,
+        before_send: Callable[[], None],
+    ) -> Iterator[http.client.HTTPResponse]:
+        """Form POST keeps contact settings and optional credentials out of URLs."""
+        with self._request(
+            host,
+            target,
+            address,
+            user_agent,
+            before_send=before_send,
+            body=body,
+            deadline=deadline,
+        ) as response:
+            yield response
+
+    @contextmanager
+    def _request(
+        self,
+        host,
+        target,
+        address,
+        user_agent,
+        *,
+        before_send,
+        body=None,
+        deadline=None,
+    ):
         # Use the packaged CA bundle and a fresh verified context. Environment
         # proxy, CA override, client credentials and TLS key logging are unused.
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
@@ -74,7 +119,10 @@ class DirectHTTPSTransport:
             raise ssl.SSLError from None
         context.minimum_version = ssl.TLSVersion.TLSv1_2
         family = socket.AF_INET if address.version == 4 else socket.AF_INET6
-        deadline = monotonic() + self.request_timeout
+        deadline = min(
+            deadline if deadline is not None else float("inf"),
+            monotonic() + self.request_timeout,
+        )
         connect_deadline = min(deadline, monotonic() + self.connect_timeout)
         with socket.socket(family, socket.SOCK_STREAM) as raw:
             raw.settimeout(_remaining(connect_deadline, self.connect_timeout))
@@ -87,15 +135,24 @@ class DirectHTTPSTransport:
                 tls.settimeout(_remaining(deadline, self.read_timeout))
                 # The adapter validates the hostname, origin-form target and UA
                 # before calling this transport. No credentials cross requests.
+                method = "GET" if body is None else "POST"
+                extra = (
+                    "Accept: text/html, application/pdf\r\nAccept-Encoding: identity\r\n"
+                    if body is None
+                    else "Accept: application/json\r\n"
+                    "Accept-Encoding: gzip, identity\r\n"
+                    "Content-Type: application/x-www-form-urlencoded\r\n"
+                    f"Content-Length: {len(body)}\r\n"
+                )
                 tls.sendall(
                     (
-                        f"GET {target} HTTP/1.1\r\n"
+                        f"{method} {target} HTTP/1.1\r\n"
                         f"Host: {host}\r\n"
                         f"User-Agent: {user_agent}\r\n"
-                        "Accept: text/html, application/pdf\r\n"
-                        "Accept-Encoding: identity\r\n"
+                        f"{extra}"
                         "Connection: close\r\n\r\n"
                     ).encode("ascii")
+                    + (body or b"")
                 )
                 reader = _DeadlineReader(tls, deadline, self.read_timeout)
                 with http.client.HTTPResponse(reader) as response:

@@ -159,4 +159,6 @@ class CatalogDiscoveryWriter:
                 )
         # Every item is bounded (<250 records) and atomic; another bad item cannot roll it back.
         self.connector.authorize(request, permit)
-        self.catalog.write(*records)
+        self.catalog.write(
+            *records, before_commit=lambda: self.connector.authorize(request, permit)
+        )

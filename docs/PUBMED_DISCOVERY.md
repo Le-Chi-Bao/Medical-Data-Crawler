@@ -1,5 +1,10 @@
 # PubMed metadata discovery · Session 06C.3
 
+> Tài liệu này ghi thiết kế replay 06C.3. Session 06D.1 đã bổ sung
+> [secure transport](SECURE_API_TRANSPORT.md) và [CLI pilot](PUBMED_LIVE_PILOT.md)
+> có bật mạng tường minh, authority thu hồi quyền và snapshot theo thứ tự nguồn.
+> Hành vi fixture/offline mô tả bên dưới vẫn được giữ tương thích.
+
 Connector ngoại tuyến mô phỏng `ESearch → ESummary` với `db=pubmed`, JSON và
 ESummary profile 2.0. Dữ liệu thư mục tổng hợp đi vào Medical Document Catalog
 SQLite v1. Không thay schema catalog, Structured Raw v0.1, export manifest v0.1

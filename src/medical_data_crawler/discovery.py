@@ -68,6 +68,8 @@ class SearchSnapshot:
     query: str = field(repr=False)
     pmids: tuple[str, ...]
     sort: str = "pmid-descending"
+    total_results: int | None = None
+    captured_at: str | None = None
 
     def __post_init__(self):
         try:
@@ -82,7 +84,8 @@ class SearchSnapshot:
             or any(ord(c) < 32 or 127 <= ord(c) <= 159 for c in self.query)
             or type(self.pmids) is not tuple
             or len(self.pmids) > 10000
-            or self.sort != "pmid-descending"
+            or type(self.sort) is not str
+            or self.sort not in {"pmid-descending", "provider-pub-date"}
         ):
             raise DiscoveryError("invalid_snapshot")
         try:
@@ -91,15 +94,35 @@ class SearchSnapshot:
         except UnicodeError:
             raise DiscoveryError("invalid_snapshot") from None
         canonical = tuple(identifier("pmid", value) for value in self.pmids)
-        if (
-            canonical != self.pmids
-            or tuple(sorted(set(canonical), key=int, reverse=True)) != canonical
-        ):
+        if canonical != self.pmids or len(set(canonical)) != len(canonical):
             raise DiscoveryError("invalid_snapshot")
+        if self.sort == "pmid-descending":
+            if tuple(sorted(canonical, key=int, reverse=True)) != canonical:
+                raise DiscoveryError("invalid_snapshot")
+            if self.total_results is not None or self.captured_at is not None:
+                raise DiscoveryError("invalid_snapshot")
+        else:
+            try:
+                captured = datetime.fromisoformat(self.captured_at)
+            except (TypeError, ValueError):
+                raise DiscoveryError("invalid_snapshot") from None
+            if (
+                not valid_time(captured)
+                or len(canonical) > 50
+                or type(self.total_results) is not int
+                or self.total_results < len(canonical)
+                or not canonical
+                and self.total_results != 0
+            ):
+                raise DiscoveryError("invalid_snapshot")
 
     @property
     def fingerprint(self) -> str:
-        return digest(self.id, self.profile_id, self.query, self.pmids, self.sort)
+        values = (self.id, self.profile_id, self.query, self.pmids, self.sort)
+        # Preserve fingerprints and existing HMAC cursors for legacy replay snapshots.
+        if self.sort == "provider-pub-date":
+            values += (self.total_results, self.captured_at)
+        return digest(*values)
 
 
 @dataclass(frozen=True, slots=True)

@@ -249,3 +249,17 @@ body response hoặc URL publisher. Publication type hỗ trợ category; correc
 retraction thiếu endpoint quan hệ giữ unresolved candidate. Scope/audience giữ
 `unknown`. Permit discovery không cấp quyền full text hay AI. Giới hạn và demo
 nằm trong [PUBMED_DISCOVERY.md](PUBMED_DISCOVERY.md).
+
+## ADR 11 — Secure API và pilot metadata giới hạn trong Session 06D.1
+
+`SecureMetadataTransport` dùng lại TLS/IP pinning 06A, khóa endpoint/query PubMed,
+quota chung, deadline và byte/gzip budget. Mặc định tắt mạng. Gate theo thao tác
+nhận authority riêng với request; CLI đọc lại approval local để áp expiry/revoke.
+Catalog recheck quyền trong giao dịch ngay trước commit, không thay schema v1.
+
+Live pilot phải bật tường minh, không key, một worker và tối đa 50 metadata. Một
+ESearch ghim prefix theo thứ tự nguồn, ESummary phân trang trên pinned IDs; snapshot
+offline/cursor cũ tiếp tục tương thích. Không có fetch toàn văn, original, export
+mới hoặc quyền AI. Không chạy pilot thật trong phiên triển khai.
+[Transport và trust boundary](SECURE_API_TRANSPORT.md) ·
+[CLI và điều kiện pilot](PUBMED_LIVE_PILOT.md)

@@ -217,3 +217,20 @@ rendition hoặc gọi mạng. Test subprocess có socket/DNS guard riêng. Dùn
 pytest tạm mới như hướng dẫn trên nếu Windows báo lỗi ACL. Permit demo chỉ cho
 metadata tổng hợp; cấu hình nguồn thật cần review riêng.
 [API, allowlist, cursor, mã lỗi và giới hạn](PUBMED_DISCOVERY.md)
+
+## Secure API và pilot metadata Session 06D.1
+
+```powershell
+python -m medical_data_crawler.pubmed_cli profiles
+python -m medical_data_crawler.pubmed_cli preview --profile melanoma-v1 --limit 20
+python scripts/demo_secure_api_transport.py
+python scripts/demo_secure_api_transport.py
+```
+
+Các lệnh trên không gọi mạng. Demo chạy HTTP giả lập qua transport bảo mật, retry
+429/503 và authority độc lập, xác minh SQLite/idempotency và chặn toàn văn.
+Suite mới có network guard, kiểm tra hai process tranh OS lock và revoke trong
+transaction. Dùng thư mục pytest riêng như hướng dẫn phía trên khi Windows lỗi ACL.
+Không chạy lệnh `pilot --enable-network` trong automated tests hoặc validation.
+[Cấu hình transport](SECURE_API_TRANSPORT.md) ·
+[Phê duyệt local, pilot 20 record và cách đọc kết quả](PUBMED_LIVE_PILOT.md)

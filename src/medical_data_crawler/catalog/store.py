@@ -2,7 +2,7 @@
 
 import json
 import sqlite3
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from contextlib import contextmanager, nullcontext, suppress
 from dataclasses import fields, replace
 from pathlib import Path
@@ -205,7 +205,7 @@ class DomainCatalog:
     def access_domain(self) -> AccessDomain:
         return self._domain
 
-    def write(self, *records: Record) -> None:
+    def write(self, *records: Record, before_commit: Callable[[], None] | None = None) -> None:
         """Write a batch atomically. Replay is a no-op and changed facts have new IDs."""
         if len(records) > MAX_WRITE_RECORDS:
             raise CatalogError("write_too_large")
@@ -229,6 +229,8 @@ class DomainCatalog:
         with _write_transaction(self._connection):
             for record in sorted(pending, key=lambda record: _ORDER[type(record)]):
                 self._put(record)
+            if before_commit is not None:
+                before_commit()
 
     def _put(self, record: Record) -> None:
         kind = type(record)
