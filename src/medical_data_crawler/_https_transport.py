@@ -85,6 +85,8 @@ class DirectHTTPSTransport:
         body: bytes,
         deadline: float,
         before_send: Callable[[], None],
+        accept: str = "application/json",
+        accept_encoding: str = "gzip, identity",
     ) -> Iterator[http.client.HTTPResponse]:
         """Form POST keeps contact settings and optional credentials out of URLs."""
         with self._request(
@@ -95,6 +97,8 @@ class DirectHTTPSTransport:
             before_send=before_send,
             body=body,
             deadline=deadline,
+            accept=accept,
+            accept_encoding=accept_encoding,
         ) as response:
             yield response
 
@@ -109,7 +113,14 @@ class DirectHTTPSTransport:
         before_send,
         body=None,
         deadline=None,
+        accept="application/json",
+        accept_encoding="gzip, identity",
     ):
+        if accept not in {"application/json", "application/xml"} or accept_encoding not in {
+            "gzip, identity",
+            "identity",
+        }:
+            raise ValueError("invalid_wire_profile")
         # Use the packaged CA bundle and a fresh verified context. Environment
         # proxy, CA override, client credentials and TLS key logging are unused.
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
@@ -139,8 +150,8 @@ class DirectHTTPSTransport:
                 extra = (
                     "Accept: text/html, application/pdf\r\nAccept-Encoding: identity\r\n"
                     if body is None
-                    else "Accept: application/json\r\n"
-                    "Accept-Encoding: gzip, identity\r\n"
+                    else f"Accept: {accept}\r\n"
+                    f"Accept-Encoding: {accept_encoding}\r\n"
                     "Content-Type: application/x-www-form-urlencoded\r\n"
                     f"Content-Length: {len(body)}\r\n"
                 )

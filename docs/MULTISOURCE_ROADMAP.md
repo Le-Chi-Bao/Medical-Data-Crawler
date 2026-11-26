@@ -1,5 +1,26 @@
 # Lộ trình triển khai danh mục tài liệu y khoa đa nguồn
 
+## Ưu tiên mới được duyệt trong phiên M0/M1 — 26/11/2026
+
+Lộ trình 06C–06E phía dưới được giữ nguyên để truy vết. Baseline đã có catalog,
+PubMed và secure transport. Theo yêu cầu phiên M0/M1, ưu tiên PMC toàn văn trước
+Crossref/Europe PMC để thu nội dung phục vụ tổn thương da, tránh phụ thuộc PubMed
+đang redirect_denied. M0 tương ứng nền tảng capability/report; M1 thực hiện phần
+06D.2b + 06D.3 bằng PMC OAI GetRecord, XML/JATS và kiểm thử offline.
+
+| Phiên | Phạm vi / trạng thái |
+| --- | --- |
+| M0 | Registry capability, nguồn độc lập, báo cáo — implemented, offline tested |
+| M1 | PMC XML, quyền riêng, JATS, catalog, CLI — implemented, offline tested; chờ pilot |
+| M2 | MedlinePlus — chưa triển khai |
+| M3 | NCBI Bookshelf — chưa triển khai |
+| M4 | WHO và nguồn clinical/reference được duyệt — chưa triển khai |
+| M5 | Đối sánh liên nguồn, lịch, mở rộng và chất lượng corpus — chưa triển khai |
+
+M2–M5 cần phiên được duyệt riêng. M1 chưa LIVE VERIFIED; AC-15 chờ pilot. Chưa
+thay phạm vi K01–K08, category hay triển khai RAG. [Quickstart](MULTISOURCE_QUICKSTART.md)
+và [backlog](MULTISOURCE_BACKLOG.md).
+
 Đề xuất ngày 24/11/2026, đối chiếu `main` tại `dfc9169`. Phiên thiết kế kết thúc khi hai tài liệu được rà soát. Mỗi phiên triển khai dưới đây cần phạm vi được phê duyệt riêng. [Kiến trúc đề xuất](MULTISOURCE_ARCHITECTURE.md)
 
 ## Quan hệ với Phase 06B–06E

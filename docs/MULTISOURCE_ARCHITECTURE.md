@@ -1,5 +1,19 @@
 # Kiến trúc danh mục tài liệu y khoa đa nguồn
 
+## Triển khai M0/M1 ngày 26/11/2026
+
+Capability registry bổ sung trong multisource.py, độc lập và không thay registry
+URL v0.1. PubMed và PMC implemented; năm nguồn tương lai candidate/pending_review
+không có connector hoạt động. Capability không cấp quyền. Mỗi connector dùng
+transport riêng, dùng chung OperationPolicyGate, ArtifactStore, ProvenanceStore
+và Catalog khi phù hợp. Không tạo plugin framework.
+
+PMC nhận danh sách 1–3 PMCID, PMCTransport trả byte; jats.py parse/inspect/extract;
+pmc.py điều phối quyền/lưu/catalog/report; CLI quản lý approval và chạy.
+Luồng này độc lập với lỗi redirect PubMed. [Chi tiết M1](PMC_FULLTEXT_ACQUISITION.md)
+và [quickstart](MULTISOURCE_QUICKSTART.md) mô tả hợp đồng/profile đã triển khai.
+Các phần đề xuất phía dưới được giữ để truy vết, không phải toàn bộ đã triển khai.
+
 Đề xuất ngày 24/11/2026, đối chiếu `main` tại `dfc9169`. Lộ trình triển khai và điều kiện nghiệm thu nằm trong [MULTISOURCE_ROADMAP.md](MULTISOURCE_ROADMAP.md).
 
 ## Phạm vi và hợp đồng

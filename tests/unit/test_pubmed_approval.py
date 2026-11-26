@@ -121,7 +121,13 @@ def test_missing_file_and_output_is_file(approval):
     assert {"code": "invalid_output_directory"} in validate_approval(path, at=NOW)["issues"]
 
 
-def test_ready_is_read_only_and_matches_actual_reader(approval):
+def test_ready_is_read_only_and_matches_actual_reader(approval, monkeypatch):
+    class FixedDateTime(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return NOW
+
+    monkeypatch.setattr("medical_data_crawler.pubmed_pilot.datetime", FixedDateTime)
     path, value = approval
     # Inclusive start, explicit offset, and UTC equivalent are supported.
     value["valid_from"] = "2026-11-25T19:00:00+07:00"

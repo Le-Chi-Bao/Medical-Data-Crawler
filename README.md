@@ -1,5 +1,10 @@
 # Medical Data Crawler
 
+M0/M1 bổ sung PMC toàn văn XML độc lập với PubMed, chỉ đã kiểm chứng offline.
+Chạy thử: python -m medical_data_crawler.multisource_cli pmc demo --output data/pmc-m1-demo.
+Xem [hướng dẫn PowerShell đa nguồn](docs/MULTISOURCE_QUICKSTART.md) và
+[quyền/giới hạn PMC](docs/PMC_FULLTEXT_ACQUISITION.md). Chưa thu bài thật trong phiên này.
+
 Dự án thu thập kiến thức về tổn thương da thuộc K01–K08 cho Medical RAG. Pipeline tiếp nhận HTML/PDF nội bộ qua cổng phê duyệt offline hoặc tải từng tài liệu từ URL HTTPS đã duyệt khi caller bật HTTP. Cả hai luồng lưu byte gốc theo SHA-256, ghi provenance và trích xuất theo quyền đã cấp. Manifest v0.1 cho phép đối chiếu checksum, nguồn gốc và trạng thái các bản ghi Structured Raw. Chunking, embeddings, truy xuất RAG, chẩn đoán và xử lý ảnh nằm ngoài phạm vi.
 
 ## Cài đặt và kiểm tra
