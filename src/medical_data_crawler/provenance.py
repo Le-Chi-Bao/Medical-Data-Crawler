@@ -50,6 +50,15 @@ class InternalIntakeTrace:
     reuse: str
 
 
+@dataclass(frozen=True)
+class CuratedPublicTrace:
+    """Versioned public intake evidence; never presented as internal intake."""
+
+    version: str
+    manifest_entry_sha256: str
+    approval_sha256: str
+
+
 def _validate_text(value: str) -> None:
     if not isinstance(value, str) or not value.strip():
         raise ProvenanceError("Trường văn bản phải là chuỗi khác rỗng")
@@ -84,6 +93,7 @@ class ProvenanceStore:
         error_code: str | None = None,
         http: HTTPTrace | None = None,
         internal: InternalIntakeTrace | None = None,
+        curated: CuratedPublicTrace | None = None,
     ) -> str:
         """Chỉ nhận locator đã loại secrets/PHI và mã lỗi từ danh sách an toàn."""
         identity = document_id(source_id, logical_key)
@@ -130,6 +140,8 @@ class ProvenanceStore:
             event["http"] = asdict(http)
         if internal is not None:
             event["internal"] = asdict(internal)
+        if curated is not None:
+            event["curated_public"] = asdict(curated)
         temporary = None
         try:
             with tempfile.NamedTemporaryFile(
