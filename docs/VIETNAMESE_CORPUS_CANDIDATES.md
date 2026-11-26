@@ -1,5 +1,9 @@
 # Nghiên cứu ứng viên corpus tiếng Việt — 26/11/2026
 
+> Đây là snapshot nghiên cứu Phase V1. Xem [review Phase V1.1](PHASE_V1_1_CORPUS_REPORT.md)
+> để có kết quả truy cập lại, URL thay thế và batch 3 PDF có bằng chứng CC BY-SA.
+> Snapshot và manifest v0.1 được giữ nguyên để truy vết; chưa có acquisition được duyệt.
+
 Đã nhận diện 15 tài liệu thật từ nguồn chính thức. 11 mục mở được trang nguồn/metadata,
 4 mục chỉ xác nhận qua chỉ mục tìm kiếm, chưa xác minh live. Không có file gốc nào được tải
 hoặc đưa vào intake trong phiên này. Source verified là xác minh thư mục, không chứng minh

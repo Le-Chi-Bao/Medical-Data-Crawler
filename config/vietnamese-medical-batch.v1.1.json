@@ -1,0 +1,105 @@
+{
+  "curated_manifest_version": "0.1",
+  "documents": [
+    {
+      "document_id": "vn-tbjmp-atopic-488",
+      "title": "Đặc điểm lâm sàng và một số yếu tố liên quan đến bệnh viêm da cơ địa ở sinh viên Trường Đại học Y Dược Thái Bình năm 2024",
+      "publisher": "Trường Đại học Y Dược Thái Bình – Tạp chí Y Dược Thái Bình",
+      "source_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/view/488",
+      "download_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/download/488/449/1470",
+      "language": "vi",
+      "published_on": "2025-09-30",
+      "format": "pdf",
+      "category": "research_papers",
+      "scope": [
+        "K01",
+        "K03",
+        "K04"
+      ],
+      "scope_evidence": "https://thaibinhjmp.vn/index.php/ojstbump/article/view/488; Trang in 49-54 (6 trang); bảng triệu chứng mụn nước, khô da/bong vảy, ngứa và yếu tố liên quan. Metadata web chỉ liệt kê tác giả đầu; danh sách đồng tác giả lấy từ trang đầu PDF.",
+      "local_path": null,
+      "expected_sha256": null,
+      "submitted_at": null,
+      "data_origin": "real",
+      "source_status": "verified",
+      "verified_at": "2026-11-26T04:43:16.637779+00:00",
+      "access_status": "download_link",
+      "rights": {
+        "status": "pending_review",
+        "license_uri": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "evidence_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/view/488",
+        "evidence_note": "Trang bài áp CC BY-SA 4.0. Đây là bằng chứng license đã tìm thấy; chưa có operator review/grant, không tự cấp quyền.",
+        "allowed_operations": []
+      },
+      "review_notes": "Trang in 49-54 (6 trang); bảng triệu chứng mụn nước, khô da/bong vảy, ngứa và yếu tố liên quan. Metadata web chỉ liệt kê tác giả đầu; danh sách đồng tác giả lấy từ trang đầu PDF.; Toàn văn đã xem qua web để nghiên cứu, chưa lưu original, chưa đo chất lượng importer. Bắt buộc human quality review riêng. Xem docs/PHASE_V1_1_RIGHTS_REVIEW.md.",
+      "original_publisher": "Tạp chí Y Dược Thái Bình / Trương Mai Trâm, Dương Văn Dược, Lường Thị Hồng, Nguyễn Thị Kim Oanh, Vũ Hà Phương, Mirna Da Nora Mangue, Nguyễn Thị Tài Linh"
+    },
+    {
+      "document_id": "vn-tbjmp-acne-490",
+      "title": "Các yếu tố nguy cơ liên quan đến mức độ trứng cá thể thông thường ở sinh viên: Nghiên cứu cắt ngang tại Trường Đại học Y Dược Thái Bình",
+      "publisher": "Trường Đại học Y Dược Thái Bình – Tạp chí Y Dược Thái Bình",
+      "source_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/view/490",
+      "download_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/download/490/451/1474",
+      "language": "vi",
+      "published_on": "2025-09-30",
+      "format": "pdf",
+      "category": "research_papers",
+      "scope": [
+        "K01",
+        "K02",
+        "K03",
+        "K04"
+      ],
+      "scope_evidence": "https://thaibinhjmp.vn/index.php/ojstbump/article/view/490; Trang in 63-67 (5 trang); mục 2.2 mô tả comedones, sẩn, mủ, nốt/nang và mức độ; bảng yếu tố liên quan. Không biến liên quan thống kê thành căn nguyên đã chứng minh.",
+      "local_path": null,
+      "expected_sha256": null,
+      "submitted_at": null,
+      "data_origin": "real",
+      "source_status": "verified",
+      "verified_at": "2026-11-26T04:43:16.637779+00:00",
+      "access_status": "download_link",
+      "rights": {
+        "status": "pending_review",
+        "license_uri": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "evidence_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/view/490",
+        "evidence_note": "Trang bài áp CC BY-SA 4.0. Đây là bằng chứng license đã tìm thấy; chưa có operator review/grant, không tự cấp quyền.",
+        "allowed_operations": []
+      },
+      "review_notes": "Trang in 63-67 (5 trang); mục 2.2 mô tả comedones, sẩn, mủ, nốt/nang và mức độ; bảng yếu tố liên quan. Không biến liên quan thống kê thành căn nguyên đã chứng minh.; Toàn văn đã xem qua web để nghiên cứu, chưa lưu original, chưa đo chất lượng importer. Bắt buộc human quality review riêng. Xem docs/PHASE_V1_1_RIGHTS_REVIEW.md.",
+      "original_publisher": "Tạp chí Y Dược Thái Bình / Nguyễn Thị Kim Dung, Nguyễn Thị Tài Linh"
+    },
+    {
+      "document_id": "vn-tbjmp-psoriasis-640",
+      "title": "Kết quả điều trị và tính an toàn của Secukinumab trên bệnh nhân vảy nến thông thường mức độ vừa và nặng tại Bệnh viện Da liễu Thanh Hóa",
+      "publisher": "Trường Đại học Y Dược Thái Bình – Tạp chí Y Dược Thái Bình",
+      "source_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/view/640",
+      "download_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/download/640/598/1930",
+      "language": "vi",
+      "published_on": "2026-08-28",
+      "format": "pdf",
+      "category": "research_papers",
+      "scope": [
+        "K01",
+        "K03",
+        "K07"
+      ],
+      "scope_evidence": "https://thaibinhjmp.vn/index.php/ojstbump/article/view/640; Trang in 159-166 (8 trang); mục 2.2.2 mô tả đỏ da, dày da, bong vảy; bảng đáp ứng tổn thương PASI. DLQI chỉ mô tả chỉ số/kết quả, không thấy toàn bộ 10 câu hỏi trong lớp text đã đọc. Không nhập bộ câu hỏi riêng.",
+      "local_path": null,
+      "expected_sha256": null,
+      "submitted_at": null,
+      "data_origin": "real",
+      "source_status": "verified",
+      "verified_at": "2026-11-26T04:43:16.637779+00:00",
+      "access_status": "download_link",
+      "rights": {
+        "status": "pending_review",
+        "license_uri": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "evidence_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/view/640",
+        "evidence_note": "Trang bài áp CC BY-SA 4.0. Đây là bằng chứng license đã tìm thấy; chưa có operator review/grant, không tự cấp quyền.",
+        "allowed_operations": []
+      },
+      "review_notes": "Trang in 159-166 (8 trang); mục 2.2.2 mô tả đỏ da, dày da, bong vảy; bảng đáp ứng tổn thương PASI. DLQI chỉ mô tả chỉ số/kết quả, không thấy toàn bộ 10 câu hỏi trong lớp text đã đọc. Không nhập bộ câu hỏi riêng.; Toàn văn đã xem qua web để nghiên cứu, chưa lưu original, chưa đo chất lượng importer. Bắt buộc human quality review riêng. Xem docs/PHASE_V1_1_RIGHTS_REVIEW.md.",
+      "original_publisher": "Tạp chí Y Dược Thái Bình / Lương Đức Diễn, Lê Trí Bách, Nguyễn Thị Lệ, Lê Thu Hoài"
+    }
+  ]
+}

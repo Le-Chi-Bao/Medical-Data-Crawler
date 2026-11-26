@@ -1,0 +1,955 @@
+{
+  "review_version": "1.1",
+  "reviewed_on": "2026-11-26",
+  "baseline_commit": "1116fb0f57c782eea72efe1791cb9e800a4a7d5d",
+  "purpose": "Nghiên cứu bằng chứng và đề xuất batch; không phải importer manifest hay trusted approval.",
+  "status_semantics": "status là trạng thái chưa được operator duyệt; recommended_status=eligible chỉ là đề xuất theo giấy phép đã đọc. Không cấp quyền vận hành.",
+  "selected_document_ids": [
+    "vn-tbjmp-atopic-488",
+    "vn-tbjmp-acne-490",
+    "vn-tbjmp-psoriasis-640"
+  ],
+  "documents": [
+    {
+      "document_id": "vn-guideline-2023",
+      "title": "Hướng dẫn Chẩn đoán và điều trị các bệnh Da liễu",
+      "publisher": "Bộ Y tế",
+      "source_url": "https://syt.dongnai.gov.vn/vi/van-ban/detail/V-v-trien-khai-thuc-hien-Quyet-dinh-so-4416-QD-BYT-ngay-06-thang-12-nam-2023-cua-Bo-truong-Bo-Y-te-9469/",
+      "previous_source_url": "https://syt.dongnai.gov.vn/vi/van-ban/detail/V-v-trien-khai-thuc-hien-Quyet-dinh-so-4416-QD-BYT-ngay-06-thang-12-nam-2023-cua-Bo-truong-Bo-Y-te-9469/",
+      "document_format": "pdf",
+      "language": "not_reverified_fulltext_vi",
+      "original_author_publisher": "Bộ Y tế; nguồn đăng công văn: Sở Y tế Đồng Nai",
+      "scope": [
+        "K07"
+      ],
+      "scope_basis": "Nguồn: https://syt.dongnai.gov.vn/vi/van-ban/detail/V-v-trien-khai-thuc-hien-Quyet-dinh-so-4416-QD-BYT-ngay-06-thang-12-nam-2023-cua-Bo-truong-Bo-Y-te-9469/; chủ đề đã đối chiếu: K07. Xem review_notes về mức xác minh.",
+      "copyright_license": "unknown; không suy luận public domain/open license",
+      "evidence_urls": [
+        "https://syt.dongnai.gov.vn/vi/van-ban/detail/V-v-trien-khai-thuc-hien-Quyet-dinh-so-4416-QD-BYT-ngay-06-thang-12-nam-2023-cua-Bo-truong-Bo-Y-te-9469/"
+      ],
+      "permissions": {
+        "download": "unknown",
+        "store_original": "unknown",
+        "extract_text": "unknown",
+        "rag_indexing": "unknown"
+      },
+      "third_party_restrictions": "Trang thực tế là công văn 7556/SYT-NV ngày 14/12/2023 của Sở Y tế, có dk-7556.pdf và 7556-nv.pdf; chưa xác minh byte phụ lục là toàn bộ hướng dẫn 4416. Không coi công văn là chính tài liệu hướng dẫn.",
+      "status": "pending_review",
+      "recommended_status": "pending_review",
+      "decision_reason": "Trang thực tế là công văn 7556/SYT-NV ngày 14/12/2023 của Sở Y tế, có dk-7556.pdf và 7556-nv.pdf; chưa xác minh byte phụ lục là toàn bộ hướng dẫn 4416. Không coi công văn là chính tài liệu hướng dẫn.",
+      "source_access": "opened_notice_only",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    },
+    {
+      "document_id": "vn-melanoma-targeted",
+      "title": "Điều trị đích trong Ung thư hắc tố ở người Việt Nam",
+      "publisher": "Bệnh viện Da liễu Trung ương",
+      "source_url": "https://dalieu.vn/dieu-tri-dich-trong-ung-thu-hac-to-o-nguoi-viet-nam-6048.html",
+      "previous_source_url": "https://dalieu.vn/dieu-tri-dich-trong-ung-thu-hac-to-o-nguoi-viet-nam-6048.html",
+      "document_format": "html",
+      "language": "vi",
+      "original_author_publisher": "Bệnh viện Da liễu Trung ương",
+      "scope": [
+        "K03",
+        "K07"
+      ],
+      "scope_basis": "Nguồn: https://dalieu.vn/dieu-tri-dich-trong-ung-thu-hac-to-o-nguoi-viet-nam-6048.html; chủ đề đã đối chiếu: K03, K07. Xem review_notes về mức xác minh.",
+      "copyright_license": "unknown; không suy luận public domain/open license",
+      "evidence_urls": [
+        "https://dalieu.vn/dieu-tri-dich-trong-ung-thu-hac-to-o-nguoi-viet-nam-6048.html"
+      ],
+      "permissions": {
+        "download": "unknown",
+        "store_original": "unknown",
+        "extract_text": "unknown",
+        "rag_indexing": "unknown"
+      },
+      "third_party_restrictions": "Footer có yêu cầu ghi nguồn khi sử dụng lại thông tin, chưa chứng minh phạm vi lưu toàn bộ, extract và RAG/ảnh. Giữ pending; không suy luận rằng mọi hình/bảng là của bệnh viện.",
+      "status": "pending_review",
+      "recommended_status": "pending_review",
+      "decision_reason": "Footer có yêu cầu ghi nguồn khi sử dụng lại thông tin, chưa chứng minh phạm vi lưu toàn bộ, extract và RAG/ảnh. Giữ pending; không suy luận rằng mọi hình/bảng là của bệnh viện.",
+      "source_access": "opened",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    },
+    {
+      "document_id": "vn-skin-cancer-updates",
+      "title": "MỘT SỐ CẬP NHẬT VỀ TIẾN BỘ TRONG CHẨN ĐOÁN VÀ ĐIỀU TRỊ UNG THƯ DA",
+      "publisher": "Bệnh viện Da Liễu TP.HCM",
+      "source_url": "https://bvdl.org.vn/d-9777.0.33/kien-thuc-y-khoa/mot-so-cap-nhat-ve-tien-bo--trong-chan-doan-va-dieu-tri-ung-thu-da.html",
+      "previous_source_url": "https://bvdl.org.vn/d-9777.0.33/kien-thuc-y-khoa/mot-so-cap-nhat-ve-tien-bo--trong-chan-doan-va-dieu-tri-ung-thu-da.html",
+      "document_format": "html",
+      "language": "vi",
+      "original_author_publisher": "Bệnh viện Da Liễu TP.HCM",
+      "scope": [
+        "K05",
+        "K07",
+        "K08"
+      ],
+      "scope_basis": "Nguồn: https://bvdl.org.vn/d-9777.0.33/kien-thuc-y-khoa/mot-so-cap-nhat-ve-tien-bo--trong-chan-doan-va-dieu-tri-ung-thu-da.html; chủ đề đã đối chiếu: K05, K07, K08. Xem review_notes về mức xác minh.",
+      "copyright_license": "unknown; không suy luận public domain/open license",
+      "evidence_urls": [
+        "https://bvdl.org.vn/d-9777.0.33/kien-thuc-y-khoa/mot-so-cap-nhat-ve-tien-bo--trong-chan-doan-va-dieu-tri-ung-thu-da.html"
+      ],
+      "permissions": {
+        "download": "unknown",
+        "store_original": "unknown",
+        "extract_text": "unknown",
+        "rag_indexing": "unknown"
+      },
+      "third_party_restrictions": "Đã mở bài ngày 23/06/2023; có PDF báo cáo tại admin.bvdl.org.vn, liên kết HTTP. Chưa kiểm tra giấy phép slide/hình; không tự đổi HTTP thành HTTPS.",
+      "status": "pending_review",
+      "recommended_status": "pending_review",
+      "decision_reason": "Đã mở bài ngày 23/06/2023; có PDF báo cáo tại admin.bvdl.org.vn, liên kết HTTP. Chưa kiểm tra giấy phép slide/hình; không tự đổi HTTP thành HTTPS.",
+      "source_access": "opened",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    },
+    {
+      "document_id": "vn-bcc-diagnosis",
+      "title": "UNG THƯ BIỂU MÔ TẾ BÀO ĐÁY – CHẨN ĐOÁN VÀ ĐIỀU TRỊ",
+      "publisher": "Bệnh viện Da Liễu TP.HCM",
+      "source_url": "https://bvdl.org.vn/cong-dong/d-11422.1768.33/kien-thuc-y-khoa/ung-thu-bieu-mo-te-bao-day--chan-doan-va-dieu-tri.html",
+      "previous_source_url": "https://bvdl.org.vn/cong-dong/d-11422.0.33/tin-tuc-benh-vien/ung-thu-bieu-mo-te-bao-day--chan-doan-va-dieu-tri.html",
+      "document_format": "html",
+      "language": "vi",
+      "original_author_publisher": "Bệnh viện Da Liễu TP.HCM",
+      "scope": [
+        "K03",
+        "K04",
+        "K05",
+        "K07"
+      ],
+      "scope_basis": "Nguồn: https://bvdl.org.vn/cong-dong/d-11422.0.33/tin-tuc-benh-vien/ung-thu-bieu-mo-te-bao-day--chan-doan-va-dieu-tri.html; chủ đề đã đối chiếu: K03, K04, K05, K07. Xem review_notes về mức xác minh.",
+      "copyright_license": "unknown; không suy luận public domain/open license",
+      "evidence_urls": [
+        "https://bvdl.org.vn/cong-dong/d-11422.1768.33/kien-thuc-y-khoa/ung-thu-bieu-mo-te-bao-day--chan-doan-va-dieu-tri.html"
+      ],
+      "permissions": {
+        "download": "unknown",
+        "store_original": "unknown",
+        "extract_text": "unknown",
+        "rag_indexing": "unknown"
+      },
+      "third_party_restrictions": "URL cũ timeout; URL chính thức thay thế đã mở, bài ngày 27/10/2025, tư vấn Đặng Hùng Anh. Có PDF chính thức, footer yêu cầu ghi nguồn khi phát hành lại; chưa xác minh mọi tài sản và dùng RAG.",
+      "status": "pending_review",
+      "recommended_status": "pending_review",
+      "decision_reason": "URL cũ timeout; URL chính thức thay thế đã mở, bài ngày 27/10/2025, tư vấn Đặng Hùng Anh. Có PDF chính thức, footer yêu cầu ghi nguồn khi phát hành lại; chưa xác minh mọi tài sản và dùng RAG.",
+      "source_access": "opened_corrected_url",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    },
+    {
+      "document_id": "vn-self-skin-check",
+      "title": "LÀM THẾ NÀO ĐỂ TỰ KIỂM TRA UNG THƯ DA?",
+      "publisher": "Bệnh viện Da Liễu TP.HCM",
+      "source_url": "https://bvdl.org.vn/d-7395.5.12/truyen-thong-giao-duc-suc-khoe/lam-the-nao-de-tu-kiem-tra-ung-thu-da.html",
+      "previous_source_url": "https://bvdl.org.vn/d-7395.5.12/truyen-thong-giao-duc-suc-khoe/lam-the-nao-de-tu-kiem-tra-ung-thu-da.html",
+      "document_format": "html",
+      "language": "not_reverified_fulltext_vi",
+      "original_author_publisher": "Bệnh viện Da Liễu TP.HCM; quyền tài sản gốc chưa xác minh",
+      "scope": [
+        "K01",
+        "K08"
+      ],
+      "scope_basis": "Nguồn: https://bvdl.org.vn/d-7395.5.12/truyen-thong-giao-duc-suc-khoe/lam-the-nao-de-tu-kiem-tra-ung-thu-da.html; chủ đề đã đối chiếu: K01, K08. Xem review_notes về mức xác minh.",
+      "copyright_license": "unknown; không suy luận public domain/open license",
+      "evidence_urls": [
+        "https://bvdl.org.vn/d-7395.5.12/truyen-thong-giao-duc-suc-khoe/lam-the-nao-de-tu-kiem-tra-ung-thu-da.html"
+      ],
+      "permissions": {
+        "download": "unknown",
+        "store_original": "unknown",
+        "extract_text": "unknown",
+        "rag_indexing": "unknown"
+      },
+      "third_party_restrictions": "Mở lại timeout; kế thừa metadata từ Phase V1, chưa xác nhận live trong V1.1; không nâng mức xác minh.",
+      "status": "pending_review",
+      "recommended_status": "pending_review",
+      "decision_reason": "Mở lại timeout; kế thừa metadata từ Phase V1, chưa xác nhận live trong V1.1; không nâng mức xác minh.",
+      "source_access": "timeout",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    },
+    {
+      "document_id": "vn-moles-reference",
+      "title": "Nốt ruồi và những điều cần biết",
+      "publisher": "Khoa Da Liễu – Thẩm Mỹ Da, Bệnh viện Đại học Y Dược TP.HCM",
+      "source_url": "https://dalieudhyd.vn/not-ruoi-va-nhung-dieu-can-biet",
+      "previous_source_url": "https://dalieudhyd.vn/not-ruoi-va-nhung-dieu-can-biet",
+      "document_format": "html",
+      "language": "vi",
+      "original_author_publisher": "Bệnh viện Đại học Y Dược TP.HCM; nguồn nội dung tham khảo/ảnh bên thứ ba",
+      "scope": [
+        "K01",
+        "K02",
+        "K03",
+        "K06"
+      ],
+      "scope_basis": "Nguồn: https://dalieudhyd.vn/not-ruoi-va-nhung-dieu-can-biet; chủ đề đã đối chiếu: K01, K02, K03, K06. Xem review_notes về mức xác minh.",
+      "copyright_license": "unknown; không suy luận public domain/open license",
+      "evidence_urls": [
+        "https://dalieudhyd.vn/not-ruoi-va-nhung-dieu-can-biet"
+      ],
+      "permissions": {
+        "download": "unknown",
+        "store_original": "unknown",
+        "extract_text": "unknown",
+        "rag_indexing": "unknown"
+      },
+      "third_party_restrictions": "Nội dung tiếng Việt đã đọc; dẫn DermNet/nguồn tham khảo. Thiếu giấy phép tái sử dụng bản dịch và ảnh.",
+      "status": "pending_review",
+      "recommended_status": "pending_review",
+      "decision_reason": "Nội dung tiếng Việt đã đọc; dẫn DermNet/nguồn tham khảo. Thiếu giấy phép tái sử dụng bản dịch và ảnh.",
+      "source_access": "opened",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    },
+    {
+      "document_id": "vn-moles-warning",
+      "title": "Dấu hiệu nốt ruồi ung thư da",
+      "publisher": "Khoa Da Liễu – Thẩm Mỹ Da, Bệnh viện Đại học Y Dược TP.HCM",
+      "source_url": "https://dalieudhyd.vn/dau-hieu-not-ruoi-ung-thu-da",
+      "previous_source_url": "https://dalieudhyd.vn/dau-hieu-not-ruoi-ung-thu-da",
+      "document_format": "html",
+      "language": "vi",
+      "original_author_publisher": "VnExpress; ảnh American Academy of Dermatology",
+      "scope": [
+        "K01",
+        "K03",
+        "K08"
+      ],
+      "scope_basis": "Nguồn: https://dalieudhyd.vn/dau-hieu-not-ruoi-ung-thu-da; chủ đề đã đối chiếu: K01, K03, K08. Xem review_notes về mức xác minh.",
+      "copyright_license": "unknown; không suy luận public domain/open license",
+      "evidence_urls": [
+        "https://dalieudhyd.vn/dau-hieu-not-ruoi-ung-thu-da"
+      ],
+      "permissions": {
+        "download": "unknown",
+        "store_original": "unknown",
+        "extract_text": "unknown",
+        "rag_indexing": "unknown"
+      },
+      "third_party_restrictions": "Trang đăng lại nội dung có nguồn VnExpress, ảnh American Academy of Dermatology. Cần quyền chủ sở hữu gốc/bản dịch/ảnh, không chỉ quyền đơn vị đăng lại.",
+      "status": "pending_review",
+      "recommended_status": "pending_review",
+      "decision_reason": "Trang đăng lại nội dung có nguồn VnExpress, ảnh American Academy of Dermatology. Cần quyền chủ sở hữu gốc/bản dịch/ảnh, không chỉ quyền đơn vị đăng lại.",
+      "source_access": "opened",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    },
+    {
+      "document_id": "vn-bcc-quyhoa",
+      "title": "MỘT SỐ ĐIỀU CẦN BIẾT VỀ BỆNH UNG THƯ TẾ BÀO ĐÁY",
+      "publisher": "Bệnh viện Da liễu Trung ương Quy Hòa",
+      "source_url": "https://bvquyhoa.vn/mot-so-dieu-can-biet-ve-benh-ung-thu-te-bao-day/",
+      "previous_source_url": "https://bvquyhoa.vn/mot-so-dieu-can-biet-ve-benh-ung-thu-te-bao-day/",
+      "document_format": "html",
+      "language": "vi",
+      "original_author_publisher": "Bệnh viện Da liễu Trung ương Quy Hòa",
+      "scope": [
+        "K01",
+        "K02",
+        "K03",
+        "K04",
+        "K05",
+        "K07",
+        "K08"
+      ],
+      "scope_basis": "Nguồn: https://bvquyhoa.vn/mot-so-dieu-can-biet-ve-benh-ung-thu-te-bao-day/; chủ đề đã đối chiếu: K01, K02, K03, K04, K05, K07, K08. Xem review_notes về mức xác minh.",
+      "copyright_license": "unknown; không suy luận public domain/open license",
+      "evidence_urls": [
+        "https://bvquyhoa.vn/mot-so-dieu-can-biet-ve-benh-ung-thu-te-bao-day/"
+      ],
+      "permissions": {
+        "download": "unknown",
+        "store_original": "unknown",
+        "extract_text": "unknown",
+        "rag_indexing": "unknown"
+      },
+      "third_party_restrictions": "Đã đối chiếu tiêu đề, BSCKI. Huỳnh Thanh Ban, ngày 15/11/2023; có ảnh lâm sàng. Chưa xác minh giấy phép cho original và ảnh.",
+      "status": "pending_review",
+      "recommended_status": "pending_review",
+      "decision_reason": "Đã đối chiếu tiêu đề, BSCKI. Huỳnh Thanh Ban, ngày 15/11/2023; có ảnh lâm sàng. Chưa xác minh giấy phép cho original và ảnh.",
+      "source_access": "opened",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    },
+    {
+      "document_id": "vn-melanoma-prognosis",
+      "title": "NGHIÊN CỨU MỘT SỐ YẾU TỐ TIÊN LƯỢNG UNG THƯ HẮC TỐ DA TẠI BỆNH VIỆN K TỪ 2009 ĐẾN 2019",
+      "publisher": "Tạp chí Y học Việt Nam",
+      "source_url": "https://tapchiyhocvietnam.vn/index.php/vmj/article/view/1394",
+      "previous_source_url": "https://tapchiyhocvietnam.vn/index.php/vmj/article/view/1394",
+      "document_format": "pdf",
+      "language": "not_reverified_fulltext_vi",
+      "original_author_publisher": "Tạp chí Y học Việt Nam / tác giả bài nghiên cứu",
+      "scope": [
+        "K01",
+        "K03",
+        "K05"
+      ],
+      "scope_basis": "Nguồn: https://tapchiyhocvietnam.vn/index.php/vmj/article/view/1394; chủ đề đã đối chiếu: K01, K03, K05. Xem review_notes về mức xác minh.",
+      "copyright_license": "unknown; không suy luận public domain/open license",
+      "evidence_urls": [
+        "https://tapchiyhocvietnam.vn/index.php/vmj/article/view/1394"
+      ],
+      "permissions": {
+        "download": "unknown",
+        "store_original": "unknown",
+        "extract_text": "unknown",
+        "rag_indexing": "unknown"
+      },
+      "third_party_restrictions": "DOI 10.51298/vmj.v507i2.1394; Vũ Thanh Phương, Nguyễn Văn Chủ, Nguyễn Đại Bình; ngày 28/10/2021. Trang hiện trả tiêu đề/abstract tiếng Anh; tiếng Việt toàn văn chưa xác minh trong phiên, chưa thấy license.",
+      "status": "pending_review",
+      "recommended_status": "pending_review",
+      "decision_reason": "DOI 10.51298/vmj.v507i2.1394; Vũ Thanh Phương, Nguyễn Văn Chủ, Nguyễn Đại Bình; ngày 28/10/2021. Trang hiện trả tiêu đề/abstract tiếng Anh; tiếng Việt toàn văn chưa xác minh trong phiên, chưa thấy license.",
+      "source_access": "opened_english_metadata",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    },
+    {
+      "document_id": "vn-bcc-reconstruction",
+      "title": "Tạo hình góc mắt trong sau cắt ung thư tế bào đáy bằng nhiều vạt tại chỗ: Loạt ca lâm sàng",
+      "publisher": "Trường Đại học Y Hà Nội – Tạp chí Nghiên cứu Y học",
+      "source_url": "https://tapchinghiencuuyhoc.vn/index.php/tcncyh/article/view/3670",
+      "previous_source_url": "https://tapchinghiencuuyhoc.vn/index.php/tcncyh/article/view/3670",
+      "document_format": "pdf",
+      "language": "vi",
+      "original_author_publisher": "Trường Đại học Y Hà Nội – Tạp chí Nghiên cứu Y học / tác giả",
+      "scope": [
+        "K07"
+      ],
+      "scope_basis": "Nguồn: https://tapchinghiencuuyhoc.vn/index.php/tcncyh/article/view/3670; chủ đề đã đối chiếu: K07. Xem review_notes về mức xác minh.",
+      "copyright_license": "unknown; không suy luận public domain/open license",
+      "evidence_urls": [
+        "https://tapchinghiencuuyhoc.vn/index.php/tcncyh/article/view/3670"
+      ],
+      "permissions": {
+        "download": "unknown",
+        "store_original": "unknown",
+        "extract_text": "unknown",
+        "rag_indexing": "unknown"
+      },
+      "third_party_restrictions": "DOI 10.52852/tcncyh.v193i8.3670; Dương Mạnh Chiến, Lê Trung Thành; 29/08/2025. Có nút PDF; chưa có license reuse rõ, ảnh vùng mắt/ca bệnh cần review riêng.",
+      "status": "pending_review",
+      "recommended_status": "pending_review",
+      "decision_reason": "DOI 10.52852/tcncyh.v193i8.3670; Dương Mạnh Chiến, Lê Trung Thành; 29/08/2025. Có nút PDF; chưa có license reuse rõ, ảnh vùng mắt/ca bệnh cần review riêng.",
+      "source_access": "opened",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    },
+    {
+      "document_id": "vn-skin-cancer-signs",
+      "title": "Dấu hiệu của ung thư da",
+      "publisher": "Bệnh viện Nguyễn Tri Phương",
+      "source_url": "https://bvnguyentriphuong.com.vn/khoa-kham-benh/dau-hieu-cua-ung-thu-da",
+      "previous_source_url": "https://bvnguyentriphuong.com.vn/khoa-kham-benh/dau-hieu-cua-ung-thu-da",
+      "document_format": "html",
+      "language": "vi",
+      "original_author_publisher": "Chưa xác định chủ sở hữu nội dung gốc",
+      "scope": [
+        "K01",
+        "K03",
+        "K08"
+      ],
+      "scope_basis": "Nguồn: https://bvnguyentriphuong.com.vn/khoa-kham-benh/dau-hieu-cua-ung-thu-da; chủ đề đã đối chiếu: K01, K03, K08. Xem review_notes về mức xác minh.",
+      "copyright_license": "unknown; không suy luận public domain/open license",
+      "evidence_urls": [
+        "https://bvnguyentriphuong.com.vn/khoa-kham-benh/dau-hieu-cua-ung-thu-da"
+      ],
+      "permissions": {
+        "download": "unknown",
+        "store_original": "unknown",
+        "extract_text": "unknown",
+        "rag_indexing": "unknown"
+      },
+      "third_party_restrictions": "Trang có nội dung tiếng Việt; tác giả gốc/ngày/license chưa xác định được. Không gán bản quyền cho bệnh viện chỉ vì đang lưu trang.",
+      "status": "pending_review",
+      "recommended_status": "pending_review",
+      "decision_reason": "Trang có nội dung tiếng Việt; tác giả gốc/ngày/license chưa xác định được. Không gán bản quyền cho bệnh viện chỉ vì đang lưu trang.",
+      "source_access": "opened",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    },
+    {
+      "document_id": "vn-skin-cancer-early",
+      "title": "Một số dấu hiệu giúp bạn nhận biết sớm bệnh ung thư da",
+      "publisher": "Bệnh viện Nguyễn Tri Phương",
+      "source_url": "https://bvnguyentriphuong.com.vn/benh-hoc-da/mot-so-dau-hieu-giup-ban-nhan-biet-som-benh-ung-thu-da",
+      "previous_source_url": "https://bvnguyentriphuong.com.vn/benh-hoc-da/mot-so-dau-hieu-giup-ban-nhan-biet-som-benh-ung-thu-da",
+      "document_format": "html",
+      "language": "vi",
+      "original_author_publisher": "Chưa xác định chủ sở hữu nội dung gốc",
+      "scope": [
+        "K03",
+        "K08"
+      ],
+      "scope_basis": "Nguồn: https://bvnguyentriphuong.com.vn/benh-hoc-da/mot-so-dau-hieu-giup-ban-nhan-biet-som-benh-ung-thu-da; chủ đề đã đối chiếu: K03, K08. Xem review_notes về mức xác minh.",
+      "copyright_license": "unknown; không suy luận public domain/open license",
+      "evidence_urls": [
+        "https://bvnguyentriphuong.com.vn/benh-hoc-da/mot-so-dau-hieu-giup-ban-nhan-biet-som-benh-ung-thu-da"
+      ],
+      "permissions": {
+        "download": "unknown",
+        "store_original": "unknown",
+        "extract_text": "unknown",
+        "rag_indexing": "unknown"
+      },
+      "third_party_restrictions": "Đã mở trang tiếng Việt sau lần timeout. Thiếu căn cứ chủ sở hữu gốc/bản dịch/hình và giấy phép lưu/extract/RAG.",
+      "status": "pending_review",
+      "recommended_status": "pending_review",
+      "decision_reason": "Đã mở trang tiếng Việt sau lần timeout. Thiếu căn cứ chủ sở hữu gốc/bản dịch/hình và giấy phép lưu/extract/RAG.",
+      "source_access": "opened_after_retry",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    },
+    {
+      "document_id": "vn-seborrheic-keratosis",
+      "title": "DÀY SỪNG DA DẦU HAY DÀY SỪNG TIẾT BÃ: LÀNH TÍNH, ẢNH HƯỞNG THẦM MỸ NHƯNG DỄ ĐIỀU TRỊ",
+      "publisher": "Bệnh viện Da Liễu TP.Đà Nẵng",
+      "source_url": "https://dalieudanang.com/news/cham-soc-da-tham-my/day-sung-da-dau-hay-day-sung-tiet-ba-lanh-tinh-anh-huong-tham-my-nhung-de-dieu-tri-640.html",
+      "previous_source_url": "https://dalieudanang.com/news/cham-soc-da-tham-my/day-sung-da-dau-hay-day-sung-tiet-ba-lanh-tinh-anh-huong-tham-my-nhung-de-dieu-tri-640.html",
+      "document_format": "html",
+      "language": "vi",
+      "original_author_publisher": "Bệnh viện Da Liễu TP.Đà Nẵng",
+      "scope": [
+        "K01",
+        "K02",
+        "K04",
+        "K06",
+        "K07"
+      ],
+      "scope_basis": "Nguồn: https://dalieudanang.com/news/cham-soc-da-tham-my/day-sung-da-dau-hay-day-sung-tiet-ba-lanh-tinh-anh-huong-tham-my-nhung-de-dieu-tri-640.html; chủ đề đã đối chiếu: K01, K02, K04, K06, K07. Xem review_notes về mức xác minh.",
+      "copyright_license": "unknown; không suy luận public domain/open license",
+      "evidence_urls": [
+        "https://dalieudanang.com/news/cham-soc-da-tham-my/day-sung-da-dau-hay-day-sung-tiet-ba-lanh-tinh-anh-huong-tham-my-nhung-de-dieu-tri-640.html"
+      ],
+      "permissions": {
+        "download": "unknown",
+        "store_original": "unknown",
+        "extract_text": "unknown",
+        "rag_indexing": "unknown"
+      },
+      "third_party_restrictions": "Đã mở trang, ngày 04/09/2024, BSCKI. Nguyễn Thị Nam Phương; copyright bệnh viện. Chưa thấy giấy phép sao chép/chuyển thể cho corpus.",
+      "status": "pending_review",
+      "recommended_status": "pending_review",
+      "decision_reason": "Đã mở trang, ngày 04/09/2024, BSCKI. Nguyễn Thị Nam Phương; copyright bệnh viện. Chưa thấy giấy phép sao chép/chuyển thể cho corpus.",
+      "source_access": "opened",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    },
+    {
+      "document_id": "vn-melanoma-histology",
+      "title": "ĐẶC ĐIỂM LÂM SÀNG VÀ MÔ BỆNH HỌC CỦA BỆNH UNG THƯ HẮC TỐ DA TẠI BỆNH VIỆN DA LIỄU TRUNG ƯƠNG GIAI ĐOẠN 2020-2026",
+      "publisher": "Tạp chí Y học Cộng đồng",
+      "source_url": "https://tapchiyhcd.vn/index.php/yhcd/en/article/view/6280",
+      "previous_source_url": "https://tapchiyhcd.vn/index.php/yhcd/vi/article/view/6280",
+      "document_format": "pdf",
+      "language": "not_reverified_fulltext_vi",
+      "original_author_publisher": "Tạp chí Y học Cộng đồng / Đỗ Thị Như Hoa, Vũ Thái Hà, Nguyễn Hữu Quang",
+      "scope": [
+        "K03",
+        "K05"
+      ],
+      "scope_basis": "Nguồn: https://tapchiyhcd.vn/index.php/yhcd/vi/article/view/6280; chủ đề đã đối chiếu: K03, K05. Xem review_notes về mức xác minh.",
+      "copyright_license": "unknown; không suy luận public domain/open license",
+      "evidence_urls": [
+        "https://tapchiyhcd.vn/index.php/yhcd/en/article/view/6280"
+      ],
+      "permissions": {
+        "download": "unknown",
+        "store_original": "unknown",
+        "extract_text": "unknown",
+        "rag_indexing": "unknown"
+      },
+      "third_party_restrictions": "URL /vi/ redirect loop; endpoint không locale chuyển tới /en/ và mở được. DOI 10.52163/yhc.v67iCD12.6280, ngày 25/08/2026; chưa xác minh toàn văn tiếng Việt/giấy phép.",
+      "status": "pending_review",
+      "recommended_status": "pending_review",
+      "decision_reason": "URL /vi/ redirect loop; endpoint không locale chuyển tới /en/ và mở được. DOI 10.52163/yhc.v67iCD12.6280, ngày 25/08/2026; chưa xác minh toàn văn tiếng Việt/giấy phép.",
+      "source_access": "opened_english_metadata",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    },
+    {
+      "document_id": "vn-acs-skin-check",
+      "title": "Kiểm tra da để tìm các dấu hiệu ung thư",
+      "publisher": "American Cancer Society",
+      "source_url": "https://www.cancer.org/content/dam/cancer-org/cancer-control/vi/booklets-flyers/checking-your-skin.pdf",
+      "previous_source_url": "https://www.cancer.org/content/dam/cancer-org/cancer-control/vi/booklets-flyers/checking-your-skin.pdf",
+      "document_format": "pdf",
+      "language": "vi",
+      "original_author_publisher": "American Cancer Society, Inc.",
+      "scope": [
+        "K01",
+        "K03",
+        "K08"
+      ],
+      "scope_basis": "Nguồn: https://www.cancer.org/content/dam/cancer-org/cancer-control/vi/booklets-flyers/checking-your-skin.pdf; chủ đề đã đối chiếu: K01, K03, K08. Xem review_notes về mức xác minh.",
+      "copyright_license": "unknown; không suy luận public domain/open license",
+      "evidence_urls": [
+        "https://www.cancer.org/content/dam/cancer-org/cancer-control/vi/booklets-flyers/checking-your-skin.pdf"
+      ],
+      "permissions": {
+        "download": "unknown",
+        "store_original": "unknown",
+        "extract_text": "unknown",
+        "rag_indexing": "unknown"
+      },
+      "third_party_restrictions": "PDF chính thức 2 trang có tiếng Việt, copyright American Cancer Society 2024, Rev.9/24. Đọc PDF qua công cụ web để nghiên cứu, không lưu vào corpus. Chưa xác minh giấy phép cho workflow RAG; trang terms thử mở không truy cập được.",
+      "status": "pending_review",
+      "recommended_status": "pending_review",
+      "decision_reason": "PDF chính thức 2 trang có tiếng Việt, copyright American Cancer Society 2024, Rev.9/24. Đọc PDF qua công cụ web để nghiên cứu, không lưu vào corpus. Chưa xác minh giấy phép cho workflow RAG; trang terms thử mở không truy cập được.",
+      "source_access": "opened_pdf_in_browser",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    },
+    {
+      "document_id": "vn-tbjmp-atopic-488",
+      "title": "Đặc điểm lâm sàng và một số yếu tố liên quan đến bệnh viêm da cơ địa ở sinh viên Trường Đại học Y Dược Thái Bình năm 2024",
+      "publisher": "Trường Đại học Y Dược Thái Bình – Tạp chí Y Dược Thái Bình",
+      "source_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/view/488",
+      "download_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/download/488/449/1470",
+      "document_format": "pdf",
+      "language": "vi",
+      "original_author_publisher": "Tạp chí Y Dược Thái Bình / Trương Mai Trâm, Dương Văn Dược, Lường Thị Hồng, Nguyễn Thị Kim Oanh, Vũ Hà Phương, Mirna Da Nora Mangue, Nguyễn Thị Tài Linh",
+      "authors": [
+        "Trương Mai Trâm",
+        "Dương Văn Dược",
+        "Lường Thị Hồng",
+        "Nguyễn Thị Kim Oanh",
+        "Vũ Hà Phương",
+        "Mirna Da Nora Mangue",
+        "Nguyễn Thị Tài Linh"
+      ],
+      "doi": "10.62685/tbjmp.2025.18.08",
+      "published_on": "2025-09-30",
+      "scope": [
+        "K01",
+        "K03",
+        "K04"
+      ],
+      "scope_basis": "Trang in 49-54 (6 trang); bảng triệu chứng mụn nước, khô da/bong vảy, ngứa và yếu tố liên quan. Metadata web chỉ liệt kê tác giả đầu; danh sách đồng tác giả lấy từ trang đầu PDF.",
+      "copyright_license": "CC BY-SA 4.0",
+      "evidence_urls": [
+        "https://thaibinhjmp.vn/index.php/ojstbump/article/view/488",
+        "https://creativecommons.org/licenses/by-sa/4.0/",
+        "https://creativecommons.org/licenses/by-sa/4.0/legalcode.en",
+        "https://thaibinhjmp.vn/index.php/ojstbump/about/submissions",
+        "https://thaibinhjmp.vn/index.php/ojstbump/quy_dinh_quy_trinh",
+        "https://thaibinhjmp.vn/robots.txt"
+      ],
+      "permissions": {
+        "download": "licensed_subject_to_conditions_and_operator_approval",
+        "store_original": "licensed_subject_to_conditions_and_operator_approval",
+        "extract_text": "licensed_subject_to_conditions_and_operator_approval",
+        "rag_indexing": "license_basis_for_internal_indexing_only; operator_review_pending"
+      },
+      "third_party_restrictions": "Không thấy credit loại trừ quyền trong lớp text đã kiểm tra; chưa xác minh toàn bộ bằng hình render. Không tải tài liệu tham khảo, bộ câu hỏi SCORAD/DLQI, ảnh hoặc tài sản liên kết riêng. Nếu phát hiện ngoại lệ ở byte nhận về thì giữ nguyên original, cô lập và ngừng cấp RAG.",
+      "status": "pending_review",
+      "recommended_status": "eligible",
+      "decision_reason": "License theo từng bài cho sao chép/chuyển thể; đề xuất đủ căn cứ để operator duyệt batch có giới hạn. Không phải approved rights review.",
+      "source_access": "opened_pdf_in_browser",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null,
+      "human_quality_review": {
+        "status": "not_started",
+        "reviewer": null,
+        "reviewed_at": null,
+        "original_sha256": null,
+        "text_sha256": null,
+        "checks": [
+          "dấu tiếng Việt",
+          "thứ tự cột/đoạn/mục",
+          "bảng và số liệu",
+          "text rỗng/garbled",
+          "OCR",
+          "metadata và citation",
+          "trùng checksum",
+          "quyền tài sản nhúng"
+        ]
+      },
+      "rag_ready": false,
+      "head_observation": {
+        "http_status": 200,
+        "content_type": "application/pdf",
+        "content_length": 373569,
+        "final_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/download/488/449/1470",
+        "body_saved": false,
+        "observed_on": "2026-11-26"
+      }
+    },
+    {
+      "document_id": "vn-tbjmp-acne-490",
+      "title": "Các yếu tố nguy cơ liên quan đến mức độ trứng cá thể thông thường ở sinh viên: Nghiên cứu cắt ngang tại Trường Đại học Y Dược Thái Bình",
+      "publisher": "Trường Đại học Y Dược Thái Bình – Tạp chí Y Dược Thái Bình",
+      "source_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/view/490",
+      "download_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/download/490/451/1474",
+      "document_format": "pdf",
+      "language": "vi",
+      "original_author_publisher": "Tạp chí Y Dược Thái Bình / Nguyễn Thị Kim Dung, Nguyễn Thị Tài Linh",
+      "authors": [
+        "Nguyễn Thị Kim Dung",
+        "Nguyễn Thị Tài Linh"
+      ],
+      "doi": "10.62685/tbjmp.2025.18.10",
+      "published_on": "2025-09-30",
+      "scope": [
+        "K01",
+        "K02",
+        "K03",
+        "K04"
+      ],
+      "scope_basis": "Trang in 63-67 (5 trang); mục 2.2 mô tả comedones, sẩn, mủ, nốt/nang và mức độ; bảng yếu tố liên quan. Không biến liên quan thống kê thành căn nguyên đã chứng minh.",
+      "copyright_license": "CC BY-SA 4.0",
+      "evidence_urls": [
+        "https://thaibinhjmp.vn/index.php/ojstbump/article/view/490",
+        "https://creativecommons.org/licenses/by-sa/4.0/",
+        "https://creativecommons.org/licenses/by-sa/4.0/legalcode.en",
+        "https://thaibinhjmp.vn/index.php/ojstbump/about/submissions",
+        "https://thaibinhjmp.vn/index.php/ojstbump/quy_dinh_quy_trinh",
+        "https://thaibinhjmp.vn/robots.txt"
+      ],
+      "permissions": {
+        "download": "licensed_subject_to_conditions_and_operator_approval",
+        "store_original": "licensed_subject_to_conditions_and_operator_approval",
+        "extract_text": "licensed_subject_to_conditions_and_operator_approval",
+        "rag_indexing": "license_basis_for_internal_indexing_only; operator_review_pending"
+      },
+      "third_party_restrictions": "Không thấy credit loại trừ quyền trong lớp text đã kiểm tra; chưa xác minh toàn bộ bằng hình render. Không tải tài liệu tham khảo, bộ câu hỏi SCORAD/DLQI, ảnh hoặc tài sản liên kết riêng. Nếu phát hiện ngoại lệ ở byte nhận về thì giữ nguyên original, cô lập và ngừng cấp RAG.",
+      "status": "pending_review",
+      "recommended_status": "eligible",
+      "decision_reason": "License theo từng bài cho sao chép/chuyển thể; đề xuất đủ căn cứ để operator duyệt batch có giới hạn. Không phải approved rights review.",
+      "source_access": "opened_pdf_in_browser",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null,
+      "human_quality_review": {
+        "status": "not_started",
+        "reviewer": null,
+        "reviewed_at": null,
+        "original_sha256": null,
+        "text_sha256": null,
+        "checks": [
+          "dấu tiếng Việt",
+          "thứ tự cột/đoạn/mục",
+          "bảng và số liệu",
+          "text rỗng/garbled",
+          "OCR",
+          "metadata và citation",
+          "trùng checksum",
+          "quyền tài sản nhúng"
+        ]
+      },
+      "rag_ready": false,
+      "head_observation": {
+        "http_status": 200,
+        "content_type": "application/pdf",
+        "content_length": 240159,
+        "final_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/download/490/451/1474",
+        "body_saved": false,
+        "observed_on": "2026-11-26"
+      }
+    },
+    {
+      "document_id": "vn-tbjmp-psoriasis-640",
+      "title": "Kết quả điều trị và tính an toàn của Secukinumab trên bệnh nhân vảy nến thông thường mức độ vừa và nặng tại Bệnh viện Da liễu Thanh Hóa",
+      "publisher": "Trường Đại học Y Dược Thái Bình – Tạp chí Y Dược Thái Bình",
+      "source_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/view/640",
+      "download_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/download/640/598/1930",
+      "document_format": "pdf",
+      "language": "vi",
+      "original_author_publisher": "Tạp chí Y Dược Thái Bình / Lương Đức Diễn, Lê Trí Bách, Nguyễn Thị Lệ, Lê Thu Hoài",
+      "authors": [
+        "Lương Đức Diễn",
+        "Lê Trí Bách",
+        "Nguyễn Thị Lệ",
+        "Lê Thu Hoài"
+      ],
+      "doi": "10.62685/tbjmp.2026.24.20",
+      "published_on": "2026-08-28",
+      "scope": [
+        "K01",
+        "K03",
+        "K07"
+      ],
+      "scope_basis": "Trang in 159-166 (8 trang); mục 2.2.2 mô tả đỏ da, dày da, bong vảy; bảng đáp ứng tổn thương PASI. DLQI chỉ mô tả chỉ số/kết quả, không thấy toàn bộ 10 câu hỏi trong lớp text đã đọc. Không nhập bộ câu hỏi riêng.",
+      "copyright_license": "CC BY-SA 4.0",
+      "evidence_urls": [
+        "https://thaibinhjmp.vn/index.php/ojstbump/article/view/640",
+        "https://creativecommons.org/licenses/by-sa/4.0/",
+        "https://creativecommons.org/licenses/by-sa/4.0/legalcode.en",
+        "https://thaibinhjmp.vn/index.php/ojstbump/about/submissions",
+        "https://thaibinhjmp.vn/index.php/ojstbump/quy_dinh_quy_trinh",
+        "https://thaibinhjmp.vn/robots.txt"
+      ],
+      "permissions": {
+        "download": "licensed_subject_to_conditions_and_operator_approval",
+        "store_original": "licensed_subject_to_conditions_and_operator_approval",
+        "extract_text": "licensed_subject_to_conditions_and_operator_approval",
+        "rag_indexing": "license_basis_for_internal_indexing_only; operator_review_pending"
+      },
+      "third_party_restrictions": "Không thấy credit loại trừ quyền trong lớp text đã kiểm tra; chưa xác minh toàn bộ bằng hình render. Không tải tài liệu tham khảo, bộ câu hỏi SCORAD/DLQI, ảnh hoặc tài sản liên kết riêng. Nếu phát hiện ngoại lệ ở byte nhận về thì giữ nguyên original, cô lập và ngừng cấp RAG.",
+      "status": "pending_review",
+      "recommended_status": "eligible",
+      "decision_reason": "License theo từng bài cho sao chép/chuyển thể; đề xuất đủ căn cứ để operator duyệt batch có giới hạn. Không phải approved rights review.",
+      "source_access": "opened_pdf_in_browser",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null,
+      "human_quality_review": {
+        "status": "not_started",
+        "reviewer": null,
+        "reviewed_at": null,
+        "original_sha256": null,
+        "text_sha256": null,
+        "checks": [
+          "dấu tiếng Việt",
+          "thứ tự cột/đoạn/mục",
+          "bảng và số liệu",
+          "text rỗng/garbled",
+          "OCR",
+          "metadata và citation",
+          "trùng checksum",
+          "quyền tài sản nhúng"
+        ]
+      },
+      "rag_ready": false,
+      "head_observation": {
+        "http_status": 200,
+        "content_type": "application/pdf",
+        "content_length": 308937,
+        "final_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/download/640/598/1930",
+        "body_saved": false,
+        "observed_on": "2026-11-26"
+      }
+    },
+    {
+      "document_id": "vn-tbjmp-atopic-qol-425",
+      "title": "Các yếu tố ảnh hưởng đến chất lượng cuộc sống của bệnh nhân viêm da cơ địa tại Thái Bình",
+      "publisher": "Tạp chí Y Dược Thái Bình",
+      "source_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/view/425",
+      "document_format": "pdf",
+      "language": "vi_abstract_verified_fulltext_not_reverified",
+      "original_author_publisher": "Tạp chí Y Dược Thái Bình / Nguyễn Thị Kim Dung",
+      "scope": [
+        "K03"
+      ],
+      "scope_basis": "Có license theo bài; thiên về chất lượng cuộc sống, cần xác nhận phạm vi tổn thương và review DLQI/ảnh trước chọn.",
+      "copyright_license": "CC BY 4.0",
+      "evidence_urls": [
+        "https://thaibinhjmp.vn/index.php/ojstbump/article/view/425"
+      ],
+      "permissions": {
+        "download": "not_reviewed_for_this_batch",
+        "store_original": "not_reviewed_for_this_batch",
+        "extract_text": "not_reviewed_for_this_batch",
+        "rag_indexing": "not_reviewed_for_this_batch"
+      },
+      "third_party_restrictions": "Có license theo bài; thiên về chất lượng cuộc sống, cần xác nhận phạm vi tổn thương và review DLQI/ảnh trước chọn.",
+      "status": "pending_review",
+      "recommended_status": "pending_review",
+      "decision_reason": "Có license theo bài; thiên về chất lượng cuộc sống, cần xác nhận phạm vi tổn thương và review DLQI/ảnh trước chọn.",
+      "source_access": "opened_article_page",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    },
+    {
+      "document_id": "vn-tbjmp-psoriasis-qol-367",
+      "title": "Thực trạng chất lượng cuộc sống của người bệnh vảy nến đến khám, điều trị tại Bệnh viện Da Liễu Thái Bình năm 2024",
+      "publisher": "Tạp chí Y Dược Thái Bình",
+      "source_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/view/367",
+      "document_format": "pdf",
+      "language": "vi_abstract_verified_fulltext_not_reverified",
+      "original_author_publisher": "Tạp chí Y Dược Thái Bình / Lê Thị Hương",
+      "scope": [
+        "K03"
+      ],
+      "scope_basis": "Có license theo bài, chưa chọn; tránh trùng quần thể với bài 377, review phạm vi K và quyền bộ câu hỏi.",
+      "copyright_license": "CC BY 4.0",
+      "evidence_urls": [
+        "https://thaibinhjmp.vn/index.php/ojstbump/article/view/367"
+      ],
+      "permissions": {
+        "download": "not_reviewed_for_this_batch",
+        "store_original": "not_reviewed_for_this_batch",
+        "extract_text": "not_reviewed_for_this_batch",
+        "rag_indexing": "not_reviewed_for_this_batch"
+      },
+      "third_party_restrictions": "Có license theo bài, chưa chọn; tránh trùng quần thể với bài 377, review phạm vi K và quyền bộ câu hỏi.",
+      "status": "pending_review",
+      "recommended_status": "pending_review",
+      "decision_reason": "Có license theo bài, chưa chọn; tránh trùng quần thể với bài 377, review phạm vi K và quyền bộ câu hỏi.",
+      "source_access": "opened_article_page",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    },
+    {
+      "document_id": "vn-tbjmp-acne-tcm-507",
+      "title": "Nghiên cứu các thể lâm sàng mụn trứng cá theo Y học cổ truyền tại Bệnh viện Trường Đại học Y Dược Huế",
+      "publisher": "Tạp chí Y Dược Thái Bình",
+      "source_url": "https://thaibinhjmp.vn/index.php/ojstbump/article/view/507",
+      "document_format": "pdf",
+      "language": "vi_abstract_verified_fulltext_not_reverified",
+      "original_author_publisher": "Tạp chí Y Dược Thái Bình / Đoàn Thị Nhật Lệ",
+      "scope": [
+        "K01",
+        "K02",
+        "K03"
+      ],
+      "scope_basis": "Bài có mô tả sẩn/mụn mủ/nang và license; chưa chọn vì cần review phạm vi phần YHCT, bằng chứng và tài sản trước toàn văn.",
+      "copyright_license": "CC BY-SA 4.0",
+      "evidence_urls": [
+        "https://thaibinhjmp.vn/index.php/ojstbump/article/view/507"
+      ],
+      "permissions": {
+        "download": "not_reviewed_for_this_batch",
+        "store_original": "not_reviewed_for_this_batch",
+        "extract_text": "not_reviewed_for_this_batch",
+        "rag_indexing": "not_reviewed_for_this_batch"
+      },
+      "third_party_restrictions": "Bài có mô tả sẩn/mụn mủ/nang và license; chưa chọn vì cần review phạm vi phần YHCT, bằng chứng và tài sản trước toàn văn.",
+      "status": "pending_review",
+      "recommended_status": "pending_review",
+      "decision_reason": "Bài có mô tả sẩn/mụn mủ/nang và license; chưa chọn vì cần review phạm vi phần YHCT, bằng chứng và tài sản trước toàn văn.",
+      "source_access": "opened_article_page",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    },
+    {
+      "document_id": "vn-hue-skin-spectrum-2271",
+      "title": "Phổ các bệnh da và một số yếu tố liên quan trên bệnh nhân cao tuổi khám chuyên khoa da liễu tại Bệnh viện Thống Nhất",
+      "publisher": "Tạp chí Y học lâm sàng Bệnh viện Trung Ương Huế",
+      "source_url": "https://jcmhch.com.vn/index.php/home/article/view/2271",
+      "document_format": "pdf",
+      "language": "vi_abstract_verified_fulltext_not_reverified",
+      "original_author_publisher": "Tạp chí Y học lâm sàng Bệnh viện Trung Ương Huế / Tác giả trên trang bài; chưa chép danh sách đầy đủ",
+      "scope": [],
+      "scope_basis": "Điều khoản NC/ND; không khẳng định cấm mọi xử lý nội bộ nhưng chưa đủ căn cứ cho workflow RAG dự kiến, cần review hoặc permission riêng.",
+      "copyright_license": "CC BY-NC-ND 4.0",
+      "evidence_urls": [
+        "https://jcmhch.com.vn/index.php/home/article/view/2271",
+        "https://jcmhch.com.vn/index.php/home/License_and_copyright"
+      ],
+      "permissions": {
+        "download": "not_reviewed_for_this_batch",
+        "store_original": "not_reviewed_for_this_batch",
+        "extract_text": "not_reviewed_for_this_batch",
+        "rag_indexing": "not_reviewed_for_this_batch"
+      },
+      "third_party_restrictions": "Điều khoản NC/ND; không khẳng định cấm mọi xử lý nội bộ nhưng chưa đủ căn cứ cho workflow RAG dự kiến, cần review hoặc permission riêng.",
+      "status": "restricted",
+      "recommended_status": "restricted",
+      "decision_reason": "Điều khoản NC/ND; không khẳng định cấm mọi xử lý nội bộ nhưng chưa đủ căn cứ cho workflow RAG dự kiến, cần review hoặc permission riêng.",
+      "source_access": "opened_article_page",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    },
+    {
+      "document_id": "vn-vjdv-immunotherapy-154",
+      "title": "Liệu pháp miễn dịch trong ung thư da không hắc tố",
+      "publisher": "Tạp chí Da liễu học Việt Nam",
+      "source_url": "https://vjdv.vn/index.php/vjdv/article/view/154",
+      "document_format": "pdf",
+      "language": "vi_abstract_verified_fulltext_not_reverified",
+      "original_author_publisher": "Tạp chí Da liễu học Việt Nam / Nguyễn Hồng Sơn, Lê Thị Thanh Hiền, Nguyễn Hữu Quang, Nguyễn Đình Quân",
+      "scope": [
+        "K02",
+        "K04",
+        "K07"
+      ],
+      "scope_basis": "Nguồn chuyên khoa phù hợp trực tiếp, DOI 10.56320/tcdlhvn.43.154; chưa thấy license rõ trên trang bài. Đưa vào diện xin phép, không chọn để tải.",
+      "copyright_license": "unknown",
+      "evidence_urls": [
+        "https://vjdv.vn/index.php/vjdv/article/view/154"
+      ],
+      "permissions": {
+        "download": "not_reviewed_for_this_batch",
+        "store_original": "not_reviewed_for_this_batch",
+        "extract_text": "not_reviewed_for_this_batch",
+        "rag_indexing": "not_reviewed_for_this_batch"
+      },
+      "third_party_restrictions": "Nguồn chuyên khoa phù hợp trực tiếp, DOI 10.56320/tcdlhvn.43.154; chưa thấy license rõ trên trang bài. Đưa vào diện xin phép, không chọn để tải.",
+      "status": "pending_review",
+      "recommended_status": "pending_review",
+      "decision_reason": "Nguồn chuyên khoa phù hợp trực tiếp, DOI 10.56320/tcdlhvn.43.154; chưa thấy license rõ trên trang bài. Đưa vào diện xin phép, không chọn để tải.",
+      "source_access": "opened_article_page",
+      "reviewed_on": "2026-11-26",
+      "operator_rights_review": "not_approved",
+      "operator_acquisition": "not_approved",
+      "local_original": null,
+      "sha256": null
+    }
+  ],
+  "access_policy_observation": {
+    "url": "https://thaibinhjmp.vn/robots.txt",
+    "http_status": 200,
+    "rules": "User-agent: *; Disallow: /cache/",
+    "interpretation": "PDF endpoints outside /cache/; robots not a copyright license. Operator approval pending."
+  }
+}
