@@ -1,5 +1,13 @@
 # Medical Data Crawler
 
+Phase V1 bổ sung tiếp nhận PDF/HTML công khai đã tuyển chọn, chạy ngoại tuyến với
+quyền riêng cho lưu, trích xuất và RAG. Có 15 ứng viên tiếng Việt (11 trang nguồn
+đã mở, 4 chờ xác minh live), đều chờ review quyền; chưa import original thật.
+Xem [hướng dẫn Windows](docs/CURATED_PUBLIC_IMPORT.md) và
+[bằng chứng nguồn/kế hoạch pilot](docs/VIETNAMESE_CORPUS_CANDIDATES.md).
+Chạy `python -m medical_data_crawler.curated_cli candidates` hoặc
+`python scripts/demo_curated_import.py` (demo tổng hợp, không truy cập mạng).
+
 M0/M1 bổ sung PMC toàn văn XML độc lập với PubMed, chỉ đã kiểm chứng offline.
 Chạy thử: python -m medical_data_crawler.multisource_cli pmc demo --output data/pmc-m1-demo.
 Xem [hướng dẫn PowerShell đa nguồn](docs/MULTISOURCE_QUICKSTART.md) và
