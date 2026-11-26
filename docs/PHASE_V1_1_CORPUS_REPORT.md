@@ -1,5 +1,33 @@
 # Phase V1.1 — báo cáo trước phê duyệt acquisition
 
+> **Cập nhật thực thi 26/11/2026:** operator đã duyệt tải đúng batch ba PDF.
+> Đã tải 3/3 original, tổng 922.665 byte, SHA-256 thực đã tính lại và khớp;
+> 6 + 5 + 8 = 19 trang. Ba GET, không retry, redirect hoặc tải domain khác.
+> Trang bài/CC BY-SA 4.0 được kiểm tra lại qua HTTPS trực tiếp (HTTP 200);
+> công cụ web timeout được ghi riêng. Phần dưới là snapshot trước thực thi.
+>
+> CLI validate đạt; dry-run và preview trả exit 1 với
+> `approval_missing_or_inactive` cho cả ba mục. Chưa có định danh người duyệt
+> và thời hạn trusted grant; không tự nhận operator hay bật template.
+> **0 tài liệu trích xuất bằng curated importer, 0 Structured Raw được verify,
+> 0 tài liệu ready RAG.** Không tính việc đọc text để kiểm tra PDF là import.
+>
+> Agent đã xem render đủ 19 trang: mọi trang có text, chưa thấy dấu thay thế
+> Unicode hoặc file đính kèm. Bài 488 có ba biểu đồ raster; text không bao phủ
+> mọi nhãn trong hình. Layout hai cột/bảng ghép ô cần đối chiếu đầu ra sau
+> preview. Bảng 4 nguồn bài 488 ghi n=93 nhưng tổng 82; giữ nguyên, không sửa
+> số liệu. Human checklist vẫn `not_started`, mọi kết quả human đều pending.
+>
+> Original tại `data/vietnamese-medical-corpus/intake/`. Báo cáo thực thi,
+> inventory SHA-256, source evidence, local manifest, render và checklist tại
+> `data/vietnamese-medical-corpus/pilot-execution-20261126T045433Z/`, lần lượt
+> `execution-report.md`, `execution-inventory.json`, `source-review.json`,
+> `pilot.json`, `pdf-inspection/`, `human-review-checklist.json`.
+> Grant request `operator-grant-request.UNSIGNED.json` chưa ký, inactive;
+> operator cần cung cấp reviewer ID và expires_at thật trước import.
+> Không commit corpus/approval. Regression: **895 passed, 2 skipped** trong
+> 55,11 giây; Ruff lint/format PASS (96 file). Không thay code, không push.
+
 Ngày: **26/11/2026**. Baseline: `1116fb0f57c782eea72efe1791cb9e800a4a7d5d`.
 Đã đọc toàn bộ đặc tả v1.0, AGENTS và các tài liệu Phase V1 được yêu cầu.
 Giữ nguyên đặc tả khóa, importer, PubMed, PMC và schema Structured Raw v0.1.
